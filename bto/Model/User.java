@@ -1,3 +1,5 @@
+package bto.Model;
+
 public abstract class User {
     private String name;
     private String nric;
