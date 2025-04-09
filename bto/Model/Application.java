@@ -1,7 +1,4 @@
-package btoPackage;
-import btoPackage.Project.Applicant;
-import btoPackage.Project;
-import btoPackage.FlatType;
+package bto;
 
 public class Application {
     private Applicant application;
