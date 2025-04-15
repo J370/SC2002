@@ -1,5 +1,4 @@
 package bto.Model;
-import bto.Model.*;
 
 public class Manager extends User{
     private String name;

@@ -26,7 +26,9 @@ public class OfficerController {
     }
 
     // register status to be approved by manager
-    public void viewRegistrationStatus
+    public void viewRegistrationStatus(){
+
+    }
 
     public void generateReceipt(Application application) {
         if (application.getStatus() != ApplicationStatus.BOOKED) throw new IllegalStateException("Application is not booked");
@@ -45,10 +47,6 @@ public class OfficerController {
         application.setStatus(status);
         applicationDao.updateApplication(application);
     }
-
-
-
-
 
 
 
