@@ -4,7 +4,7 @@ import bto.Data.*;
 
 public class InitController {
     public void readCSV() {
-        CSVDao csvDao = new CSVDao();
+        UserCSVDao csvDao = new UserCSVDao();
 
         csvDao.readUser("./bto/Data/ApplicantList.csv");
         // csvDao.readCSV("ManagerList.csv");

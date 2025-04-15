@@ -8,9 +8,9 @@ public class LoginView {
 
     public void displayLoginPrompt() {
         System.out.println("Welcome to the BTO Application System!");
-        System.out.println("Please enter your NRIC: ");
+        System.out.print("Please enter your NRIC: ");
         String nric = scanner.nextLine();
-        System.out.println("Please enter your password: ");
+        System.out.print("Please enter your password: ");
         String password = scanner.nextLine();
     }
 }

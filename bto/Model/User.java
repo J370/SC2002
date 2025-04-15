@@ -28,4 +28,8 @@ public abstract class User {
     public static HashMap<String, User> getAllUsers() {
         return users;
     }
+
+    public String getPassword() {
+        return password;
+    }
 }

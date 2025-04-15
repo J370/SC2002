@@ -3,7 +3,7 @@ import java.io.*;
 import java.util.*;
 import bto.Model.*;
 
-public class CSVDao {
+public class UserCSVDao {
     public void readUser(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
