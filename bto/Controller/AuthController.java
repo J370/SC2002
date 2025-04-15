@@ -8,7 +8,7 @@ public class AuthController {
         User user = User.getUser(nric);
         if (user != null) {
             // Check if the password matches
-            if (user.getPassword.equals(password)) {
+            if (user.getPassword().equals(password)) {
                 return true; // Login successful
             } else {
                 return false; // Incorrect password

@@ -6,8 +6,8 @@ public class InitController {
     public void readCSV() {
         UserCSVDao csvDao = new UserCSVDao();
 
-        csvDao.readUser("./bto/Data/ApplicantList.csv");
-        // csvDao.readCSV("ManagerList.csv");
-        // csvDao.readCSV("OfficerList.csv");
+        csvDao.readUsers("./bto/Data/ApplicantList.csv");
+        csvDao.readUsers("./bto/Data/ManagerList.csv");
+        csvDao.readUsers("./bto/Data/OfficerList.csv");
     }
 }

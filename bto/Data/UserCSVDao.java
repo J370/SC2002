@@ -4,7 +4,7 @@ import java.util.*;
 import bto.Model.*;
 
 public class UserCSVDao {
-    public void readUser(String filePath) {
+    public void readUsers(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             boolean first = true;
@@ -20,12 +20,12 @@ public class UserCSVDao {
                         case "ApplicantList.csv":
                             User.addUser(data[1], new Applicant(data[0], data[1], Integer.parseInt(data[2]), data[3], data[4]));
                             break;
-                        // case "ManagerList.csv":
-                        //     new Manager(data[0], data[1], Integer.parseInt(data[2]), data[3], data[4]);
-                        //     break;
-                        // case "OfficerList.csv":
-                        //     new Officer(data[0], data[1], Integer.parseInt(data[2]), data[3], data[4]);
-                        //     break;
+                        case "ManagerList.csv":
+                            User.addUser(data[1], new Manager(data[0], data[1], Integer.parseInt(data[2]), data[3], data[4]));
+                            break;
+                        case "OfficerList.csv":
+                            User.addUser(data[1], new Officer(data[0], data[1], Integer.parseInt(data[2]), data[3], data[4]));
+                            break;
                     }
                 }
             }
