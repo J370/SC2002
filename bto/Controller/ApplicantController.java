@@ -38,15 +38,11 @@ public class ApplicantController {
         String flatType = "2-Room"; // Default for singles
         if (applicant.getMaritalStatus().equals("Married")) {
             List<String> availableTypes = project.getAvailableFlatTypes();
-            if (availableTypes.isEmpty()) {
-                throw new IllegalStateException("No available flat types in this project");
-            }
+            if (availableTypes.isEmpty()) throw new IllegalStateException("No available flat types in this project");
             flatType = availableTypes.size() > 1 ? ProjectView.promptFlatType() : availableTypes.get(0);
         }
 
-        if (!project.hasAvailableUnits(flatType)) {
-            throw new IllegalStateException("No available units for selected flat type");
-        }
+        if (!project.hasAvailableUnits(flatType)) throw new IllegalStateException("No available units for selected flat type");
 
         Application application = new Application(applicant, project, flatType);
         applicationDao.save(application);
@@ -62,17 +58,13 @@ public class ApplicantController {
 
     public Application viewApplication() {
         Application app = applicationDao.getActiveApplication(applicant);
-        if (app == null) {
-            throw new IllegalStateException("No active application found");
-        }
+        if (app == null) throw new IllegalStateException("No active application found");
         return app;
     }
 
     public void withdrawApplication() {
         Application app = viewApplication();
-        if (app.getStatus() == ApplicationStatus.BOOKED) {
-            throw new IllegalStateException("Cannot withdraw after booking");
-        }
+        if (app.getStatus() == ApplicationStatus.BOOKED) throw new IllegalStateException("Cannot withdraw after booking");
         app.setStatus(ApplicationStatus.WITHDRAWN);
         applicationDao.update(app);
     }
