@@ -1,15 +1,15 @@
 package bto;
 import bto.View.LoginView;
 import bto.Controller.*;
+import bto.Model.*;
 
 public class App {
     public App() {
-
     }
 
     public static void main(String[] args) {
-        AuthController authController = new AuthController();
-        authController.readCSV();
+        InitController initController = new InitController();
+        initController.readCSV();
 
         LoginView login = new LoginView();
         login.displayLoginPrompt();

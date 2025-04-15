@@ -7,7 +7,6 @@ public class CSVDao {
     public void readUser(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
-            Applicant applicant = null;
             boolean first = true;
             while ((line = br.readLine()) != null) {
                 if (first) {
@@ -19,7 +18,7 @@ public class CSVDao {
                     filePath = filePath.replace("./bto/Data/", "");
                     switch (filePath) {
                         case "ApplicantList.csv":
-                            new Applicant(data[0], data[1], Integer.parseInt(data[2]), data[3], data[4]);
+                            User.addUser(data[1], new Applicant(data[0], data[1], Integer.parseInt(data[2]), data[3], data[4]));
                             break;
                         // case "ManagerList.csv":
                         //     new Manager(data[0], data[1], Integer.parseInt(data[2]), data[3], data[4]);
