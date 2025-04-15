@@ -1,16 +1,16 @@
-package bto;
+package bto.Controller;
 import java.util.ArrayList;
 import java.util.List;
-
-import bto.Data;
+import bto.Data.*;
+import bto.Model.*;
 
 public class ApplicantController {
-    private final UserCSVDao applicant;
+    private final Applicant applicant;
     private final ApplicationDao applicationDao;
     private final ProjectDao projectDao;
     private final EnquiryDao enquiryDao;
 
-    public ApplicantController(UserCSVDao applicant, 
+    public ApplicantController(Applicant applicant, 
                               ApplicationDao applicationDao,
                               ProjectDao projectDao,
                               EnquiryDao enquiryDao) {
@@ -33,7 +33,7 @@ public class ApplicantController {
     
 
     public void applyProject(Project project) {
-        if (applicationDao.getActiveApplication(applicant) != null) throw new IllegalStateException("You already have an active application");
+        if (applicationDao.getActiveApplication(applicant.getNric()).isPresent()) throw new IllegalStateException("You already have an active application");
         
         String flatType = "2-Room"; // Default for singles
         if (applicant.getMaritalStatus().equals("Married")) {
@@ -44,17 +44,10 @@ public class ApplicantController {
 
         if (!project.hasAvailableUnits(flatType)) throw new IllegalStateException("No available units for selected flat type");
 
-        Application application = new Application(applicant, project, flatType);
+        Application application = new Application(project.getName(), applicant.getNric(), flatType);
         applicationDao.save(application);
     }
 
-
-    public void bookFlat() {
-        Application app = viewApplication();
-        if (app.getStatus() != ApplicationStatus.SUCCESSFUL) throw new IllegalStateException("Application not yet approved");
-        app.setStatus(ApplicationStatus.AWAITING_BOOKING);
-        applicationDao.update(app);
-    }
 
     public Application viewApplication() {
         Application app = applicationDao.getActiveApplication(applicant);
@@ -65,12 +58,17 @@ public class ApplicantController {
     public void withdrawApplication() {
         Application app = viewApplication();
         if (app.getStatus() == ApplicationStatus.BOOKED) throw new IllegalStateException("Cannot withdraw after booking");
-        app.setStatus(ApplicationStatus.WITHDRAWN);
+        app.setStatus(ApplicationStatus.UNSUCCESSFUL);
         applicationDao.update(app);
     }
 
-    public void submitEnquiry(String details, Project project){
-        Enquiry enquiry = new Enquiry(applicant,project,details);
+    public void submitEnquiry(String details, Project project) {
+        Enquiry enquiry = new Enquiry(
+            applicant.getNric(),  
+            project.getName(),    
+            details,              
+            null
+        );
         enquiryDao.save(enquiry);
     }
 
@@ -79,7 +77,7 @@ public class ApplicantController {
         List<Enquiry> userEnquiries = new ArrayList<>();
         
         for (Enquiry enquiry : allEnquiries) {
-            if (enquiry.getApplicant().equals(applicant)) {
+            if (enquiry.getApplicantNric().equals(applicant.getNric())) {
                 userEnquiries.add(enquiry);
             }
         }
@@ -87,14 +85,14 @@ public class ApplicantController {
     }
 
     public void editEnquiry(Enquiry enquiry, String newDetails){
-        if (!enquiry.getApplicant().equals(applicant)) throw new SecurityException("You can only edit your own enquiries");
-        if(enquiry.getReply() = null) throw new SecurityException("Cannot edit enquiries that has been replied");
-        enquiry.setContent(newDetails);
+        if (!enquiry.getApplicantNric().equals(applicant.getNric())) throw new SecurityException("You can only edit your own enquiries");
+        if(enquiry.getReply() == null) throw new SecurityException("Cannot edit enquiries that has been replied");
+        enquiry.editDetails(newDetails);
         enquiryDao.update(enquiry);
     }
 
     public void deleteEnquiry(Enquiry enquiry) {
-        if (!enquiry.getApplicant().equals(applicant)) throw new SecurityException("You can only delete your own enquiries");
+        if (!enquiry.getApplicantNric().equals(applicant.getNric())) throw new SecurityException("You can only delete your own enquiries");
         if(enquiry.getReply() != null) throw new SecurityException("Cannot delete enquiries that has been replied");
         enquiryDao.delete(enquiry.getId());
     }

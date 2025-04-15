@@ -1,21 +1,30 @@
-package bto;
+package bto.Model;
 
 public class Application {
-    private Applicant application;
-    private Project project;
-    private FlatType FlatType;
+    private String id;
+    private String projectName;
+    private String applicantNric;
+    private String flatType;
     private ApplicationStatus status;
-    private ApplicationStatus withdrawalStatus;
-    
-    public void apply() {
 
+    public Application(String projectName, String applicantNric, String flatType) {
+        this.id = "1";
+        this.projectName = projectName;
+        this.applicantNric = applicantNric;
+        this.flatType = flatType;
+        this.status = ApplicationStatus.PENDING;
     }
 
-    public void withdraw() {
+        // Getters
+    public String getId() { return id; }
+    public String getApplicantNric() { return applicantNric; }
+    public String getProjectName() { return projectName; }
+    public String getFlatType() { return flatType; }
+    public ApplicationStatus getStatus() { return status; }
 
-    }
 
-    public void viewStatus() {
-        
+    // Setters
+    public void setStatus(ApplicationStatus status) {
+        this.status = status;
     }
 }

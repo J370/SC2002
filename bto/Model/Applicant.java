@@ -1,5 +1,4 @@
 package bto.Model;
-import bto.Model.*;
 
 public class Applicant extends User{
     private String name;
@@ -16,4 +15,14 @@ public class Applicant extends User{
         this.maritalStatus = maritalStatus;
         this.password = password;
     }
+
+    public String getName() {return name;}
+    public String getNric() {return nric;}
+    public int getAge() {return age;}
+    public String getMaritalStatus() {return maritalStatus;}
+    public String getPassword() {return password;}
+    public void setName(String name) {this.name = name;}
+    public void setNric(String nric) {this.nric = nric;}
+    public void setAge(int age) {this.age = age;}
+    public void setMaritalStatus(String maritalStatus) {this.maritalStatus = maritalStatus;}
 }
