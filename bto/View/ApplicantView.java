@@ -1,6 +1,5 @@
 package bto.View;
 
-import java.util.Scanner;
 import bto.Controller.*;
 import bto.Model.*;
 import bto.Data.*;
@@ -11,6 +10,7 @@ public class ApplicantView extends UserView {
     Applicant applicant;
 
     public ApplicantView(Applicant applicant) {
+        super(applicant);
         ApplicationDao applicationDao = new ApplicationCSVDao();
         ProjectDao projectDao = new ProjectCSVDao();
         EnquiryDao enquiryDao = new EnquiryCSVDao();
@@ -18,8 +18,6 @@ public class ApplicantView extends UserView {
         this.applicantController = new ApplicantController(applicant, applicationDao, projectDao, enquiryDao);
         this.applicant = applicant;
     }
-
-    Scanner scanner = new Scanner(System.in);
 
     public void menu() {
         System.out.println("\nYou have successfully logged in!");
@@ -78,13 +76,6 @@ public class ApplicantView extends UserView {
             default:
                 menu();
         }
-    }
-
-    public void changePassword() {
-        AuthController authController = new AuthController();
-        System.out.print("Enter your new password: ");
-        String newPassword = scanner.next();
-        authController.changePassword(applicant, newPassword);
     }
 
     public void viewProjects() {
