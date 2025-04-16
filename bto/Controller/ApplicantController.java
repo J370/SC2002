@@ -4,6 +4,7 @@ import bto.Model.*;
 import bto.View.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ApplicantController {
     private final Applicant applicant;
@@ -35,16 +36,19 @@ public class ApplicantController {
 
     public void applyProject(String projectName) {
         Project project = projectDao.getProjectById(projectName);
-        if (applicationDao.getActiveApplication(applicant.getNric()).isPresent()) System.err.println("You already have an active application!");
+        if (applicationDao.getActiveApplication(applicant.getNric()).isPresent()){ System.err.println("You already have an active application!"); return; }
         
         String flatType = "2-Room"; // Default for singles
         if (applicant.getMaritalStatus().equals("Married")) {
             List<String> availableTypes = project.getAvailableFlatTypes();
-            if (availableTypes.isEmpty()) throw new IllegalStateException("No available flat types in this project");
+            if (availableTypes.isEmpty()) { System.err.println("No available flat types in this project");return; }
             //flatType = availableTypes.size() > 1 ? ProjectView.promptFlatType() : availableTypes.get(0);
         }
 
-        if (!project.hasAvailableUnits(flatType)) throw new IllegalStateException("No available units for selected flat type");
+        if (!project.hasAvailableUnits(flatType)){
+            System.err.println("No available units for selected flat type");
+            return;
+        }
 
         Application application = new Application(project.getName(), applicant.getNric(), flatType);
         applicationDao.save(application);
@@ -52,13 +56,19 @@ public class ApplicantController {
 
 
     public Application viewApplication() {
-        return applicationDao.getActiveApplication(applicant.getNric())
-            .orElseThrow(() -> new IllegalStateException("No active application found"));
+        Optional<Application> optionalApp = applicationDao.getActiveApplication(applicant.getNric());
+
+        if (optionalApp.isEmpty()) {
+            System.err.println("No active application found for applicant NRIC: " + applicant.getNric());
+            return null;
+        }
+
+        return optionalApp.get();
     }
 
     public void withdrawApplication() {
         Application app = viewApplication();
-        if (app.getStatus() == ApplicationStatus.BOOKED) throw new IllegalStateException("Cannot withdraw after booking");
+        if (app.getStatus() == ApplicationStatus.BOOKED) { System.err.println("Cannot withdraw application that has been booked!"); return;}
         app.setStatus(ApplicationStatus.UNSUCCESSFUL);
         applicationDao.update(app);
     }
@@ -86,8 +96,8 @@ public class ApplicantController {
     }
 
     public void editEnquiry(Enquiry enquiry, String newDetails){
-        if (!enquiry.getApplicantNric().equals(applicant.getNric())) throw new SecurityException("You can only edit your own enquiries");
-        if(enquiry.getReply() == null) throw new SecurityException("Cannot edit enquiries that has been replied");
+        if (!enquiry.getApplicantNric().equals(applicant.getNric())) { System.err.println("You can only edit your own enquiries"); return; }
+        if(enquiry.getReply() == null) System.err.println("Cannot edit enquiries that has been replied");
         enquiry.editDetails(newDetails);
         enquiryDao.update(enquiry);
     }
