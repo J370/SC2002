@@ -33,8 +33,9 @@ public class ApplicantController {
     }
     
 
-    public void applyProject(Project project) {
-        if (applicationDao.getActiveApplication(applicant.getNric()).isPresent()) throw new IllegalStateException("You already have an active application");
+    public void applyProject(String projectName) {
+        Project project = projectDao.getProjectById(projectName);
+        if (applicationDao.getActiveApplication(applicant.getNric()).isPresent()) System.err.println("You already have an active application!");
         
         String flatType = "2-Room"; // Default for singles
         if (applicant.getMaritalStatus().equals("Married")) {

@@ -30,10 +30,11 @@ public class ProjectCSVDao implements ProjectDao {
     }
 
     @Override
-    public Optional<Project> getProjectById(String projectId) {
+    public Project getProjectById(String projectId) {
         return getAllProjects().stream()
                 .filter(p -> p.getName().equalsIgnoreCase(projectId))
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Project with ID " + projectId + " not found"));
     }
 
     @Override

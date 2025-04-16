@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ApplicationCSVDao implements ApplicationDao {
-    private static final String FILEPATH = "./data/applications.csv";
+    private static final String FILEPATH = "./bto/Data/Applications.csv";
     private static final String HEADER = "ApplicationID,ProjectName,ApplicantNRIC,FlatType,Status";
 
     @Override
