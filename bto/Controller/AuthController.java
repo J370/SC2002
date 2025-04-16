@@ -1,6 +1,5 @@
 package bto.Controller;
 
-import bto.Data.*;
 import bto.Model.*;
 
 public class AuthController {

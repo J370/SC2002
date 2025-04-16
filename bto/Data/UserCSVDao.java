@@ -1,7 +1,6 @@
 package bto.Data;
-import java.io.*;
-import java.util.*;
 import bto.Model.*;
+import java.io.*;
 
 public class UserCSVDao {
     public void readUsers(String filePath) {

@@ -8,7 +8,6 @@ public class Application {
     private ApplicationStatus status;
 
     public Application(String projectName, String applicantNric, String flatType) {
-        this.id = "1";
         this.projectName = projectName;
         this.applicantNric = applicantNric;
         this.flatType = flatType;
@@ -24,7 +23,13 @@ public class Application {
 
 
     // Setters
-    public void setStatus(ApplicationStatus status) {
+    public Application setStatus(ApplicationStatus status) {
         this.status = status;
+        return this;
+    }
+
+    public Application setId(String string) {
+        this.id = string;
+        return this;
     }
 }

@@ -27,7 +27,7 @@ public class ApplicantController {
         for (Project project : allProjects) {
             if (project.isVisible() && project.isEligible(applicant)) visibleProjects.add(project);
         }
-        ProjectView.displayProjects(visibleProjects, applicant.getMaritalStatus());
+        //ProjectView.displayProjects(visibleProjects, applicant.getMaritalStatus());
 
     }
     
@@ -50,9 +50,8 @@ public class ApplicantController {
 
 
     public Application viewApplication() {
-        Application app = applicationDao.getActiveApplication(applicant);
-        if (app == null) throw new IllegalStateException("No active application found");
-        return app;
+        return applicationDao.getActiveApplication(applicant.getNric())
+            .orElseThrow(() -> new IllegalStateException("No active application found"));
     }
 
     public void withdrawApplication() {
