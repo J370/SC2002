@@ -2,17 +2,19 @@ package bto.Model;
 
 
 public class Enquiry {
+    private int id;
     private final String applicantNric;
     private final String projectName;
     private String enquiryDetails;
     private String reply;    
 
-        public Enquiry(String applicantNric, String projectName, String enquiryDetails, String reply) {
+        public Enquiry(int id,String applicantNric, String projectName, String enquiryDetails, String reply) {
         
+        this.id = id;
         this.applicantNric = applicantNric;
         this.projectName = projectName;
         this.enquiryDetails = enquiryDetails;
-        this.reply = reply;
+        this.reply = null;
     }
 
     public void addReply(String reply, String officerId) {
@@ -36,5 +38,7 @@ public class Enquiry {
     public String getProjectName() { return projectName; }
     public String getDetails() { return enquiryDetails; }
     public String getReply() { return reply; }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; } 
 
 }

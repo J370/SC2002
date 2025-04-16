@@ -1,8 +1,8 @@
 package bto.Controller;
-import java.util.ArrayList;
-import java.util.List;
 import bto.Data.*;
 import bto.Model.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ApplicantController {
     private final Applicant applicant;
@@ -39,7 +39,7 @@ public class ApplicantController {
         if (applicant.getMaritalStatus().equals("Married")) {
             List<String> availableTypes = project.getAvailableFlatTypes();
             if (availableTypes.isEmpty()) throw new IllegalStateException("No available flat types in this project");
-            flatType = availableTypes.size() > 1 ? ProjectView.promptFlatType() : availableTypes.get(0);
+            //flatType = availableTypes.size() > 1 ? ProjectView.promptFlatType() : availableTypes.get(0);
         }
 
         if (!project.hasAvailableUnits(flatType)) throw new IllegalStateException("No available units for selected flat type");
@@ -62,7 +62,7 @@ public class ApplicantController {
     }
 
     public void submitEnquiry(String details, Project project) {
-        Enquiry enquiry = new Enquiry(
+        Enquiry enquiry = new Enquiry(0,
             applicant.getNric(),  
             project.getName(),    
             details,              
