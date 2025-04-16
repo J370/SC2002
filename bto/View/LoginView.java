@@ -18,8 +18,8 @@ public class LoginView {
         User user = User.getUser(nric);
         boolean isValid = authController.validateLogin(user, password);
         if (isValid) {
-            if (user.getClass() == Applicant.class) {
-                ApplicantView applicantView = new ApplicantView();
+            if (user instanceof Applicant) {
+                ApplicantView applicantView = new ApplicantView((Applicant)user);
                 applicantView.menu();
             }
         } else {

@@ -1,6 +1,7 @@
 package bto.Controller;
 import bto.Data.*;
 import bto.Model.*;
+import bto.View.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,12 +24,12 @@ public class ApplicantController {
     public void viewAvailableProjects(){
         List<Project> visibleProjects = new ArrayList<>();
         List<Project> allProjects = projectDao.getAllProjects();
+        ApplicantView applicantView = new ApplicantView(applicant);
     
         for (Project project : allProjects) {
             if (project.isVisible() && project.isEligible(applicant)) visibleProjects.add(project);
         }
-        //ProjectView.displayProjects(visibleProjects, applicant.getMaritalStatus());
-
+        applicantView.displayProjects(visibleProjects, applicant.getMaritalStatus());
     }
     
 

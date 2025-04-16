@@ -2,10 +2,22 @@ package bto.View;
 
 import java.util.Scanner;
 import bto.Controller.*;
+import bto.Model.*;
+import bto.Data.*;
+import java.util.List;
 
 public class ApplicantView extends UserView {
+    ApplicantController applicantController;
+
+    public ApplicantView(Applicant applicant) {
+        ApplicationDao applicationDao = new ApplicationCSVDao();
+        ProjectDao projectDao = new ProjectCSVDao();
+        EnquiryDao enquiryDao = new EnquiryCSVDao();
+
+        this.applicantController = new ApplicantController(applicant, applicationDao, projectDao, enquiryDao);
+    }
+
     Scanner scanner = new Scanner(System.in);
-    ApplicantController applicantController = new ApplicantController();
 
     public void menu() {
         System.out.println("\nYou have successfully logged in!");
@@ -16,14 +28,21 @@ public class ApplicantView extends UserView {
 
         switch (scanner.nextInt()) {
             case 1:
-                applicantController.viewAvailableProjects();
                 menu();
 
             case 2:
+                applicantController.viewAvailableProjects();
                 menu();
         
             default:
                 menu();
+        }
+    }
+
+    public void displayProjects(List<Project> projects, String maritalStatus) {
+        System.out.println("Available Projects:");
+        for (Project project : projects) {
+            System.out.println(project);
         }
     }
 }
