@@ -48,8 +48,6 @@ public class OfficerController {
         applicationDao.updateApplication(application);
     }
 
-
-
     // view all enquiries for officer assigned project
     public void viewEnquiry() {
         List<Enquiry> enquiries = enquiryDao.getAllEnquiries();

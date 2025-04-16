@@ -42,10 +42,11 @@ public class EnquiryCSVDao implements EnquiryDao {
     }
 
     @Override
-    public Optional<Enquiry> findById(int enquiryId) {
+    public Enquiry findById(int enquiryId) {
         return readAllEnquiries().stream()
             .filter(e -> e.getId() == enquiryId)
-            .findFirst();
+            .findFirst()
+            .orElse(null);
     }
 
     @Override

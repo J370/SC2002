@@ -73,9 +73,10 @@ public class ApplicantController {
         applicationDao.update(app);
     }
 
-    public void submitEnquiry(String details, Project project) {
+    public void submitEnquiry(String projectName, String details) {
+        Project project = projectDao.getProjectById(projectName);
         Enquiry enquiry = new Enquiry(0,
-            applicant.getNric(),  
+            applicant.getNric(),
             project.getName(),    
             details,              
             null
@@ -95,14 +96,16 @@ public class ApplicantController {
         return userEnquiries;
     }
 
-    public void editEnquiry(Enquiry enquiry, String newDetails){
+    public void editEnquiry(int enquiryId, String newDetails){
+        Enquiry enquiry = enquiryDao.findById(enquiryId);
         if (!enquiry.getApplicantNric().equals(applicant.getNric())) { System.err.println("You can only edit your own enquiries"); return; }
-        if(enquiry.getReply() == null) System.err.println("Cannot edit enquiries that has been replied");
+        if(enquiry.getReply() != null) System.err.println("Cannot edit enquiries that has been replied");
         enquiry.editDetails(newDetails);
         enquiryDao.update(enquiry);
     }
 
-    public void deleteEnquiry(Enquiry enquiry) {
+    public void deleteEnquiry(int enquiryId) {
+        Enquiry enquiry = enquiryDao.findById(enquiryId);
         if (!enquiry.getApplicantNric().equals(applicant.getNric())) throw new SecurityException("You can only delete your own enquiries");
         if(enquiry.getReply() != null) throw new SecurityException("Cannot delete enquiries that has been replied");
         enquiryDao.delete(enquiry.getId());

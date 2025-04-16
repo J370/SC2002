@@ -1,7 +1,6 @@
 package bto;
 import bto.View.LoginView;
 import bto.Controller.*;
-import bto.Model.*;
 
 public class App {
     public App() {
