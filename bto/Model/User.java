@@ -21,15 +21,21 @@ public abstract class User {
         users.put(id, user);
     }
     
-    public static User getUser(String id) {
-        return users.get(id);
-    }
+    public static User getUser(String id) {return users.get(id);}
+    public static HashMap<String, User> getAllUsers() {return users;}
 
-    public static HashMap<String, User> getAllUsers() {
-        return users;
-    }
+    public String getName() {return name;}
+    public String getNric() {return nric;}
+    public int getAge() {return age;}
+    public String getMaritalStatus() {return maritalStatus;}
+    public String getPassword() {return password;}
+    public void setName(String name) {this.name = name;}
+    public void setNric(String nric) {this.nric = nric;}
+    public void setAge(int age) {this.age = age;}
+    public void setMaritalStatus(String maritalStatus) {this.maritalStatus = maritalStatus;}
+    public void setPassword(String password) {this.password = password;}
 
-    public String getPassword() {
-        return password;
+    public String toString() {
+        return name + ',' + nric + "," + age + "," + maritalStatus + "," + password;
     }
 }

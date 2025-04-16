@@ -8,6 +8,7 @@ import java.util.List;
 
 public class ApplicantView extends UserView {
     ApplicantController applicantController;
+    Applicant applicant;
 
     public ApplicantView(Applicant applicant) {
         ApplicationDao applicationDao = new ApplicationCSVDao();
@@ -15,6 +16,7 @@ public class ApplicantView extends UserView {
         EnquiryDao enquiryDao = new EnquiryCSVDao();
 
         this.applicantController = new ApplicantController(applicant, applicationDao, projectDao, enquiryDao);
+        this.applicant = applicant;
     }
 
     Scanner scanner = new Scanner(System.in);
@@ -30,11 +32,15 @@ public class ApplicantView extends UserView {
         System.out.println("7. View enquiry status");
         System.out.println("8. Edit enquiry");
         System.out.println("9. Delete enquiry");
-        
+        System.out.println("10. Logout");
         System.out.print("Please select an option: ");
 
         switch (scanner.nextInt()) {
             case 1:
+                AuthController authController = new AuthController();
+                System.out.print("Enter your new password: ");
+                String newPassword = scanner.next();
+                authController.changePassword(applicant, newPassword);
                 menu();
 
             case 2:
@@ -111,7 +117,9 @@ public class ApplicantView extends UserView {
                     System.out.println("Deletion cancelled.");
                 }
                 menu();
-
+            case 10:
+                System.out.println("Logging out...");
+                break;
             default:
         }
     }

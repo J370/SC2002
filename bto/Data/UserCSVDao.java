@@ -32,4 +32,34 @@ public class UserCSVDao {
             e.printStackTrace();
         }
     }
+
+    public void updateUser(User user) {
+        String filePath = "./bto/Data/CSV/" + user.getClass().getSimpleName() + "List.csv";
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath, true))) {
+            StringBuilder updatedContent = new StringBuilder();
+            try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+                String line;
+                boolean first = true;
+                while ((line = br.readLine()) != null) {
+                    if (first) {
+                        updatedContent.append(line).append("\n");
+                        first = false;
+                    } else {
+                        String[] data = line.split(",");
+                        if (data[1].equals(user.getNric())) {
+                            updatedContent.append(user.toString()).append("\n");
+                        } else {
+                            updatedContent.append(line).append("\n");
+                        }
+                    }
+                }
+            }
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+                writer.write(updatedContent.toString());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
