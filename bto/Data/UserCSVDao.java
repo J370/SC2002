@@ -14,7 +14,7 @@ public class UserCSVDao {
                 else {
                     // use comma as separator
                     String[] data = line.split(",");
-                    filePath = filePath.replace("./bto/Data/", "");
+                    filePath = filePath.replace("./bto/Data/CSV/", "");
                     switch (filePath) {
                         case "ApplicantList.csv":
                             User.addUser(data[1], new Applicant(data[0], data[1], Integer.parseInt(data[2]), data[3], data[4]));

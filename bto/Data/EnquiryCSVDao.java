@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class EnquiryCSVDao implements EnquiryDao {
-    private static final String CSV_FILE = "./data/enquiries.csv";
+    private static final String CSV_FILE = "./bto/Data/CSV/Enquiries.csv";
     private static final String HEADER = "EnquiryID,ApplicantNRIC,ProjectName,EnquiryDetails,Reply";
 
     @Override
