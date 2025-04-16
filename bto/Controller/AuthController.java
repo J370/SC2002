@@ -3,8 +3,7 @@ package bto.Controller;
 import bto.Model.*;
 
 public class AuthController {
-    public boolean validateLogin(String nric, String password) {
-        User user = User.getUser(nric);
+    public boolean validateLogin(User user, String password) {
         if (user != null) {
             // Check if the password matches
             if (user.getPassword().equals(password)) {
