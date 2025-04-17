@@ -4,10 +4,13 @@ import bto.Model.Enquiry;
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class EnquiryCSVDao implements EnquiryDao {
     private static final String CSV_FILE = "./bto/Data/CSV/Enquiries.csv";
-    private static final String HEADER = "EnquiryID,ApplicantNRIC,ProjectName,EnquiryDetails,Reply";
+    private static final String HEADER = "EnquiryID,ApplicantNRIC,ProjectName,EnquiryDetails,CreatedTime,Reply,RepliedBy,RepliedTime";
+    private static final DateTimeFormatter DT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public void save(Enquiry enquiry) {
@@ -17,8 +20,8 @@ public class EnquiryCSVDao implements EnquiryDao {
         if (enquiry.getId() == 0) {
             int newId = generateNewId(allEnquiries);
             enquiry = new Enquiry(newId, enquiry.getApplicantNric(), 
-                                enquiry.getProjectName(), enquiry.getDetails(), 
-                                enquiry.getReply());
+                                enquiry.getProjectName(), enquiry.getDetails(), LocalDateTime.now(), 
+                                enquiry.getReply(), enquiry.getRepliedBy(), enquiry.getRepliedTime());
         }
         
         allEnquiries.add(enquiry);
@@ -102,11 +105,14 @@ public class EnquiryCSVDao implements EnquiryDao {
         try {
             String[] parts = csvLine.split(",", -1);
             return new Enquiry(
-                Integer.parseInt(parts[0]),   // ID
-                parts[1],                     // ApplicantNRIC
-                parts[2],                     // ProjectName
-                parts[3],                     // EnquiryDetails
-                parts[4].equals("null") ? null : parts[4]  // Reply
+                Integer.parseInt(parts[0]),
+                parts[1],
+                parts[2],
+                parts[3],
+                parts[4].equals("null") ? null : LocalDateTime.parse(parts[4], DT_FORMATTER),
+                parts[5].equals("null") ? null : parts[5],
+                parts[6].equals("null") ? null : parts[6],
+                parts[7].equals("null") ? null : LocalDateTime.parse(parts[7], DT_FORMATTER)
             );
         } catch (Exception e) {
             System.err.println("Error parsing enquiry: " + csvLine);
@@ -119,13 +125,21 @@ public class EnquiryCSVDao implements EnquiryDao {
             String.valueOf(enq.getId()),
             enq.getApplicantNric(),
             enq.getProjectName(),
-            escapeCommas(enq.getDetails()),
-            enq.getReply() != null ? escapeCommas(enq.getReply()) : "null"
+            enq.getDetails() != null ? enq.getDetails() : "null",
+            enq.getCreatedTime() != null ? enq.getCreatedTime().format(DT_FORMATTER) : "null",
+            enq.getReply() != null ? enq.getReply() : "null",
+            enq.getRepliedBy() != null ? enq.getRepliedBy() : "null",
+            enq.getRepliedTime() != null ? enq.getRepliedTime().format(DT_FORMATTER) : "null"
         );
     }
 
     private String escapeCommas(String input) {
         return input.contains(",") ? "\"" + input + "\"" : input;
+    }
+
+    private String unescapeCommas(String input) {
+        return input.startsWith("\"") && input.endsWith("\"") ? 
+            input.substring(1, input.length()-1) : input;
     }
 
     private int generateNewId(List<Enquiry> existing) {

@@ -1,0 +1,17 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Build Java (exclude specific files)",
+        "type": "shell",
+        "command": "powershell",
+        "args": [
+          "-Command",
+          "Get-ChildItem -Recurse -Filter *.java | Where-Object { $_.Name -notin @('OfficerController.java', 'ManagerController.java', 'UserController.java') } | ForEach-Object { $_.FullName } | javac @()"
+        ],
+        "group": "build",
+        "problemMatcher": [],
+        "detail": "Compiles all Java files except excluded controllers."
+      }
+    ]
+  }

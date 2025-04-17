@@ -1,44 +1,56 @@
 package bto.Model;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Enquiry {
     private int id;
     private final String applicantNric;
     private final String projectName;
     private String enquiryDetails;
-    private String reply;    
+    private final LocalDateTime createdTime;
+    private String reply;
+    private String repliedBy;
+    private LocalDateTime repliedTime;
 
-        public Enquiry(int id,String applicantNric, String projectName, String enquiryDetails, String reply) {
-        
+    public Enquiry(int id, String applicantNric, String projectName, String enquiryDetails, LocalDateTime createdTime, String reply, String repliedBy, LocalDateTime repliedTime) {
         this.id = id;
         this.applicantNric = applicantNric;
         this.projectName = projectName;
         this.enquiryDetails = enquiryDetails;
-        this.reply = null;
+        this.createdTime = createdTime;
+        this.reply = reply;
+        this.repliedBy = repliedBy;
+        this.repliedTime = repliedTime;
     }
 
-    public void addReply(String reply, String officerId) {
-        if (reply == null )throw new IllegalArgumentException("Reply cannot be empty");
-        if (this.reply != null) throw new IllegalStateException("Enquiry already has a reply");
+    public void setReply(String reply, String officerName) {
+        if (reply == null ) { System.err.printf("Reply cannot be empty"); return; }
+        if (this.reply != null) { System.err.printf("Enquiry already has a reply"); return; }
         
         this.reply = reply;
-        //this.repliedBy = officerId;
-        //this.repliedAt = LocalDateTime.now();
+        this.repliedBy = officerName;
+        this.repliedTime = LocalDateTime.now();
     }
 
     public void editDetails(String enquiryDetails) {
-        if (isReplied()) throw new IllegalStateException("Cannot modify replied enquiry");
-        if (enquiryDetails == null) throw new IllegalArgumentException("Content cannot be empty");
+        if (isReplied()) { System.err.printf("Cannot modify replied enquiry"); return; }
+        if (enquiryDetails == null) { System.err.printf("Content cannot be empty"); return; }
         
         this.enquiryDetails = enquiryDetails;
     }
 
-    public boolean isReplied() {return reply != null && !reply.isEmpty();}
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
     public String getApplicantNric() { return applicantNric; }
     public String getProjectName() { return projectName; }
     public String getDetails() { return enquiryDetails; }
+    public void setDetails(String details) { this.enquiryDetails = details; }
+    public LocalDateTime getCreatedTime() { return createdTime; }
     public String getReply() { return reply; }
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; } 
+
+    public String getRepliedBy() { return repliedBy; }
+    public LocalDateTime getRepliedTime() { return repliedTime; }
+    public boolean isReplied() { return reply != null && !reply.equals("null") && !reply.isEmpty(); }
 
 }

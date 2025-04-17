@@ -2,18 +2,22 @@ package bto.Model;
 import bto.Model.*;
 
 public class Officer extends User{
-    private String name;
-    private String nric;
-    private int age;
-    private String maritalStatus;
-    private String password;
 
-    public Officer(String name, String nric, int age, String maritalStatus, String password) {
+    private Project project;
+    private String status;
+    private String registrationStatus;
+
+    public Officer(String name, String nric, int age, String maritalStatus, String password, Project project, String status) {
         super(name, nric, age, maritalStatus, password);
-        this.name = name;
-        this.nric = nric;
-        this.age = age;
-        this.maritalStatus = maritalStatus;
-        this.password = password;
+
+        this.project = project;
+        this.status = status;
+        this.registrationStatus = "Not Registered";
     }
+
+    public Project getProject() { return project; }
+    public void setProject() { this.project = project; }
+    public void setRegistrationStatus(String status) { this.status = status; }
+    public void registerForProject(Project project) { this.registrationStatus = "Pending"; }
+
 }

@@ -30,6 +30,8 @@ public class OfficerController {
 
     }
 
+
+    //generate receipt for applicant once approved
     public void generateReceipt(Application application) {
         if (application.getStatus() != ApplicationStatus.BOOKED) throw new IllegalStateException("Application is not booked");
         String receipt = "Receipt for Application ID: " + application.getId() + "\n" +

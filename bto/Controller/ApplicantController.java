@@ -5,6 +5,7 @@ import bto.View.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDateTime;
 
 public class ApplicantController {
     private final Applicant applicant;
@@ -42,7 +43,7 @@ public class ApplicantController {
         if (applicant.getMaritalStatus().equals("Married")) {
             List<String> availableTypes = project.getAvailableFlatTypes();
             if (availableTypes.isEmpty()) { System.err.println("No available flat types in this project");return; }
-            //flatType = availableTypes.size() > 1 ? ProjectView.promptFlatType() : availableTypes.get(0);
+            //flatType = availableTypes.size() > 1 ? applicantView.promptFlatType() : availableTypes.get(0);
         }
 
         if (!project.hasAvailableUnits(flatType)){
@@ -79,6 +80,9 @@ public class ApplicantController {
             applicant.getNric(),
             project.getName(),    
             details,              
+            LocalDateTime.now(),
+            null,
+            null,
             null
         );
         enquiryDao.save(enquiry);
@@ -106,8 +110,8 @@ public class ApplicantController {
 
     public void deleteEnquiry(int enquiryId) {
         Enquiry enquiry = enquiryDao.findById(enquiryId);
-        if (!enquiry.getApplicantNric().equals(applicant.getNric())) throw new SecurityException("You can only delete your own enquiries");
-        if(enquiry.getReply() != null) throw new SecurityException("Cannot delete enquiries that has been replied");
+        if (!enquiry.getApplicantNric().equals(applicant.getNric())) { System.err.println("You can only delete your own enquiries"); return; }
+        if(enquiry.getReply() != null) { System.err.println("Cannot delete enquiries that has been replied"); return; }
         enquiryDao.delete(enquiry.getId());
     }
 }
