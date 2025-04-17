@@ -20,7 +20,7 @@ public class LoginView {
         if (isValid) {
             if (user instanceof Applicant) {
                 ApplicantView applicantView = new ApplicantView((Applicant)user);
-                applicantView.menu();
+                applicantView.menu(true);
             }
         } else {
             System.out.println("Invalid NRIC or password. Please try again.");

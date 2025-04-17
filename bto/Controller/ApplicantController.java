@@ -53,13 +53,10 @@ public class ApplicantController {
     }
 
 
-    public Application viewApplication() {
+    public Application viewApplication() throws Exception {
         Optional<Application> optionalApp = applicationDao.getActiveApplication(applicant.getNric());
 
-        if (optionalApp.isEmpty()) {
-            throw new Exception("No active application found for applicant NRIC: " + applicant.getNric());
-            return null;
-        }
+        if (optionalApp.isEmpty()) throw new Exception("No active application found for applicant NRIC: " + applicant.getNric());
 
         return optionalApp.get();
     }

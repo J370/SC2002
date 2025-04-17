@@ -7,12 +7,12 @@ public class Officer extends User{
     private String status;
     private String registrationStatus;
 
-    public Officer(String name, String nric, int age, String maritalStatus, String password, Project project, String status) {
+    public Officer(String name, String nric, int age, String maritalStatus, String password) {
         super(name, nric, age, maritalStatus, password);
 
-        this.project = project;
-        this.status = status;
-        this.registrationStatus = "Not Registered";
+        //this.project = project;
+        //this.status = status;
+        //this.registrationStatus = "Not Registered";
     }
 
     public Project getProject() { return project; }

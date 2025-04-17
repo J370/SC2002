@@ -19,8 +19,13 @@ public class ApplicantView extends UserView {
         this.applicant = applicant;
     }
 
-    public void menu() {
-        System.out.println("\nYou have successfully logged in!");
+    public void menu(boolean isFirstTime) {
+        if (isFirstTime) {
+            System.out.println("Welcome " + applicant.getName() + "!");
+            System.out.println("You are logged in as an applicant.");
+        } else {
+            System.out.println("Welcome back " + applicant.getName() + "!");
+        }
         System.out.println("1. Change password");
         System.out.println("2. View projects");
         System.out.println("3. Apply for projects");
@@ -36,45 +41,45 @@ public class ApplicantView extends UserView {
         switch (scanner.nextInt()) {
             case 1:
                 changePassword();
-                menu();
+                menu(false);
 
             case 2:
                 viewProjects();
-                menu();
+                menu(false);
 
             case 3:
                 applyProject();
-                menu();
+                menu(false);
 
             case 4:
                 applicationStatus();
-                menu();
+                menu(false);
 
             case 5:
                 withdrawApplication();
-                menu();
+                menu(false);
 
             case 6:
                 makeEnquiry();
-                menu();
+                menu(false);
 
             case 7:
                 viewEnquiry();
-                menu();
+                menu(false);
 
             case 8:
                 editEnquiry();
-                menu();
+                menu(false);
 
             case 9:
                 deleteEnquiry();
-                menu();
+                menu(false);
             case 10:
                 System.out.println("Logging out...");
                 break;
 
             default:
-                menu();
+                menu(false);
         }
     }
 
@@ -84,7 +89,8 @@ public class ApplicantView extends UserView {
 
     public void applyProject() {
         System.out.print("Enter the project name you want to apply for: ");
-        String projectName = scanner.next();
+        scanner.nextLine();
+        String projectName = scanner.nextLine();
         try {
             applicantController.applyProject(projectName);
             System.out.println("Application submitted successfully.");
@@ -94,9 +100,13 @@ public class ApplicantView extends UserView {
     
 
     public void applicationStatus() {
-        Application application = applicantController.viewApplication();
-        System.out.println("Application Project Name: " + application.getProjectName());
-        System.out.println("Application Status: " + application.getStatus());
+        try{        
+            Application application = applicantController.viewApplication();
+            System.out.println("Application Project Name: " + application.getProjectName());
+            System.out.println("Application Status: " + application.getStatus());
+        }
+        catch (Exception e) {System.out.println("Error: " + e.getMessage());}
+
     }
 
     public void withdrawApplication() {
@@ -115,9 +125,10 @@ public class ApplicantView extends UserView {
 
     public void makeEnquiry() {
         System.out.print("Enter the project name for your enquiry: ");
-        String projectNameEnquiry = scanner.next();
+        scanner.nextLine();
+        String projectNameEnquiry = scanner.nextLine();
         System.out.print("Enter your enquiry details: ");
-        String enquiryDetails = scanner.next();
+        String enquiryDetails = scanner.nextLine();
         applicantController.submitEnquiry(projectNameEnquiry, enquiryDetails);
         System.out.println("Enquiry submitted successfully.");
     }
@@ -128,6 +139,7 @@ public class ApplicantView extends UserView {
             System.out.println("No enquiries found.");
         } else {
             for (Enquiry enquiry : userEnquiries) {
+                System.out.println("-----------------------------------");
                 System.out.println("Enquiry ID: " + enquiry.getId());
                 System.out.println("Project Name: " + enquiry.getProjectName());
                 System.out.println("Enquiry Details: " + enquiry.getDetails());
@@ -144,7 +156,8 @@ public class ApplicantView extends UserView {
         System.out.print("Enter the enquiry ID you want to edit: ");
         int enquiryId = scanner.nextInt();
         System.out.print("Enter the new details: ");
-        String newDetails = scanner.next();
+        scanner.nextLine();
+        String newDetails = scanner.nextLine();
         try{
             applicantController.editEnquiry(enquiryId, newDetails);
             System.out.println("Enquiry updated successfully.");
