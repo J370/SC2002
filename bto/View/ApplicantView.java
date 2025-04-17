@@ -4,6 +4,7 @@ import bto.Controller.*;
 import bto.Model.*;
 import bto.Data.*;
 import java.util.List;
+import java.util.Map;
 
 public class ApplicantView extends UserView {
     ApplicantController applicantController;
@@ -11,9 +12,9 @@ public class ApplicantView extends UserView {
 
     public ApplicantView(Applicant applicant) {
         super(applicant);
-        ApplicationDao applicationDao = new ApplicationCSVDao();
-        ProjectDao projectDao = new ProjectCSVDao();
-        EnquiryDao enquiryDao = new EnquiryCSVDao();
+        ApplicationCSVDao applicationDao = new ApplicationCSVDao();
+        ProjectCSVDao projectDao = new ProjectCSVDao();
+        EnquiryCSVDao enquiryDao = new EnquiryCSVDao();
 
         this.applicantController = new ApplicantController(applicant, applicationDao, projectDao, enquiryDao);
         this.applicant = applicant;
@@ -84,7 +85,31 @@ public class ApplicantView extends UserView {
     }
 
     public void viewProjects() {
-        applicantController.viewAvailableProjects();
+        List<Project> projects = applicantController.getAvailableProjects();
+        if (projects.isEmpty()) System.out.println("No available projects."); 
+        else {
+            System.out.println("Available Projects:");
+            for (Project project : projects) {
+                System.out.println("---------------------------------");
+                System.out.println("Project Name: " + project.getName());
+                System.out.println("Neighborhood: " + project.getNeighborhood());
+
+                // Print all flat types from the map
+                for (Map.Entry<String, Project.FlatTypeDetails> entry : project.getFlatTypes().entrySet()) {
+                    String flatType = entry.getKey();
+                    Project.FlatTypeDetails details = entry.getValue();
+                    System.out.println("Flat Type: " + flatType);
+                    System.out.println("    Number of units: " + details.getAvailableUnits());
+                    System.out.println("    Selling price: $" + details.getSellingPrice());
+                }
+
+                System.out.println("Application opening date: " + project.getOpeningDate());
+                System.out.println("Application closing date: " + project.getClosingDate());
+                System.out.println("Manager: " + project.getManager());
+                System.out.println("Officer(s): " + String.join(", ", project.getAssignedOfficers()));
+                System.out.println("---------------------------------");
+            }
+        }
     }
 
     public void applyProject() {
@@ -101,7 +126,7 @@ public class ApplicantView extends UserView {
 
     public void applicationStatus() {
         try{        
-            Application application = applicantController.viewApplication();
+            Application application = applicantController.viewActiveApplication();
             System.out.println("Application Project Name: " + application.getProjectName());
             System.out.println("Application Status: " + application.getStatus());
         }
@@ -139,7 +164,7 @@ public class ApplicantView extends UserView {
             System.out.println("No enquiries found.");
         } else {
             for (Enquiry enquiry : userEnquiries) {
-                System.out.println("-----------------------------------");
+                System.out.println("---------------------------------");
                 System.out.println("Enquiry ID: " + enquiry.getId());
                 System.out.println("Project Name: " + enquiry.getProjectName());
                 System.out.println("Enquiry Details: " + enquiry.getDetails());
@@ -147,7 +172,7 @@ public class ApplicantView extends UserView {
                 System.out.println("Reply: " + (enquiry.getReply() != null ? enquiry.getReply() : "No reply yet"));
                 System.out.println("Replied By: " + (enquiry.getRepliedBy() != null ? enquiry.getRepliedBy() : "NIL"));
                 System.out.println("Replied Time: " + (enquiry.getRepliedTime() != null ? enquiry.getRepliedTime().toString() : "NIL"));
-                System.out.println("-----------------------------------");
+                System.out.println("---------------------------------");
             }
         }
     }

@@ -9,31 +9,48 @@ import java.time.LocalDateTime;
 
 public class ApplicantController {
     private final Applicant applicant;
-    private final ApplicationDao applicationDao;
-    private final ProjectDao projectDao;
-    private final EnquiryDao enquiryDao;
+    private final ApplicationCSVDao applicationDao;
+    private final ProjectCSVDao projectDao;
+    private final EnquiryCSVDao enquiryDao;
 
     public ApplicantController(Applicant applicant, 
-                              ApplicationDao applicationDao,
-                              ProjectDao projectDao,
-                              EnquiryDao enquiryDao) {
+                              ApplicationCSVDao applicationDao,
+                              ProjectCSVDao projectDao,
+                              EnquiryCSVDao enquiryDao) {
         this.applicant = applicant;
         this.applicationDao = applicationDao;
         this.projectDao = projectDao;
         this.enquiryDao = enquiryDao;
     }
 
-    public void viewAvailableProjects(){
+    public List<Project> getAvailableProjects() {
         List<Project> visibleProjects = new ArrayList<>();
         List<Project> allProjects = projectDao.getAllProjects();
-        ApplicantView applicantView = new ApplicantView(applicant);
-    
         for (Project project : allProjects) {
             if (project.isVisible() && project.isEligible(applicant)) visibleProjects.add(project);
         }
-        applicantView.displayProjects(visibleProjects, applicant.getMaritalStatus());
+        return visibleProjects;
     }
     
+    public List<Project> getAppliedProjects() {
+        List<Project> appliedProjects = new ArrayList<>();
+        List<Application> allApplications = applicationDao.getAllApplications();
+        List<Project> allProjects = projectDao.getAllProjects();
+    
+        for (Application app : allApplications) {
+            if (app.getApplicantNric().equals(applicant.getNric())) {
+                // Find the project by name (even if not visible)
+                for (Project project : allProjects) {
+                    if (project.getName().equals(app.getProjectName())) {
+                        if (!appliedProjects.contains(project)) {
+                            appliedProjects.add(project);
+                        }
+                    }
+                }
+            }
+        }
+        return appliedProjects;
+    }
 
     public void applyProject(String projectName) throws Exception {
         Project project = projectDao.getProjectById(projectName);
@@ -53,7 +70,7 @@ public class ApplicantController {
     }
 
 
-    public Application viewApplication() throws Exception {
+    public Application viewActiveApplication() throws Exception {
         Optional<Application> optionalApp = applicationDao.getActiveApplication(applicant.getNric());
 
         if (optionalApp.isEmpty()) throw new Exception("No active application found for applicant NRIC: " + applicant.getNric());
@@ -62,7 +79,7 @@ public class ApplicantController {
     }
 
     public void withdrawApplication() throws Exception {
-        Application app = viewApplication();
+        Application app = viewActiveApplication();
         if (app.getStatus() == ApplicationStatus.BOOKED) throw new Exception("Cannot withdraw application that has been booked!");
         app.setStatus(ApplicationStatus.UNSUCCESSFUL);
         applicationDao.update(app);

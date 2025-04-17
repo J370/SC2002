@@ -1,1 +1,2 @@
-ApplicationID,ProjectName,ApplicantNRIC,FlatType,Status
+ApplicationID,ProjectName,ApplicantNRIC,FlatType,Status,CreatedDate
+APP-001,Jurong Blossom,0,2-Room,UNSUCCESSFUL,2025-04-17 21:21:38

@@ -7,12 +7,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ProjectCSVDao implements ProjectDao {
+public class ProjectCSVDao {
     private static final String FILEPATH = "./bto/Data/CSV/ProjectList.csv";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy/M/d");
     private static final String HEADER = "Project Name,Neighborhood,Type 1,Number of units for Type 1,Selling price for Type 1,Type 2,Number of units for Type 2,Selling price for Type 2,Application opening date,Application closing date,Manager,Officer Slot,Officer";
 
-    @Override
     public List<Project> getAllProjects() {
         List<Project> projects = new ArrayList<>();
         
@@ -29,7 +28,6 @@ public class ProjectCSVDao implements ProjectDao {
         return projects;
     }
 
-    @Override
     public Project getProjectById(String projectId) {
         return getAllProjects().stream()
                 .filter(p -> p.getName().equalsIgnoreCase(projectId))
@@ -37,7 +35,6 @@ public class ProjectCSVDao implements ProjectDao {
                 .orElseThrow(() -> new NoSuchElementException("Project with ID " + projectId + " not found"));
     }
 
-    @Override
     public void updateProject(Project project) {
         List<Project> allProjects = getAllProjects().stream()
                 .map(p -> p.getName().equals(project.getName()) ? project : p)
@@ -46,7 +43,6 @@ public class ProjectCSVDao implements ProjectDao {
         writeAllProjects(allProjects);
     }
 
-    @Override
     public void decreaseAvailableUnits(String projectId, String flatType, int count) {
         List<Project> allProjects = getAllProjects();
         allProjects.forEach(p -> {
@@ -70,9 +66,10 @@ public class ProjectCSVDao implements ProjectDao {
 
     private Project parseProject(String csvLine) {
         try {
-            String[] parts = csvLine.split(",", -1);
+            // Split only the first 12 commas, so the last field (officers) can contain | separators
+            String[] parts = csvLine.split(",", 13);
             Map<String, Project.FlatTypeDetails> flatTypes = new HashMap<>();
-
+    
             // Parse Type 1
             if (!parts[2].isEmpty()) {
                 flatTypes.put(parts[2], new Project.FlatTypeDetails(
@@ -80,7 +77,7 @@ public class ProjectCSVDao implements ProjectDao {
                     Double.parseDouble(parts[4])
                 ));
             }
-
+    
             // Parse Type 2
             if (!parts[5].isEmpty()) {
                 flatTypes.put(parts[5], new Project.FlatTypeDetails(
@@ -88,7 +85,7 @@ public class ProjectCSVDao implements ProjectDao {
                     Double.parseDouble(parts[7])
                 ));
             }
-
+    
             Project project = new Project(
                 parts[0],  // name
                 parts[1],  // neighborhood
@@ -98,13 +95,14 @@ public class ProjectCSVDao implements ProjectDao {
                 parts[10], // manager
                 Integer.parseInt(parts[11]) // officerSlots
             );
-
-            // Handle officers
+    
+            // Handle officers (parts[12] may contain multiple names separated by |)
             if (parts.length > 12 && !parts[12].isEmpty()) {
-                Arrays.stream(parts[12].split(","))
+                Arrays.stream(parts[12].split("\\|"))
+                    .map(String::trim)
                     .forEach(project::addOfficer);
             }
-
+    
             return project;
         } catch (Exception e) {
             System.err.println("Error parsing project: " + csvLine);
@@ -127,7 +125,7 @@ public class ProjectCSVDao implements ProjectDao {
     private String toCsvLine(Project p) {
         Map<String, Project.FlatTypeDetails> flatTypes = p.getFlatTypes();
         List<String> types = new ArrayList<>(flatTypes.keySet());
-        
+    
         return String.join(",",
             p.getName(),
             p.getNeighborhood(),
@@ -141,7 +139,7 @@ public class ProjectCSVDao implements ProjectDao {
             p.getClosingDate().format(DATE_FORMATTER),
             p.getManager(),
             String.valueOf(p.getOfficerSlots()),
-            String.join(",", p.getAssignedOfficers())
+            String.join("|", p.getAssignedOfficers()) // Use | as separator
         );
     }
 

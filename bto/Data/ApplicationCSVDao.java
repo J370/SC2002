@@ -6,24 +6,23 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ApplicationCSVDao implements ApplicationDao {
+public class ApplicationCSVDao{
     private static final String FILEPATH = "./bto/Data/CSV/Applications.csv";
     private static final String HEADER = "ApplicationID,ProjectName,ApplicantNRIC,FlatType,Status";
 
-    @Override
     public void save(Application application) {
         // Generate ID if missing
         if (application.getId() == null || application.getId().isEmpty()) {
             application.setId(generateNewApplicationId());
         }
         
-        List<Application> allApps = readAllApplications();
+        List<Application> allApps = getAllApplications();
         allApps.add(application);
         writeAllApplications(allApps);
     }
 
     private String generateNewApplicationId() {
-        List<Application> apps = readAllApplications();
+        List<Application> apps = getAllApplications();
         int maxId = apps.stream()
             .map(Application::getId)
             .filter(id -> id.startsWith("APP-"))
@@ -35,52 +34,47 @@ public class ApplicationCSVDao implements ApplicationDao {
         return String.format("APP-%03d", maxId + 1);
     }
 
-    @Override
     public void update(Application application) {
-        List<Application> allApps = readAllApplications().stream()
+        List<Application> allApps = getAllApplications().stream()
             .map(app -> app.getId().equals(application.getId()) ? application : app)
             .collect(Collectors.toList());
         writeAllApplications(allApps);
     }
 
-    @Override
     public void delete(String applicationId) {
-        List<Application> filtered = readAllApplications().stream()
+        List<Application> filtered = getAllApplications().stream()
             .filter(app -> !app.getId().equals(applicationId))
             .collect(Collectors.toList());
         writeAllApplications(filtered);
     }
 
-    @Override
     public Optional<Application> findById(String applicationId) {
-        return readAllApplications().stream()
+        return getAllApplications().stream()
             .filter(app -> app.getId().equals(applicationId))
             .findFirst();
     }
 
-    @Override
     public Optional<Application> getActiveApplication(String applicantNric) {
-        return readAllApplications().stream()
+        return getAllApplications().stream()
             .filter(app -> app.getApplicantNric().equals(applicantNric))
             .filter(app -> !app.getStatus().isTerminal())
             .findFirst();
     }
 
-    @Override
     public List<Application> getApplicationsByStatus(String status) {
-        return readAllApplications().stream()
+        return getAllApplications().stream()
             .filter(app -> app.getStatus().name().equalsIgnoreCase(status))
             .collect(Collectors.toList());
     }
 
-    @Override
+
     public List<Application> getApplicationsByProject(String projectName) {
-        return readAllApplications().stream()
+        return getAllApplications().stream()
             .filter(app -> app.getProjectName().equalsIgnoreCase(projectName))
             .collect(Collectors.toList());
     }
 
-    private List<Application> readAllApplications() {
+    public List<Application> getAllApplications() {
         List<Application> applications = new ArrayList<>();
         File file = new File(FILEPATH);
         

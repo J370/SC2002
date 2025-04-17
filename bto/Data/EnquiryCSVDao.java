@@ -7,12 +7,11 @@ import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class EnquiryCSVDao implements EnquiryDao {
+public class EnquiryCSVDao {
     private static final String CSV_FILE = "./bto/Data/CSV/Enquiries.csv";
     private static final String HEADER = "EnquiryID,ApplicantNRIC,ProjectName,EnquiryDetails,CreatedTime,Reply,RepliedBy,RepliedTime";
     private static final DateTimeFormatter DT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    @Override
     public void save(Enquiry enquiry) {
         List<Enquiry> allEnquiries = readAllEnquiries();
         
@@ -28,7 +27,6 @@ public class EnquiryCSVDao implements EnquiryDao {
         writeAllEnquiries(allEnquiries);
     }
 
-    @Override
     public void update(Enquiry enquiry) {
         List<Enquiry> updated = readAllEnquiries().stream()
             .map(e -> e.getId() == enquiry.getId() ? enquiry : e)
@@ -36,7 +34,6 @@ public class EnquiryCSVDao implements EnquiryDao {
         writeAllEnquiries(updated);
     }
 
-    @Override
     public void delete(int enquiryId) {
         List<Enquiry> filtered = readAllEnquiries().stream()
             .filter(e -> e.getId() != enquiryId)
@@ -44,7 +41,6 @@ public class EnquiryCSVDao implements EnquiryDao {
         writeAllEnquiries(filtered);
     }
 
-    @Override
     public Enquiry findById(int enquiryId) {
         return readAllEnquiries().stream()
             .filter(e -> e.getId() == enquiryId)
@@ -52,21 +48,18 @@ public class EnquiryCSVDao implements EnquiryDao {
             .orElse(null);
     }
 
-    @Override
     public List<Enquiry> getEnquiriesByApplicant(String applicantNric) {
         return readAllEnquiries().stream()
             .filter(e -> e.getApplicantNric().equalsIgnoreCase(applicantNric))
             .collect(Collectors.toList());
     }
 
-    @Override
     public List<Enquiry> getEnquiriesByProject(String projectName) {
         return readAllEnquiries().stream()
             .filter(e -> e.getProjectName().equalsIgnoreCase(projectName))
             .collect(Collectors.toList());
     }
 
-    @Override
     public List<Enquiry> getAllEnquiries() {
         return readAllEnquiries();
     }
