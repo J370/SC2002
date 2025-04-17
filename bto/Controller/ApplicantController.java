@@ -27,29 +27,20 @@ public class ApplicantController {
         List<Project> visibleProjects = new ArrayList<>();
         List<Project> allProjects = projectDao.getAllProjects();
         for (Project project : allProjects) {
-            if (project.isVisible() && project.isEligible(applicant)) visibleProjects.add(project);
+            if (project.isVisible()) visibleProjects.add(project);
         }
         return visibleProjects;
     }
     
-    public List<Project> getAppliedProjects() {
-        List<Project> appliedProjects = new ArrayList<>();
+    public List<Application> getAllApplications() {
         List<Application> allApplications = applicationDao.getAllApplications();
-        List<Project> allProjects = projectDao.getAllProjects();
-    
+        List<Application> result = new ArrayList<>();
         for (Application app : allApplications) {
             if (app.getApplicantNric().equals(applicant.getNric())) {
-                // Find the project by name (even if not visible)
-                for (Project project : allProjects) {
-                    if (project.getName().equals(app.getProjectName())) {
-                        if (!appliedProjects.contains(project)) {
-                            appliedProjects.add(project);
-                        }
-                    }
-                }
+                result.add(app);
             }
         }
-        return appliedProjects;
+        return result;
     }
 
     public void applyProject(String projectName) throws Exception {
@@ -121,6 +112,7 @@ public class ApplicantController {
 
     public void deleteEnquiry(int enquiryId) throws Exception {
         Enquiry enquiry = enquiryDao.findById(enquiryId);
+        if (enquiry == null) throw new Exception("Enquiry not found");
         if (!enquiry.getApplicantNric().equals(applicant.getNric())) throw new Exception("You can only delete your own enquiries");
         if(enquiry.getReply() != null) throw new Exception("Cannot delete enquiries that has been replied");
         enquiryDao.delete(enquiry.getId());

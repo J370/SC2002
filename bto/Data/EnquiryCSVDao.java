@@ -7,11 +7,12 @@ import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class EnquiryCSVDao {
+public class EnquiryCSVDao implements EnquiryDao {
     private static final String CSV_FILE = "./bto/Data/CSV/Enquiries.csv";
     private static final String HEADER = "EnquiryID,ApplicantNRIC,ProjectName,EnquiryDetails,CreatedTime,Reply,RepliedBy,RepliedTime";
     private static final DateTimeFormatter DT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    @Override
     public void save(Enquiry enquiry) {
         List<Enquiry> allEnquiries = readAllEnquiries();
         
@@ -27,6 +28,7 @@ public class EnquiryCSVDao {
         writeAllEnquiries(allEnquiries);
     }
 
+    @Override
     public void update(Enquiry enquiry) {
         List<Enquiry> updated = readAllEnquiries().stream()
             .map(e -> e.getId() == enquiry.getId() ? enquiry : e)
@@ -34,6 +36,7 @@ public class EnquiryCSVDao {
         writeAllEnquiries(updated);
     }
 
+    @Override
     public void delete(int enquiryId) {
         List<Enquiry> filtered = readAllEnquiries().stream()
             .filter(e -> e.getId() != enquiryId)
@@ -41,6 +44,7 @@ public class EnquiryCSVDao {
         writeAllEnquiries(filtered);
     }
 
+    @Override
     public Enquiry findById(int enquiryId) {
         return readAllEnquiries().stream()
             .filter(e -> e.getId() == enquiryId)
@@ -48,23 +52,26 @@ public class EnquiryCSVDao {
             .orElse(null);
     }
 
+    @Override
     public List<Enquiry> getEnquiriesByApplicant(String applicantNric) {
         return readAllEnquiries().stream()
             .filter(e -> e.getApplicantNric().equalsIgnoreCase(applicantNric))
             .collect(Collectors.toList());
     }
 
+    @Override
     public List<Enquiry> getEnquiriesByProject(String projectName) {
         return readAllEnquiries().stream()
             .filter(e -> e.getProjectName().equalsIgnoreCase(projectName))
             .collect(Collectors.toList());
     }
 
+    @Override
     public List<Enquiry> getAllEnquiries() {
         return readAllEnquiries();
     }
 
-    private List<Enquiry> readAllEnquiries() {
+    public List<Enquiry> readAllEnquiries() {
         List<Enquiry> enquiries = new ArrayList<>();
         File file = new File(CSV_FILE);
         
@@ -126,14 +133,6 @@ public class EnquiryCSVDao {
         );
     }
 
-    private String escapeCommas(String input) {
-        return input.contains(",") ? "\"" + input + "\"" : input;
-    }
-
-    private String unescapeCommas(String input) {
-        return input.startsWith("\"") && input.endsWith("\"") ? 
-            input.substring(1, input.length()-1) : input;
-    }
 
     private int generateNewId(List<Enquiry> existing) {
         return existing.stream()

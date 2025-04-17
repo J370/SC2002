@@ -30,13 +30,14 @@ public class ApplicantView extends UserView {
         System.out.println("1. Change password");
         System.out.println("2. View projects");
         System.out.println("3. Apply for projects");
-        System.out.println("4. View application status");
-        System.out.println("5. Withdraw application");
-        System.out.println("6. Make an enquiry");
-        System.out.println("7. View enquiry status");
-        System.out.println("8. Edit enquiry");
-        System.out.println("9. Delete enquiry");
-        System.out.println("10. Logout");
+        System.out.println("4. View all my applications");
+        System.out.println("5. View active application status");
+        System.out.println("6. Withdraw application");
+        System.out.println("7. Make an enquiry");
+        System.out.println("8. View enquiry status");
+        System.out.println("9. Edit enquiry");
+        System.out.println("10. Delete enquiry");
+        System.out.println("11. Logout");
         System.out.print("Please select an option: ");
 
         switch (scanner.nextInt()) {
@@ -53,29 +54,34 @@ public class ApplicantView extends UserView {
                 menu(false);
 
             case 4:
+                viewMyApplications();
+                menu(false);
+
+
+            case 5:
                 applicationStatus();
                 menu(false);
 
-            case 5:
+            case 6:
                 withdrawApplication();
                 menu(false);
 
-            case 6:
+            case 7:
                 makeEnquiry();
                 menu(false);
 
-            case 7:
+            case 8:
                 viewEnquiry();
                 menu(false);
 
-            case 8:
+            case 9:
                 editEnquiry();
                 menu(false);
 
-            case 9:
+            case 10:
                 deleteEnquiry();
                 menu(false);
-            case 10:
+            case 11:
                 System.out.println("Logging out...");
                 break;
 
@@ -86,28 +92,37 @@ public class ApplicantView extends UserView {
 
     public void viewProjects() {
         List<Project> projects = applicantController.getAvailableProjects();
-        if (projects.isEmpty()) System.out.println("No available projects."); 
-        else {
+        if (projects.isEmpty()) {
+            System.out.println("No available projects.");
+        } else {
             System.out.println("Available Projects:");
             for (Project project : projects) {
-                System.out.println("---------------------------------");
+                System.out.println("-------------------------------");
                 System.out.println("Project Name: " + project.getName());
                 System.out.println("Neighborhood: " + project.getNeighborhood());
-
-                // Print all flat types from the map
-                for (Map.Entry<String, Project.FlatTypeDetails> entry : project.getFlatTypes().entrySet()) {
-                    String flatType = entry.getKey();
-                    Project.FlatTypeDetails details = entry.getValue();
-                    System.out.println("Flat Type: " + flatType);
-                    System.out.println("    Number of units: " + details.getAvailableUnits());
-                    System.out.println("    Selling price: $" + details.getSellingPrice());
+    
+                if (applicant.getMaritalStatus().equals("Single") && applicant.getAge() < 35) {
+                    Project.FlatTypeDetails details = project.getFlatTypes().get("2-Room");
+                    if (details != null) {
+                        System.out.println("Flat Type: 2-Room");
+                        System.out.println("    Number of units: " + details.getAvailableUnits());
+                        System.out.println("    Selling price: $" + details.getSellingPrice());
+                    }
+                } else {
+                    for (Map.Entry<String, Project.FlatTypeDetails> entry : project.getFlatTypes().entrySet()) {
+                        String flatType = entry.getKey();
+                        Project.FlatTypeDetails details = entry.getValue();
+                        System.out.println("Flat Type: " + flatType);
+                        System.out.println("    Number of units: " + details.getAvailableUnits());
+                        System.out.println("    Selling price: $" + details.getSellingPrice());
+                    }
                 }
-
+    
                 System.out.println("Application opening date: " + project.getOpeningDate());
                 System.out.println("Application closing date: " + project.getClosingDate());
                 System.out.println("Manager: " + project.getManager());
                 System.out.println("Officer(s): " + String.join(", ", project.getAssignedOfficers()));
-                System.out.println("---------------------------------");
+                System.out.println("-------------------------------");
             }
         }
     }
@@ -123,6 +138,18 @@ public class ApplicantView extends UserView {
         catch (Exception e) {System.out.println("Error: " + e.getMessage());}
     } 
     
+    public void viewMyApplications() {
+        List<Application> apps = applicantController.getAllApplications();
+        for (Application app : apps) {
+            System.out.println("-------------------------------");
+            System.out.println("Application ID: " + app.getId());
+            System.out.println("Project Name: " + app.getProjectName());
+            System.out.println("Flat Type: " + app.getFlatType());
+            System.out.println("Status: " + app.getStatus());
+            System.out.println("Created Time: " + (app.getCreatedTime() != null ? app.getCreatedTime().toString() : "NIL"));
+            System.out.println("-------------------------------");
+        }
+    }
 
     public void applicationStatus() {
         try{        

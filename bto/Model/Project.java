@@ -15,6 +15,8 @@ public class Project {
     private String manager;
     private int officerSlots;
     private List<String> assignedOfficers;
+    private List<String> requestedOfficers;
+    private List<String> rejectedOfficers;
     private boolean isVisible;
 
     public static class FlatTypeDetails {
@@ -34,7 +36,9 @@ public class Project {
     }
 
     public Project (String projectName, String neighborhood, Map<String, FlatTypeDetails> flatTypes,
-                    LocalDate openingDate, LocalDate closingDate, String manager, int officerSlots) {
+                    LocalDate openingDate, LocalDate closingDate, String manager, int officerSlots, 
+                    List<String> assignedOfficers, List<String> requestedOfficers, List<String> rejectedOfficers,
+                    boolean isVisible) {
         this.projectName = projectName;
         this.neighborhood = neighborhood;
         this.flatTypes = new HashMap<>(flatTypes);
@@ -42,8 +46,10 @@ public class Project {
         this.closingDate = closingDate;
         this.manager = manager;
         this.officerSlots = Math.min(officerSlots, 10); // Limit to 10 officers
-        this.assignedOfficers = new ArrayList<>();
-        this.isVisible = true;
+        this.assignedOfficers = assignedOfficers;
+        this.requestedOfficers = requestedOfficers;
+        this.rejectedOfficers = rejectedOfficers;
+        this.isVisible = isVisible;
     }
 
 
@@ -86,15 +92,20 @@ public class Project {
     public String getManager() {return manager;}
     public int getOfficerSlots() {return officerSlots;}
     public List<String> getAssignedOfficers() {return new ArrayList<>(assignedOfficers);}
+    public List<String> getRequestedOfficers() {return new ArrayList<>(requestedOfficers);}
+    public List<String> getRejectedOfficers() {return new ArrayList<>(rejectedOfficers);}
+    public boolean getVisible() {return isVisible;}
 
     // === Setters ===
     public void setFlatTypes(Map<String, FlatTypeDetails> flatTypes) {this.flatTypes = new HashMap<>(flatTypes);}
     public void setOfficerSlots(int slots) {this.officerSlots = Math.min(slots, 10);}
+    public void setVisible(boolean visible) {this.isVisible = visible;}
 
-    public void addOfficer(String officerId) {
-        if (assignedOfficers.size() < officerSlots) {
-            assignedOfficers.add(officerId);
-        }
-    }
+    public void addAssignedOfficer(String officerName) {assignedOfficers.add(officerName);}
+    public void addRequestedOfficer(String officerName) { requestedOfficers.add(officerName); }
+    public void addRejectedOfficer(String officerName) { rejectedOfficers.add(officerName); }
 
+    public void removeAssignedOfficer(String officerName) {assignedOfficers.remove(officerName);}
+    public void removeRequestedOfficer(String officerName) { requestedOfficers.remove(officerName); }
+    public void removeRejectedOfficer(String officerName) { rejectedOfficers.remove(officerName); }
 }

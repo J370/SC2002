@@ -3,13 +3,17 @@ package bto.Data;
 import bto.Model.Application;
 import bto.Model.ApplicationStatus;
 import java.io.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
-public class ApplicationCSVDao{
+public class ApplicationCSVDao implements ApplicationDao {
     private static final String FILEPATH = "./bto/Data/CSV/Applications.csv";
-    private static final String HEADER = "ApplicationID,ProjectName,ApplicantNRIC,FlatType,Status";
+    private static final String HEADER = "ApplicationID,ProjectName,ApplicantNRIC,FlatType,Status,CreatedTime;";
+    private static final DateTimeFormatter DT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    @Override
     public void save(Application application) {
         // Generate ID if missing
         if (application.getId() == null || application.getId().isEmpty()) {
@@ -34,6 +38,7 @@ public class ApplicationCSVDao{
         return String.format("APP-%03d", maxId + 1);
     }
 
+    @Override
     public void update(Application application) {
         List<Application> allApps = getAllApplications().stream()
             .map(app -> app.getId().equals(application.getId()) ? application : app)
@@ -41,6 +46,7 @@ public class ApplicationCSVDao{
         writeAllApplications(allApps);
     }
 
+    @Override
     public void delete(String applicationId) {
         List<Application> filtered = getAllApplications().stream()
             .filter(app -> !app.getId().equals(applicationId))
@@ -48,12 +54,14 @@ public class ApplicationCSVDao{
         writeAllApplications(filtered);
     }
 
+    @Override
     public Optional<Application> findById(String applicationId) {
         return getAllApplications().stream()
             .filter(app -> app.getId().equals(applicationId))
             .findFirst();
     }
 
+    @Override
     public Optional<Application> getActiveApplication(String applicantNric) {
         return getAllApplications().stream()
             .filter(app -> app.getApplicantNric().equals(applicantNric))
@@ -61,19 +69,21 @@ public class ApplicationCSVDao{
             .findFirst();
     }
 
+    @Override
     public List<Application> getApplicationsByStatus(String status) {
         return getAllApplications().stream()
             .filter(app -> app.getStatus().name().equalsIgnoreCase(status))
             .collect(Collectors.toList());
     }
 
-
+    @Override
     public List<Application> getApplicationsByProject(String projectName) {
         return getAllApplications().stream()
             .filter(app -> app.getProjectName().equalsIgnoreCase(projectName))
             .collect(Collectors.toList());
     }
 
+    @Override
     public List<Application> getAllApplications() {
         List<Application> applications = new ArrayList<>();
         File file = new File(FILEPATH);
@@ -104,30 +114,34 @@ public class ApplicationCSVDao{
         }
     }
 
+
     private Application parseApplication(String csvLine) {
         try {
             String[] parts = csvLine.split(",", -1);
             return new Application(
-                parts[1],  // ProjectName (was parts[0])
-                parts[2],  // ApplicantNRIC (was parts[1])
-                parts[3]   // FlatType (was parts[2])
+                parts[1],  // ProjectName
+                parts[2],  // ApplicantNRIC
+                parts[3]   // FlatType
             ).setId(parts[0])  // ApplicationID
-             .setStatus(ApplicationStatus.valueOf(parts[4].toUpperCase()));
+             .setStatus(ApplicationStatus.valueOf(parts[4].toUpperCase()))
+             .setCreatedTime(parts.length > 5 && !parts[5].isEmpty() ? LocalDateTime.parse(parts[5], DT_FORMATTER) : null);
         } catch (Exception e) {
             System.err.println("Error parsing application: " + csvLine);
             return null;
         }
     }
-
+    
     private String toCsvLine(Application app) {
         return String.join(",",
             app.getId(),
             app.getProjectName(),
             app.getApplicantNric(),
             app.getFlatType(),
-            app.getStatus().name()
+            app.getStatus().name(),
+            app.getCreatedTime().format(DT_FORMATTER)
         );
     }
+
 
     private void initializeCsvFile() {
         try (FileWriter writer = new FileWriter(FILEPATH)) {

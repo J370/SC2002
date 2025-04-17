@@ -1,2 +1,3 @@
-ApplicationID,ProjectName,ApplicantNRIC,FlatType,Status,CreatedDate
+ApplicationID,ProjectName,ApplicantNRIC,FlatType,Status,CreatedTime;
 APP-001,Jurong Blossom,0,2-Room,UNSUCCESSFUL,2025-04-17 21:21:38
+APP-002,Acacia Breeze,0,2-Room,UNSUCCESSFUL,2025-04-18 02:24:29
