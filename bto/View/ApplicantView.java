@@ -131,8 +131,11 @@ public class ApplicantView extends UserView {
                 System.out.println("Enquiry ID: " + enquiry.getId());
                 System.out.println("Project Name: " + enquiry.getProjectName());
                 System.out.println("Enquiry Details: " + enquiry.getDetails());
-                System.out.println(
-                        "Reply: " + (enquiry.getReply() != null ? enquiry.getReply() : "No reply yet"));
+                System.out.println("Created Time: " + (enquiry.getCreatedTime() != null ? enquiry.getCreatedTime().toString() : "NIL"));
+                System.out.println("Reply: " + (enquiry.getReply() != null ? enquiry.getReply() : "No reply yet"));
+                System.out.println("Replied By: " + (enquiry.getRepliedBy() != null ? enquiry.getRepliedBy() : "NIL"));
+                System.out.println("Replied Time: " + (enquiry.getRepliedTime() != null ? enquiry.getRepliedTime().toString() : "NIL"));
+                System.out.println("-----------------------------------");
             }
         }
     }
