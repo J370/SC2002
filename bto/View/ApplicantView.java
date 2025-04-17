@@ -85,8 +85,13 @@ public class ApplicantView extends UserView {
     public void applyProject() {
         System.out.print("Enter the project name you want to apply for: ");
         String projectName = scanner.next();
-        applicantController.applyProject(projectName);
-    }
+        try {
+            applicantController.applyProject(projectName);
+            System.out.println("Application submitted successfully.");
+        } 
+        catch (Exception e) {System.out.println("Error: " + e.getMessage());}
+    } 
+    
 
     public void applicationStatus() {
         Application application = applicantController.viewApplication();
@@ -100,8 +105,11 @@ public class ApplicantView extends UserView {
         if (!confirm) {
             System.out.println("Withdrawal cancelled.");
         } else {
-            applicantController.withdrawApplication();
-            System.out.println("Application withdrawn successfully.");
+            try{
+                applicantController.withdrawApplication();
+                System.out.println("Application withdrawn successfully.");
+            }
+            catch (Exception e) {System.out.println("Error: " + e.getMessage());}
         }
     }
 
@@ -134,8 +142,11 @@ public class ApplicantView extends UserView {
         int enquiryId = scanner.nextInt();
         System.out.print("Enter the new details: ");
         String newDetails = scanner.next();
-        applicantController.editEnquiry(enquiryId, newDetails);
-        System.out.println("Enquiry updated successfully.");
+        try{
+            applicantController.editEnquiry(enquiryId, newDetails);
+            System.out.println("Enquiry updated successfully.");
+        }
+        catch (Exception e) {System.out.println("Error: " + e.getMessage());}
     }
 
     public void deleteEnquiry() {
@@ -143,8 +154,11 @@ public class ApplicantView extends UserView {
         int deleteEnquiryId = scanner.nextInt();
         System.out.println("Are you sure you want to delete this enquiry?\n(1 for Yes, 2 for No)");
         if (scanner.nextInt() == 1) {
-            applicantController.deleteEnquiry(deleteEnquiryId);
-            System.out.println("Enquiry deleted successfully.");
+            try{
+                applicantController.deleteEnquiry(deleteEnquiryId);
+                System.out.println("Enquiry deleted successfully.");
+            }
+            catch (Exception e) {System.out.println("Error: " + e.getMessage());}
         } else {
             System.out.println("Deletion cancelled.");
         }
