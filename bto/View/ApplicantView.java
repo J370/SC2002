@@ -1,6 +1,5 @@
 package bto.View;
 
-import java.util.Scanner;
 import bto.Controller.*;
 import bto.Model.*;
 import bto.Data.*;
@@ -11,6 +10,7 @@ public class ApplicantView extends UserView {
     Applicant applicant;
 
     public ApplicantView(Applicant applicant) {
+        super(applicant);
         ApplicationDao applicationDao = new ApplicationCSVDao();
         ProjectDao projectDao = new ProjectCSVDao();
         EnquiryDao enquiryDao = new EnquiryCSVDao();
@@ -18,8 +18,6 @@ public class ApplicantView extends UserView {
         this.applicantController = new ApplicantController(applicant, applicationDao, projectDao, enquiryDao);
         this.applicant = applicant;
     }
-
-    Scanner scanner = new Scanner(System.in);
 
     public void menu() {
         System.out.println("\nYou have successfully logged in!");
@@ -37,90 +35,118 @@ public class ApplicantView extends UserView {
 
         switch (scanner.nextInt()) {
             case 1:
-                AuthController authController = new AuthController();
-                System.out.print("Enter your new password: ");
-                String newPassword = scanner.next();
-                authController.changePassword(applicant, newPassword);
+                changePassword();
                 menu();
 
             case 2:
-                applicantController.viewAvailableProjects();
+                viewProjects();
                 menu();
 
             case 3:
-                System.out.print("Enter the project name you want to apply for: ");
-                String projectName = scanner.next();
-                applicantController.applyProject(projectName);
+                applyProject();
                 menu();
-            
+
             case 4:
-                Application application = applicantController.viewApplication();
-                System.out.println("Application Project Name: " + application.getProjectName());
-                System.out.println("Application Status: " + application.getStatus());
+                applicationStatus();
                 menu();
-            
+
             case 5:
-                System.out.println("Are you sure you want to withdraw: ");
-                System.out.println("1. Yes");
-                System.out.println("2. No");
-                boolean confirm = scanner.nextInt() == 1;
-                if (!confirm) {
-                    System.out.println("Withdrawal cancelled.");
-                    menu();
-                }
-                else {
-                    applicantController.withdrawApplication();
-                    System.out.println("Application withdrawn successfully.");
-                    menu();
-                }
+                withdrawApplication();
+                menu();
 
             case 6:
-                System.out.print("Enter the project name for your enquiry: ");
-                String projectNameEnquiry = scanner.next();
-                System.out.print("Enter your enquiry details: ");
-                String enquiryDetails = scanner.next();
-                applicantController.submitEnquiry(projectNameEnquiry, enquiryDetails);
-                System.out.println("Enquiry submitted successfully.");
+                makeEnquiry();
                 menu();
 
             case 7:
-                List<Enquiry> userEnquiries = applicantController.viewEnquiries();
-                if (userEnquiries.isEmpty()) {
-                    System.out.println("No enquiries found.");
-                } else {
-                    for (Enquiry enquiry : userEnquiries) {
-                        System.out.println("Enquiry ID: " + enquiry.getId());
-                        System.out.println("Project Name: " + enquiry.getProjectName());
-                        System.out.println("Enquiry Details: " + enquiry.getDetails());
-                        System.out.println("Reply: " + (enquiry.getReply() != null ? enquiry.getReply() : "No reply yet"));
-                    }
-                }
+                viewEnquiry();
                 menu();
-            
+
             case 8:
-                System.out.print("Enter the enquiry ID you want to edit: ");
-                int enquiryId = scanner.nextInt();
-                System.out.print("Enter the new details: ");
-                String newDetails = scanner.next();
-                applicantController.editEnquiry(enquiryId, newDetails);
-                System.out.println("Enquiry updated successfully.");
+                editEnquiry();
                 menu();
 
             case 9:
-                System.out.print("Enter the enquiry ID you want to delete: ");
-                int deleteEnquiryId = scanner.nextInt();
-                System.out.println("Are you sure you want to delete this enquiry? (1 for Yes, 2 for No)");
-                if (scanner.nextInt() == 1) {
-                    applicantController.deleteEnquiry(deleteEnquiryId);
-                    System.out.println("Enquiry deleted successfully.");
-                } else {
-                    System.out.println("Deletion cancelled.");
-                }
+                deleteEnquiry();
                 menu();
             case 10:
                 System.out.println("Logging out...");
                 break;
+
             default:
+                menu();
+        }
+    }
+
+    public void viewProjects() {
+        applicantController.viewAvailableProjects();
+    }
+
+    public void applyProject() {
+        System.out.print("Enter the project name you want to apply for: ");
+        String projectName = scanner.next();
+        applicantController.applyProject(projectName);
+    }
+
+    public void applicationStatus() {
+        Application application = applicantController.viewApplication();
+        System.out.println("Application Project Name: " + application.getProjectName());
+        System.out.println("Application Status: " + application.getStatus());
+    }
+
+    public void withdrawApplication() {
+        System.out.println("Are you sure you want to withdraw?\n(1 for Yes, 2 for No)");
+        boolean confirm = scanner.nextInt() == 1;
+        if (!confirm) {
+            System.out.println("Withdrawal cancelled.");
+        } else {
+            applicantController.withdrawApplication();
+            System.out.println("Application withdrawn successfully.");
+        }
+    }
+
+    public void makeEnquiry() {
+        System.out.print("Enter the project name for your enquiry: ");
+        String projectNameEnquiry = scanner.next();
+        System.out.print("Enter your enquiry details: ");
+        String enquiryDetails = scanner.next();
+        applicantController.submitEnquiry(projectNameEnquiry, enquiryDetails);
+        System.out.println("Enquiry submitted successfully.");
+    }
+
+    public void viewEnquiry() {
+        List<Enquiry> userEnquiries = applicantController.viewEnquiries();
+        if (userEnquiries.isEmpty()) {
+            System.out.println("No enquiries found.");
+        } else {
+            for (Enquiry enquiry : userEnquiries) {
+                System.out.println("Enquiry ID: " + enquiry.getId());
+                System.out.println("Project Name: " + enquiry.getProjectName());
+                System.out.println("Enquiry Details: " + enquiry.getDetails());
+                System.out.println(
+                        "Reply: " + (enquiry.getReply() != null ? enquiry.getReply() : "No reply yet"));
+            }
+        }
+    }
+
+    public void editEnquiry() {
+        System.out.print("Enter the enquiry ID you want to edit: ");
+        int enquiryId = scanner.nextInt();
+        System.out.print("Enter the new details: ");
+        String newDetails = scanner.next();
+        applicantController.editEnquiry(enquiryId, newDetails);
+        System.out.println("Enquiry updated successfully.");
+    }
+
+    public void deleteEnquiry() {
+        System.out.print("Enter the enquiry ID you want to delete: ");
+        int deleteEnquiryId = scanner.nextInt();
+        System.out.println("Are you sure you want to delete this enquiry?\n(1 for Yes, 2 for No)");
+        if (scanner.nextInt() == 1) {
+            applicantController.deleteEnquiry(deleteEnquiryId);
+            System.out.println("Enquiry deleted successfully.");
+        } else {
+            System.out.println("Deletion cancelled.");
         }
     }
 

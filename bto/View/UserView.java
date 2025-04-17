@@ -2,22 +2,21 @@ package bto.View;
 
 import java.util.Scanner;
 
-import bto.Controller.ApplicantController;
-import bto.Data.ApplicationCSVDao;
-import bto.Data.ApplicationDao;
-import bto.Data.EnquiryCSVDao;
-import bto.Data.EnquiryDao;
-import bto.Data.ProjectCSVDao;
-import bto.Data.ProjectDao;
+import bto.Controller.*;
 import bto.Model.*;
 
 public class UserView {
     private User user;
+    Scanner scanner = new Scanner(System.in);
+
+    public UserView(User user) {
+        this.user = user;
+    }
 
     public void changePassword() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Please enter your new password: ");
+        AuthController authController = new AuthController();
+        System.out.print("Enter your new password: ");
         String newPassword = scanner.next();
-        System.out.println("Password changed successfully!");
+        authController.changePassword(user, newPassword);
     }
 }
