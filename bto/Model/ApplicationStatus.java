@@ -8,10 +8,6 @@ public enum ApplicationStatus {
     BOOKED;
 
     public boolean isTerminal() {
-        return this == UNSUCCESSFUL;
-    }
-
-    public boolean isActive() {
-        return isTerminal();
+        return !(this == UNSUCCESSFUL);
     }
 }
