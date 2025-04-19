@@ -38,4 +38,5 @@ public abstract class User {
     public String toString() {
         return name + ',' + nric + "," + age + "," + maritalStatus + "," + password;
     }
+
 }

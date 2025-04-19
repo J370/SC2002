@@ -1,20 +1,19 @@
 package bto.Controller;
+import bto.Data.*;
+import bto.Model.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import bto.Data.*;
-import bto.Model.*;
-
 public class ManagerController {
     private final Manager manager;
-    private final ProjectCSVDao projectDao;
-    private final ApplicationCSVDao applicationDao;
-    private final EnquiryCSVDao enquiryDao;
+    private final ProjectDao projectDao;
+    private final ApplicationDao applicationDao;
+    private final EnquiryDao enquiryDao;
     
-    public ManagerController(Manager manager, ProjectCSVDao projectDao, 
-                            ApplicationCSVDao applicationDao, EnquiryCSVDao enquiryDao) {
+    public ManagerController(Manager manager, ProjectDao projectDao, 
+                            ApplicationDao applicationDao, EnquiryDao enquiryDao) {
         this.manager = manager;
         this.projectDao = projectDao;
         this.applicationDao = applicationDao;

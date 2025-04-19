@@ -1,22 +1,21 @@
 package bto.Controller;
 import bto.Data.*;
 import bto.Model.*;
-import bto.View.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.time.LocalDateTime;
 
 public class ApplicantController {
     private final Applicant applicant;
-    private final ApplicationCSVDao applicationDao;
-    private final ProjectCSVDao projectDao;
-    private final EnquiryCSVDao enquiryDao;
+    private final ApplicationDao applicationDao;
+    private final ProjectDao projectDao;
+    private final EnquiryDao enquiryDao;
 
     public ApplicantController(Applicant applicant, 
-                              ApplicationCSVDao applicationDao,
-                              ProjectCSVDao projectDao,
-                              EnquiryCSVDao enquiryDao) {
+                              ApplicationDao applicationDao,
+                              ProjectDao projectDao,
+                              EnquiryDao enquiryDao) {
         this.applicant = applicant;
         this.applicationDao = applicationDao;
         this.projectDao = projectDao;
