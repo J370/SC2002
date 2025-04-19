@@ -6,8 +6,4 @@ public enum ApplicationStatus {
     SUCCESS,
     UNSUCCESSFUL,
     BOOKED;
-
-    public boolean isTerminal() {
-        return !(this == UNSUCCESSFUL);
-    }
 }
