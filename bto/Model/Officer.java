@@ -13,6 +13,4 @@ public class Officer extends User{
     public void setProject(Project project) { this.project = project; }
     public void setRegistrationStatus(String registrationStatus) { this.registrationStatus = registrationStatus; }
     public String getRegistrationStatus() { return registrationStatus; }
-
-
 }
