@@ -131,11 +131,24 @@ public class OfficerController {
 
     
     // view all enquiries for officer assigned project
-    public List<Enquiry> viewEnquiriesForMyProject() throws Exception {
-        if (officer.getProject() == null) throw new Exception("Officer is not assigned to any project");
-        return enquiryDao.getEnquiriesByProject(officer.getProject().getName());
+    public List<Enquiry> viewEnquiriesForMyProjects() throws Exception {
+        List<Project> allProjects = projectDao.getAllProjects();
+        List<String> assignedProjectNames = new ArrayList<>();
+        for (Project p : allProjects) {
+            if (p.getAssignedOfficers().contains(officer.getName())) {
+                assignedProjectNames.add(p.getName());
+            }
+        }
+        if (assignedProjectNames.isEmpty()) {
+            throw new Exception("Officer is not assigned to any project");
+        }
+        List<Enquiry> result = new ArrayList<>();
+        for (String projectName : assignedProjectNames) {
+            result.addAll(enquiryDao.getEnquiriesByProject(projectName));
+        }
+        return result;
     }
-
+    
     // Officer can reply to an enquiry for their project
     public void replyEnquiry(int enquiryId, String reply) throws Exception{
         Enquiry enquiry = enquiryDao.findById(enquiryId);
