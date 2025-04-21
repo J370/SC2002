@@ -63,10 +63,10 @@ public class OfficerView extends UserView {
             //     menu(false);
             //     break;
 
-            // case 6:
-            //     viewEnquiriesForMyProject();
-            //     menu(false);
-            //     break;
+            case 6:
+                viewEnquiriesForMyProject();
+                menu(false);
+                break;
 
             // case 7:
             //     replyToEnquiry();
@@ -117,11 +117,39 @@ public class OfficerView extends UserView {
     //     System.out.print("Enter application ID to generate receipt: ");
     //     String applicationId = scanner.next();
     //     try {
-    //         Application application = officerController.getApplicationById(applicationId);
+    //         Application application = applicationDao.getApplicationById(applicationId);
     //         String receipt = officerController.generateReceipt(application);
     //         System.out.println("Receipt generated: " + receipt);
     //     } catch (Exception e) {
     //         System.out.println(e.getMessage());
     //     }
     // }
+
+    // public void updateStatus() {
+    //     System.out.print("Enter application ID to update status: ");
+    //     String applicationId = scanner.next();
+    //     System.out.print("Enter new status: ");
+    //     String newStatus = scanner.next();
+    //     try {
+    //         officerController.updateStatus(applicationId, newStatus);
+    //         System.out.println("Status updated successfully.");
+    //     } catch (Exception e) {
+    //         System.out.println(e.getMessage());
+    //     }
+    // }
+
+    public void viewEnquiriesForMyProject() {
+        try {
+            List<Enquiry> enquiries = officerController.viewEnquiriesForMyProject();
+            System.out.println("Enquiries:");
+            for (Enquiry enquiry : enquiries) {
+                System.out.println("-------------------------------");
+                System.out.println("Enquiry ID: " + enquiry.getId());
+                System.out.println("Project Name: " + enquiry.getProjectName());
+                System.out.println("Enquiry Details: " + enquiry.getDetails());
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

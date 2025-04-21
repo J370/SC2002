@@ -26,6 +26,13 @@ public class LoginView {
                 OfficerView officerView = new OfficerView((Officer)user);
                 officerView.menu(true);
             }
+            else if (user instanceof Manager) {
+                ManagerView managerView = new ManagerView((Manager)user);
+                managerView.menu(true);
+            }
+            else {
+                System.out.println("Invalid user type.");
+            }
         } else {
             System.out.println("Invalid NRIC or password. Please try again.");
             displayLoginPrompt(); // Retry login
