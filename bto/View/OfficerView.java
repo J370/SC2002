@@ -162,7 +162,7 @@ public class OfficerView extends UserView {
 
     public void viewEnquiriesForMyProject() {
         try {
-            List<Enquiry> enquiries = officerController.viewEnquiriesForMyProject();
+            List<Enquiry> enquiries = officerController.viewEnquiriesForMyProjects();
             System.out.println("Enquiries:");
             for (Enquiry enquiry : enquiries) {
                 System.out.println("-------------------------------");
