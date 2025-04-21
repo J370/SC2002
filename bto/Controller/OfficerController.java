@@ -94,14 +94,15 @@ public class OfficerController {
     }
 
     // update status of BTO applicants
-    public void updateStatus(String applicationId, ApplicationStatus status) throws Exception {
+    public void updateStatus(String applicationId, String status) throws Exception {
         Application application = applicationDao.findById(applicationId)
             .orElseThrow(() -> new Exception("Application not found"));
         Project project = projectDao.getProjectById(application.getProjectName());
         if (!project.getAssignedOfficers().contains(officer.getName())) throw new Exception("You are not assigned to this project.");
 
         if (application.getStatus() == ApplicationStatus.BOOKED) throw new Exception("Cannot update booked application status");
-        application.setStatus(status);
+        ApplicationStatus tempStatus = ApplicationStatus.valueOf(status);
+        application.setStatus(tempStatus);
         applicationDao.save(application);
 
         if (status == ApplicationStatus.BOOKED) {
