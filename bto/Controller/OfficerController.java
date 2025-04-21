@@ -105,7 +105,7 @@ public class OfficerController {
         application.setStatus(tempStatus);
         applicationDao.save(application);
 
-        if (status == ApplicationStatus.BOOKED) {
+        if (tempStatus == ApplicationStatus.BOOKED) {
             projectDao.decreaseAvailableUnits(application.getProjectName(), application.getFlatType(), 1);
         }
     }
