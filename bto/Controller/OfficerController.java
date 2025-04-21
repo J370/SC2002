@@ -1,10 +1,9 @@
 package bto.Controller;
+import bto.Data.*;
+import bto.Model.*;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-
-import bto.Data.*;
-import bto.Model.*;
 
 public class OfficerController {
     private final Officer officer;
@@ -54,14 +53,8 @@ public class OfficerController {
         }
         
         for (Project p : projectDao.getAllProjects()) {
-            if (p.getOpeningDate() == null || p.getClosingDate() == null) {
-                continue; // Skip projects with invalid dates
-            }
-            
-            boolean isRegistered = p.getRequestedOfficers().contains(officer.getName()) || 
-                                p.getAssignedOfficers().contains(officer.getName());
-            boolean overlap = !(targetProject.getClosingDate().isBefore(p.getOpeningDate()) || 
-                                targetProject.getOpeningDate().isAfter(p.getClosingDate()));
+            boolean isRegistered = p.getRequestedOfficers().contains(officer.getName()) || p.getAssignedOfficers().contains(officer.getName());
+            boolean overlap = !(targetProject.getClosingDate().isBefore(p.getOpeningDate()) || targetProject.getOpeningDate().isAfter(p.getClosingDate()));
                                 
             if (isRegistered && overlap) {
                 throw new Exception("Already registered or assigned to another project during this period.");
@@ -72,9 +65,7 @@ public class OfficerController {
         if (!targetProject.getRequestedOfficers().contains(officer.getName())) {
             targetProject.addRequestedOfficer(officer.getName());
             projectDao.updateProject(targetProject);
-        } else {
-            throw new Exception("Already requested registration for this project.");
-        }
+        } else throw new Exception("Already requested registration for this project.");
     }
 
 

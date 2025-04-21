@@ -22,7 +22,6 @@ public class ProjectCSVDao implements ProjectDao {
     
     @Override
     public void updateProject(Project project) {
-        System.out.print("catch");
         List<Project> allProjects = getAllProjects().stream()
                 .map(p -> p.getName().equals(project.getName()) ? project : p)
                 .collect(Collectors.toList());
@@ -88,8 +87,36 @@ public class ProjectCSVDao implements ProjectDao {
         try {
             String[] parts = csvLine.split(",", -1);
             Map<String, Project.FlatTypeDetails> flatTypes = new HashMap<>();
-    
-            // ...parse flat types as before...
+
+            List<String> assignedOfficers = (parts[12].equals("null") || parts[12].isEmpty())
+                ? new ArrayList<>()
+                : new ArrayList<>(Arrays.asList(parts[12].split("\\|")));
+            List<String> requestedOfficers = (parts[13].equals("null") || parts[13].isEmpty())
+                ? new ArrayList<>()
+                : new ArrayList<>(Arrays.asList(parts[13].split("\\|")));
+            List<String> rejectedOfficers = (parts[14].equals("null") || parts[14].isEmpty())
+                ? new ArrayList<>()
+                : new ArrayList<>(Arrays.asList(parts[14].split("\\|")));
+
+                        // Parse Type 1
+            if (!parts[2].isEmpty()) {
+                String type1 = parts[2];
+                int units1 = parts[3].isEmpty() ? 0 : Integer.parseInt(parts[3]);
+                double price1 = parts[4].isEmpty() ? 0 : Double.parseDouble(parts[4]);
+                flatTypes.put(type1, new Project.FlatTypeDetails(units1, price1));
+            }
+            // Parse Type 2
+            if (!parts[5].isEmpty()) {
+                String type2 = parts[5];
+                int units2 = parts[6].isEmpty() ? 0 : Integer.parseInt(parts[6]);
+                double price2 = parts[7].isEmpty() ? 0 : Double.parseDouble(parts[7]);
+                flatTypes.put(type2, new Project.FlatTypeDetails(units2, price2));
+            }
+
+            // Remove accidental "null" string if present
+            assignedOfficers.removeIf(s -> s.equals("null"));
+            requestedOfficers.removeIf(s -> s.equals("null"));
+            rejectedOfficers.removeIf(s -> s.equals("null"));
     
             boolean isVisible = parts.length > 15 && parts[15].trim().equalsIgnoreCase("true");
     
@@ -101,9 +128,9 @@ public class ProjectCSVDao implements ProjectDao {
                 LocalDate.parse(parts[9].trim(), DATE_FORMATTER),
                 parts[10],
                 Integer.parseInt(parts[11]),
-                Arrays.asList(parts[12].split("\\|")),
-                Arrays.asList(parts[13].split("\\|")),
-                Arrays.asList(parts[14].split("\\|")),
+                assignedOfficers,
+                requestedOfficers,
+                rejectedOfficers,
                 isVisible
             );
     
@@ -130,6 +157,7 @@ public class ProjectCSVDao implements ProjectDao {
     private String toCsvLine(Project p) {
         Map<String, Project.FlatTypeDetails> flatTypes = p.getFlatTypes();
         List<String> types = new ArrayList<>(flatTypes.keySet());
+
     
         return String.join(",",
             p.getName(),
@@ -144,9 +172,9 @@ public class ProjectCSVDao implements ProjectDao {
             p.getClosingDate().format(DATE_FORMATTER),
             p.getManager(),
             String.valueOf(p.getOfficerSlots()),
-            String.join("|", p.getAssignedOfficers()), // Use | as separator
-            String.join("|", p.getRequestedOfficers()),
-            String.join("|", p.getRejectedOfficers()),
+            p.getAssignedOfficers().isEmpty() ? "null" : String.join("|", p.getAssignedOfficers()),
+            p.getRequestedOfficers().isEmpty() ? "null" : String.join("|", p.getRequestedOfficers()),
+            p.getRejectedOfficers().isEmpty() ? "null" : String.join("|", p.getRejectedOfficers()),
             String.valueOf(p.isVisible())
         );
     }
