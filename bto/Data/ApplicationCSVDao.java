@@ -3,10 +3,10 @@ package bto.Data;
 import bto.Model.Application;
 import bto.Model.ApplicationStatus;
 import java.io.*;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.time.LocalDateTime;
 
 public class ApplicationCSVDao implements ApplicationDao {
     private static final String FILEPATH = "./bto/Data/CSV/Applications.csv";
@@ -29,13 +29,12 @@ public class ApplicationCSVDao implements ApplicationDao {
         List<Application> apps = getAllApplications();
         int maxId = apps.stream()
             .map(Application::getId)
-            .filter(id -> id.startsWith("APP-"))
-            .map(id -> id.substring(4))
+            .filter(id -> id.matches("\\d+")) // Only consider numeric IDs
             .mapToInt(Integer::parseInt)
             .max()
             .orElse(0);
-        
-        return String.format("APP-%03d", maxId + 1);
+    
+        return String.valueOf(maxId + 1);
     }
 
     @Override
