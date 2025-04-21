@@ -109,7 +109,7 @@ public class ManagerController {
 
     // approve applicant bto request - approval is limited to supply of flats
     public void approveApplication(String applicationId) throws Exception {
-        Application application = applicationDao.findById(applicationId)
+        Application application = applicationDao.getApplicationById(applicationId)
             .orElseThrow(() -> new Exception("Application not found"));
 
         Project project = projectDao.getProjectById(application.getProjectName());
@@ -134,7 +134,7 @@ public class ManagerController {
 
     // Approve withdrawal request
     public void approveWithdrawal(String applicationId) throws Exception {
-        Application application = applicationDao.findById(applicationId)
+        Application application = applicationDao.getApplicationById(applicationId)
             .orElseThrow(() -> new Exception("Application not found"));
 
         // Check booking status

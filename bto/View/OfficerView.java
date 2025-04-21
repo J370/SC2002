@@ -58,10 +58,10 @@ public class OfficerView extends UserView {
             //     menu(false);
             //     break;
 
-            // case 5:
-            //     updateStatus();
-            //     menu(false);
-            //     break;
+            case 5:
+                updateStatus();
+                menu(false);
+                break;
 
             case 6:
                 viewEnquiriesForMyProject();
@@ -125,18 +125,38 @@ public class OfficerView extends UserView {
     //     }
     // }
 
-    // public void updateStatus() {
-    //     System.out.print("Enter application ID to update status: ");
-    //     String applicationId = scanner.next();
-    //     System.out.print("Enter new status: ");
-    //     String newStatus = scanner.next();
-    //     try {
-    //         officerController.updateStatus(applicationId, newStatus);
-    //         System.out.println("Status updated successfully.");
-    //     } catch (Exception e) {
-    //         System.out.println(e.getMessage());
-    //     }
-    // }
+    public void updateStatus() {
+        try {
+            List<Application> applications = officerController.viewStatusForMyProject();
+            System.out.println("Applications:");
+            for (Application application : applications) {
+                System.out.println("-------------------------------");
+                System.out.println("Application ID: " + application.getId());
+                System.out.println("Applicant NRIC: " + application.getApplicantNric());
+                System.out.println("Project Name: " + application.getProjectName());
+                System.out.println("Status: " + application.getStatus());
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+
+        System.out.print("Enter application ID to update status: ");
+        String applicationId = scanner.next();
+        System.out.print("Enter new status (PENDING/SUCCESS/UNSUCCESSFUL/BOOKED): ");
+        String newStatus = scanner.next();
+        if (newStatus != "PENDING" && newStatus != "SUCCESS" &&
+            newStatus != "UNSUCCESSFUL" && newStatus != "BOOKED") {
+            System.out.println("Invalid status. Please enter a valid status.");
+            return;
+        }
+        try {
+            officerController.updateStatus(applicationId, newStatus);
+            System.out.println("Status updated successfully.");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     public void viewEnquiriesForMyProject() {
         try {

@@ -55,7 +55,7 @@ public class ApplicationCSVDao implements ApplicationDao {
     }
 
     @Override
-    public Optional<Application> findById(String applicationId) {
+    public Optional<Application> getApplicationById(String applicationId) {
         return getAllApplications().stream()
             .filter(app -> app.getId().equals(applicationId))
             .findFirst();

@@ -93,9 +93,14 @@ public class OfficerController {
         return receipt;
     }
 
+    public List<Application> viewStatusForMyProject() throws Exception {
+        if (officer.getProject() == null) throw new Exception("Officer is not assigned to any project");
+        return applicationDao.getApplicationsByProject(officer.getProject().getName());
+    }
+
     // update status of BTO applicants
     public void updateStatus(String applicationId, String status) throws Exception {
-        Application application = applicationDao.findById(applicationId)
+        Application application = applicationDao.getApplicationById(applicationId)
             .orElseThrow(() -> new Exception("Application not found"));
         Project project = projectDao.getProjectById(application.getProjectName());
         if (!project.getAssignedOfficers().contains(officer.getName())) throw new Exception("You are not assigned to this project.");
