@@ -33,8 +33,7 @@ public class OfficerView extends UserView {
         System.out.println("5. Update status");
         System.out.println("6. View enquiries for my project");
         System.out.println("7. Reply to enquiry");
-        System.out.println("8. Has applied to project");
-        System.out.println("9. Logout");
+        System.out.println("8. Logout");
         System.out.print("Please select an option: ");
 
         switch (scanner.nextInt()) {
@@ -68,17 +67,12 @@ public class OfficerView extends UserView {
                 menu(false);
                 break;
 
-            // case 7:
-            //     replyToEnquiry();
-            //     menu(false);
-            //     break;
+            case 7:
+                replyToEnquiry();
+                menu(false);
+                break;
 
-            // case 8:
-            //     hasAppliedToProject();
-            //     menu(false);
-            //     break;
-
-            case 9:
+            case 8:
                 System.out.println("Logging out...");
                 break;
             
@@ -170,6 +164,21 @@ public class OfficerView extends UserView {
                 System.out.println("Project Name: " + enquiry.getProjectName());
                 System.out.println("Enquiry Details: " + enquiry.getDetails());
             }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void replyToEnquiry() {
+        System.out.print("Enter enquiry ID to reply: ");
+        int enquiryId = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        System.out.print("Enter your reply: ");
+        String reply = scanner.nextLine();
+
+        try {
+            officerController.replyEnquiry(enquiryId, reply);
+            System.out.println("Reply sent successfully.");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

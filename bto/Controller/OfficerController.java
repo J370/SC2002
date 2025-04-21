@@ -150,15 +150,21 @@ public class OfficerController {
     }
     
     // Officer can reply to an enquiry for their project
-    public void replyEnquiry(int enquiryId, String reply) throws Exception{
+    public void replyEnquiry(int enquiryId, String reply) throws Exception {
         Enquiry enquiry = enquiryDao.findById(enquiryId);
         if (enquiry == null) throw new Exception("Enquiry not found");
-        if (officer.getProject() == null || !enquiry.getProjectName().equals(officer.getProject().getName()))
+    
+        // Check if officer is assigned to the project of this enquiry
+        Project project = projectDao.getProjectById(enquiry.getProjectName());
+        if (project == null || !project.getAssignedOfficers().contains(officer.getName())) {
             throw new Exception("You are not assigned to this project");
+        }
+    
         if (enquiry.isReplied()) throw new Exception("Enquiry already replied");
         enquiry.setReply(reply, officer.getName());
         enquiryDao.update(enquiry);
     }
+    
 
     private boolean hasAppliedToProject(String projectName) {
         List<Application> applications = applicationDao.getAllApplications();
