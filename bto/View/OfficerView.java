@@ -100,16 +100,15 @@ public class OfficerView extends UserView {
     }
 
     public void viewRegistrationStatus() {
-        List<Project> projects = officerController.viewRegistrationStatus();
-        if (projects.isEmpty()) {
+        List<OfficerController.RegistrationStatus> status = officerController.viewRegistrationStatus();
+        if (status.isEmpty()) {
             System.out.println("No registration status available.");
         } else {
             System.out.println("Registration Status:");
-            for (Project project : projects) {
-                System.out.println("-------------------------------");
-                System.out.println("Project Name: " + project.getName());
-                System.out.println("Requested Officers: " + project.getRequestedOfficers());
-                System.out.println("Assigned Officers: " + project.getAssignedOfficers());
+            for (OfficerController.RegistrationStatus s : status) {
+                System.out.println("-----------------------------");
+                System.out.println("Project Name: " + s.project.getName());
+                System.out.println("Application Status: " + s.status);
             }
         }
     }

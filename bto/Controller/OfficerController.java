@@ -1,9 +1,9 @@
 package bto.Controller;
 import bto.Data.*;
 import bto.Model.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 public class OfficerController {
     private final Officer officer;
@@ -70,10 +70,19 @@ public class OfficerController {
 
 
     // register status to be approved by manager
-    public List<Project> viewRegistrationStatus() {
-        return projectDao.getAllProjects().stream()
-            .filter(p -> p.getRequestedOfficers().contains(officer.getNric()))
-            .collect(Collectors.toList());
+    public List<RegistrationStatus> viewRegistrationStatus() {
+        List<Project>  projects = projectDao.getAllProjects();
+        List<RegistrationStatus> output = new ArrayList<>();
+        for (Project p : projects){
+            if (p.getAssignedOfficers().contains(officer.getName())) {
+                output.add(new RegistrationStatus(p, "Assigned"));
+            } else if (p.getRequestedOfficers().contains(officer.getName())) {
+                output.add(new RegistrationStatus(p, "Pending"));
+            } else if (p.getRejectedOfficers().contains(officer.getName())) {
+                output.add(new RegistrationStatus(p, "Rejected"));
+            }
+        }
+        return output;
     }
 
 
@@ -121,5 +130,13 @@ public class OfficerController {
         return false;
     }
 
+    public static class RegistrationStatus {
+        public final Project project;
+        public final String status; // "Pending", "Successful", "Unsuccessful"
+        public RegistrationStatus(Project project, String status) {
+            this.project = project;
+            this.status = status;
+        }
+    }
 
 }
