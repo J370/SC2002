@@ -127,7 +127,7 @@ public class OfficerView extends UserView {
 
     public void updateStatus() {
         try {
-            List<Application> applications = officerController.viewStatusForMyProject();
+            List<Application> applications = officerController.viewApplicationsForMyProjects();
             System.out.println("Applications:");
             for (Application application : applications) {
                 System.out.println("-------------------------------");
@@ -142,11 +142,13 @@ public class OfficerView extends UserView {
         }
 
         System.out.print("Enter application ID to update status: ");
-        String applicationId = scanner.next();
+        scanner.nextLine();
+        String applicationId = scanner.nextLine();
         System.out.print("Enter new status (PENDING/SUCCESS/UNSUCCESSFUL/BOOKED): ");
-        String newStatus = scanner.next();
-        if (newStatus != "PENDING" && newStatus != "SUCCESS" &&
-            newStatus != "UNSUCCESSFUL" && newStatus != "BOOKED") {
+        String newStatus = scanner.nextLine();
+
+        // Validate status
+        if (!newStatus.equals("PENDING") && !newStatus.equals("SUCCESS") && !newStatus.equals("UNSUCCESSFUL") && !newStatus.equals("BOOKED")) {
             System.out.println("Invalid status. Please enter a valid status.");
             return;
         }

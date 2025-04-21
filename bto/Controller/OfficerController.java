@@ -93,10 +93,24 @@ public class OfficerController {
         return receipt;
     }
 
-    public List<Application> viewStatusForMyProject() throws Exception {
-        if (officer.getProject() == null) throw new Exception("Officer is not assigned to any project");
-        return applicationDao.getApplicationsByProject(officer.getProject().getName());
+    // view status of BTO applicants
+    public List<Application> viewApplicationsForMyProjects() {
+        List<Application> result = new ArrayList<>();
+        List<Project> allProjects = projectDao.getAllProjects();
+        List<String> myProjectNames = new ArrayList<>();
+        for (Project p : allProjects) {
+            if (p.getAssignedOfficers().contains(officer.getName())) {
+                myProjectNames.add(p.getName());
+            }
+        }
+        for (Application app : applicationDao.getAllApplications()) {
+            if (myProjectNames.contains(app.getProjectName())) {
+                result.add(app);
+            }
+        }
+        return result;
     }
+    
 
     // update status of BTO applicants
     public void updateStatus(String applicationId, String status) throws Exception {
