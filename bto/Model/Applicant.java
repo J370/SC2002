@@ -1,7 +1,5 @@
 package bto.Model;
 
-import bto.View.ApplicantView;
-
 public class Applicant extends User{
 
 

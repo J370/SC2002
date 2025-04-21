@@ -1,6 +1,6 @@
 package bto.Controller;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import bto.Data.*;
@@ -24,26 +24,59 @@ public class OfficerController {
 
     // To register to be a registered officer for a specific project
     public void registerProject(String projectName) throws Exception {
+        if (projectName == null || projectName.trim().isEmpty()) {
+            throw new Exception("Project name cannot be empty");
+        }
+
         // 1. Check if officer has applied for this project as an applicant
         if (hasAppliedToProject(projectName)) {
             throw new Exception("Cannot register for a project you've applied to as an applicant.");
         }
-    
-        Project targetProject = projectDao.getProjectById(projectName);
+        
+        Project targetProject;
+        try {
+            targetProject = projectDao.getProjectById(projectName);
+            if (targetProject == null) {
+                throw new Exception("Project not found: " + projectName);
+            }
+        } catch (NoSuchElementException e) {
+            throw new Exception("Project not found: " + projectName);
+        }
+        
+        // Check that officer name is not null
+        if (officer.getName() == null) {
+            throw new Exception("Officer name is not set");
+        }
+        
+        // Date validations
+        if (targetProject.getOpeningDate() == null || targetProject.getClosingDate() == null) {
+            throw new Exception("Project has invalid dates");
+        }
+        
         for (Project p : projectDao.getAllProjects()) {
-            boolean isRegistered = p.getRequestedOfficers().contains(officer.getName()) || p.getAssignedOfficers().contains(officer.getName());
-            boolean overlap = !(targetProject.getClosingDate().isBefore(p.getOpeningDate()) || targetProject.getOpeningDate().isAfter(p.getClosingDate()));
+            if (p.getOpeningDate() == null || p.getClosingDate() == null) {
+                continue; // Skip projects with invalid dates
+            }
+            
+            boolean isRegistered = p.getRequestedOfficers().contains(officer.getName()) || 
+                                p.getAssignedOfficers().contains(officer.getName());
+            boolean overlap = !(targetProject.getClosingDate().isBefore(p.getOpeningDate()) || 
+                                targetProject.getOpeningDate().isAfter(p.getClosingDate()));
+                                
             if (isRegistered && overlap) {
                 throw new Exception("Already registered or assigned to another project during this period.");
             }
         }
-    
-        // 3. Add to requested officers if not already requested
+
+        // Add to requested officers if not already requested
         if (!targetProject.getRequestedOfficers().contains(officer.getName())) {
             targetProject.addRequestedOfficer(officer.getName());
             projectDao.updateProject(targetProject);
-        } else throw new Exception("Already requested registration for this project.");
+        } else {
+            throw new Exception("Already requested registration for this project.");
+        }
     }
+
 
     // register status to be approved by manager
     public List<Project> viewRegistrationStatus() {

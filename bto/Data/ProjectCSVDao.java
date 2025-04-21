@@ -22,6 +22,7 @@ public class ProjectCSVDao implements ProjectDao {
     
     @Override
     public void updateProject(Project project) {
+        System.out.print("catch");
         List<Project> allProjects = getAllProjects().stream()
                 .map(p -> p.getName().equals(project.getName()) ? project : p)
                 .collect(Collectors.toList());

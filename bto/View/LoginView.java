@@ -22,6 +22,10 @@ public class LoginView {
                 ApplicantView applicantView = new ApplicantView((Applicant)user);
                 applicantView.menu(true);
             }
+            else if (user instanceof Officer) {
+                OfficerView officerView = new OfficerView((Officer)user);
+                officerView.menu(true);
+            }
         } else {
             System.out.println("Invalid NRIC or password. Please try again.");
             displayLoginPrompt(); // Retry login
