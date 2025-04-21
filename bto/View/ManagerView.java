@@ -53,19 +53,19 @@ public class ManagerView extends UserView {
                 menu(false);
                 break;
 
-            // case 4:
-            //     manageProject();
-            //     menu(false);
-            //     break;
+            case 4:
+                manageProject();
+                menu(false);
+                break;
 
-            // case 5:
-            //     viewAllProjects();
-            //     menu(false);
-            //     break;
+            case 5:
+                viewAllProjects();
+                menu(false);
+                break;
 
-            // case 6:
-            //     System.out.println("Logging out...");
-            //     break;
+            case 6:
+                System.out.println("Logging out...");
+                break;
         
             default:
                 break;
@@ -119,6 +119,23 @@ public class ManagerView extends UserView {
             System.out.println("Project deleted successfully.");
         } catch (Exception e) {
             System.out.println("An error occurred while deleting the project: " + e.getMessage());
+        }
+    }
+
+    public void manageProject() {
+        System.out.println("Please enter the project name to manage: ");
+        String projectName = scanner.nextLine();
+        managerController.manageProject();
+    }
+
+    public void viewAllProjects() {
+        System.out.println("All projects:");
+        for (Project project : managerController.viewAllProject()) {
+            System.out.println("Project Name: " + project.getName());
+            System.out.println("Neighborhood: " + project.getNeighborhood());
+            System.out.println("Opening Date: " + project.getOpeningDate());
+            System.out.println("Closing Date: " + project.getClosingDate());
+            System.out.println("_______________________________");
         }
     }
 }
