@@ -16,6 +16,7 @@ public class ApplicantView extends UserView {
     }
 
     public void menu(boolean isFirstTime) {
+        System.out.println("\n===================================");
         if (isFirstTime) {
             System.out.println("Welcome " + applicant.getName() + "!");
             System.out.println("You are logged in as an applicant.");
@@ -81,6 +82,8 @@ public class ApplicantView extends UserView {
                 break;
             case 11:
                 System.out.println("Logging out...");
+                LoginView loginView = new LoginView();
+                loginView.displayLoginPrompt();
                 break;
             default:
                 menu(false);
