@@ -68,7 +68,7 @@ public class LoginView {
     }
 
     private boolean isValidNric(String nric) {
-        String nricPattern = "^[STFG]\\d{7}[A-Z]$";
+        String nricPattern = "^[ST]\\d{7}[A-Z]$";
         Pattern pattern = Pattern.compile(nricPattern);
         Matcher matcher = pattern.matcher(nric);
         return matcher.matches();
