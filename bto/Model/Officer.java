@@ -1,7 +1,6 @@
 package bto.Model;
 
 public class Officer extends User{
-
     private Project project;
     private String registrationStatus;
 

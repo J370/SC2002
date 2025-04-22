@@ -18,6 +18,7 @@ public class ManagerView extends UserView {
     }
 
     public void menu(boolean isFirstTime) {
+        System.out.println("\n===================================");
         if (isFirstTime) {
             System.out.println("Welcome " + manager.getName() + "!");
             System.out.println("You are logged in as a manager.");

@@ -7,11 +7,15 @@ import java.util.List;
 public class OfficerView extends UserView {
     OfficerController officerController;
     Officer officer;
+    ApplicantController applicantController;
+    ApplicantView applicantView;
 
-    public OfficerView(Officer officer, OfficerController officerController) {
+    public OfficerView(Officer officer, OfficerController officerController, ApplicantController applicantController, ApplicantView applicantView) {
         super(officer);
         this.officer = officer;
         this.officerController = officerController;
+        this.applicantController = applicantController;
+        this.applicantView = applicantView;
     }
     
     public void menu(boolean isFirstTime) {
@@ -28,7 +32,8 @@ public class OfficerView extends UserView {
         System.out.println("5. Update status");
         System.out.println("6. View enquiries for my project");
         System.out.println("7. Reply to enquiry");
-        System.out.println("8. Logout");
+        System.out.println("8. View as applicant");
+        System.out.println("9. Logout");
         System.out.print("Please select an option: ");
 
         switch (scanner.nextInt()) {
@@ -68,6 +73,11 @@ public class OfficerView extends UserView {
                 break;
 
             case 8:
+                applicantView.menu(true);
+                menu(false);
+                break;
+
+            case 9:
                 System.out.println("Logging out...");
                 break;
             
@@ -135,7 +145,7 @@ public class OfficerView extends UserView {
         String applicationId = scanner.nextLine();
 
         try {
-            officerController.updateStatus(applicationId);
+            officerController.updateStatus(applicationId, "BOOKED");
             System.out.println("Status updated successfully.");
         } catch (Exception e) {
             System.out.println(e.getMessage());

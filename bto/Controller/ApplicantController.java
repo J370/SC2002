@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Optional;
 
 public class ApplicantController {
-    private final Applicant applicant;
+    private final User applicant;
     private final ApplicationDao applicationDao;
     private final ProjectDao projectDao;
     private final EnquiryDao enquiryDao;
 
-    public ApplicantController(Applicant applicant, 
+    public ApplicantController(User applicant, 
                               ApplicationDao applicationDao,
                               ProjectDao projectDao,
                               EnquiryDao enquiryDao) {

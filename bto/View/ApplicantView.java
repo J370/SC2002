@@ -7,9 +7,9 @@ import java.util.Map;
 
 public class ApplicantView extends UserView {
     ApplicantController applicantController;
-    Applicant applicant;
+    User applicant;
 
-    public ApplicantView(Applicant applicant, ApplicantController applicantController) {
+    public ApplicantView(User applicant, ApplicantController applicantController) {
         super(applicant);
         this.applicantController = applicantController;
         this.applicant = applicant;

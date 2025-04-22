@@ -33,7 +33,9 @@ public class LoginView {
             }
             else if (user instanceof Officer) {
                 OfficerController officerController = new OfficerController((Officer)user, applicationDao, projectDao, enquiryDao);
-                OfficerView officerView = new OfficerView((Officer)user, officerController);
+                ApplicantController applicantController = new ApplicantController((User)user, applicationDao, projectDao, enquiryDao);
+                ApplicantView applicantView = new ApplicantView((User)user, applicantController);
+                OfficerView officerView = new OfficerView((Officer)user, officerController, applicantController, applicantView);
                 officerView.menu(true);
             }
             else if (user instanceof Manager) {
