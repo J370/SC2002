@@ -5,6 +5,7 @@ import bto.Model.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ManagerView extends UserView {
@@ -50,12 +51,12 @@ public class ManagerView extends UserView {
                 break;
 
             case 4:
-                manageProject();
+                editProject();
                 menu(false);
                 break;
 
             case 5:
-                viewAllProjects();
+                //viewAllProjects();
                 menu(false);
                 break;
 
@@ -72,35 +73,39 @@ public class ManagerView extends UserView {
 
     public void createProject() {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        scanner.nextLine(); // Consume any leftover newline
+    
         System.out.print("Please enter the project name: ");
-        String name = scanner.next();
+        String name = scanner.nextLine().trim();
+    
         System.out.print("Please enter the neighborhood: ");
-        String neighborhood = scanner.next();
-        System.out.print("Please enter the opening date (yyyy/mm/dd): ");
-        LocalDate openingDateStr = LocalDate.parse(scanner.next(), dateFormatter);
-        System.out.print("Please enter the closing date (yyyy/mm/dd): ");
-        LocalDate closingDateStr = LocalDate.parse(scanner.next(), dateFormatter);
+        String neighborhood = scanner.nextLine().trim();
+    
+        System.out.print("Please enter the opening date (yyyy/MM/dd): ");
+        String openingDateInput = scanner.nextLine().trim();
+        LocalDate openingDateStr = LocalDate.parse(openingDateInput, dateFormatter);
+    
+        System.out.print("Please enter the closing date (yyyy/MM/dd): ");
+        String closingDateInput = scanner.nextLine().trim();
+        LocalDate closingDateStr = LocalDate.parse(closingDateInput, dateFormatter);
+    
         System.out.print("Please enter the officer slots: ");
-        int officerSlots = scanner.nextInt();
-        scanner.nextLine(); // Consume newline left-over
-
-
-        System.out.println("Please enter the flat types and their details (type 'done' to finish): ");
+        int officerSlots = Integer.parseInt(scanner.nextLine().trim());
+    
         Map<String, Project.FlatTypeDetails> flatTypes = new HashMap<>();
-        while (true) {
-            System.out.println("Flat type: ");
-            String flatType = scanner.next();
-            if (flatType.equals("done")) {
-                break;
-            }
-            System.out.println("Number of units: ");
-            int numberOfUnits = scanner.nextInt();
-            System.out.println("Price: ");
-            double price = scanner.nextDouble();
+        String[] allowedTypes = {"2-Room", "3-Room"};
+        for (String flatType : allowedTypes) {
+            System.out.println("Enter details for " + flatType + ":");
+            System.out.print("Number of units: ");
+            int numberOfUnits = Integer.parseInt(scanner.nextLine().trim());
+            System.out.print("Price: ");
+            double price = Double.parseDouble(scanner.nextLine().trim());
             flatTypes.put(flatType, new Project.FlatTypeDetails(numberOfUnits, price));
         }
+    
         try {
             managerController.createProject(name, neighborhood, flatTypes, openingDateStr, closingDateStr, officerSlots);
+            System.out.println("Project created successfully.");
         } catch (Exception e) {
             System.out.println("An error occurred while creating the project: " + e.getMessage());
         }
@@ -123,21 +128,158 @@ public class ManagerView extends UserView {
         }
     }
 
-    public void manageProject() {
-        System.out.println("Please enter the project name to manage: ");
-        String projectName = scanner.nextLine();
-
-        managerController.manageProject();
+    public void editProject() {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        scanner.nextLine(); // consume leftover newline if needed
+    
+        System.out.print("Please enter the project name to edit: ");
+        String projectName = scanner.nextLine().trim();
+        if (projectName.isEmpty()) {
+            System.out.println("Project name is required to edit a project.");
+            return;
+        }
+    
+        Project project = managerController.viewAllProject().stream()
+            .filter(p -> p.getName().equals(projectName))
+            .findFirst().orElse(null);
+    
+        if (project == null) {
+            System.out.println("Project not found.");
+            return;
+        }
+    
+        System.out.println("Press Enter to keep the current value.");
+    
+        System.out.print("Current neighborhood: " + project.getNeighborhood() + ". New neighborhood (or press Enter to skip): ");
+        String neighborhood = scanner.nextLine().trim();
+        if (neighborhood.isEmpty()) neighborhood = project.getNeighborhood();
+    
+        System.out.print("Current opening date: " + project.getOpeningDate() + ". New opening date (yyyy/MM/dd, or press Enter to skip): ");
+        String openingDateStr = scanner.nextLine().trim();
+        LocalDate openingDate = project.getOpeningDate();
+        if (!openingDateStr.isEmpty()) {
+            try {
+                openingDate = LocalDate.parse(openingDateStr, dateFormatter);
+            } catch (Exception e) {
+                System.out.println("Invalid date format. Keeping current opening date.");
+            }
+        }
+    
+        System.out.print("Current closing date: " + project.getClosingDate() + ". New closing date (yyyy/MM/dd, or press Enter to skip): ");
+        String closingDateStr = scanner.nextLine().trim();
+        LocalDate closingDate = project.getClosingDate();
+        if (!closingDateStr.isEmpty()) {
+            try {
+                closingDate = LocalDate.parse(closingDateStr, dateFormatter);
+            } catch (Exception e) {
+                System.out.println("Invalid date format. Keeping current closing date.");
+            }
+        }
+    
+        System.out.print("Current officer slots: " + project.getOfficerSlots() + ". New officer slots (or press Enter to skip): ");
+        String officerSlotsStr = scanner.nextLine().trim();
+        int officerSlots = project.getOfficerSlots();
+        if (!officerSlotsStr.isEmpty()) {
+            try {
+                officerSlots = Integer.parseInt(officerSlotsStr);
+            } catch (Exception e) {
+                System.out.println("Invalid number. Keeping current officer slots.");
+            }
+        }
+    
+        // Only allow editing of 2-Room and 3-Room
+        Map<String, Project.FlatTypeDetails> flatTypes = new HashMap<>(project.getFlatTypes());
+        String[] allowedTypes = {"2-Room", "3-Room"};
+        for (String type : allowedTypes) {
+            Project.FlatTypeDetails details = flatTypes.get(type);
+            if (details == null) {
+                // If missing, add with default values
+                details = new Project.FlatTypeDetails(0, 0.0);
+            }
+            System.out.print("Current " + type + " units: " + details.getAvailableUnits() + ". New units (or press Enter to skip): ");
+            String unitsStr = scanner.nextLine().trim();
+            int units = details.getAvailableUnits();
+            if (!unitsStr.isEmpty()) {
+                try { units = Integer.parseInt(unitsStr); } catch (Exception e) {}
+            }
+            System.out.print("Current " + type + " price: " + details.getSellingPrice() + ". New price (or press Enter to skip): ");
+            String priceStr = scanner.nextLine().trim();
+            double price = details.getSellingPrice();
+            if (!priceStr.isEmpty()) {
+                try { price = Double.parseDouble(priceStr); } catch (Exception e) {}
+            }
+            flatTypes.put(type, new Project.FlatTypeDetails(units, price));
+        }
+    
+        // Ensure only 2-Room and 3-Room exist
+        flatTypes.keySet().retainAll(java.util.Arrays.asList(allowedTypes));
+    
+        try {
+            managerController.editProject(
+                project.getName(),
+                neighborhood,
+                flatTypes,
+                openingDate,
+                closingDate,
+                officerSlots
+            );
+            System.out.println("Project updated successfully.");
+        } catch (Exception e) {
+            System.out.println("An error occurred while editing the project: " + e.getMessage());
+        }
     }
 
-    public void viewAllProjects() {
-        System.out.println("All projects:");
-        for (Project project : managerController.viewAllProject()) {
+    public void generateReport() {
+        List<Application> applications = managerController.generateReport();
+    
+        // Prompt for filters
+        System.out.print("Enter marital status to filter by (or press Enter to skip): ");
+        String maritalStatus = scanner.nextLine().trim();
+        if (maritalStatus.isEmpty()) maritalStatus = null;
+    
+        System.out.print("Enter flat type to filter by (or press Enter to skip): ");
+        String flatType = scanner.nextLine().trim();
+        if (flatType.isEmpty()) flatType = null;
+    
+        System.out.print("Enter project name to filter by (or press Enter to skip): ");
+        String projectName = scanner.nextLine().trim();
+        if (projectName.isEmpty()) projectName = null;
+    
+        System.out.println("\n===== Filtered BTO Booking Report =====");
+        boolean found = false;
+        for (Application app : applications) {
+            User applicant = User.getUser(app.getApplicantNric());
+            if (applicant == null) continue;
+    
+            // Apply filters
+            if (maritalStatus != null && !applicant.getMaritalStatus().equalsIgnoreCase(maritalStatus)) continue;
+            if (flatType != null && !app.getFlatType().equalsIgnoreCase(flatType)) continue;
+            if (projectName != null && !app.getProjectName().equalsIgnoreCase(projectName)) continue;
+    
+            Project project = managerController.viewAllProject().stream()
+                .filter(p -> p.getName().equals(app.getProjectName()))
+                .findFirst().orElse(null);
+            if (project == null) continue;
+    
+            Project.FlatTypeDetails flatDetails = project.getFlatTypes().get(app.getFlatType());
+            String flatPrice = (flatDetails != null) ? String.valueOf(flatDetails.getSellingPrice()) : "N/A";
+    
+            System.out.println("-------------------------------");
+            System.out.println("Applicant Name: " + applicant.getName());
+            System.out.println("NRIC: " + applicant.getNric());
+            System.out.println("Age: " + applicant.getAge());
+            System.out.println("Marital Status: " + applicant.getMaritalStatus());
+            System.out.println("Flat Type Booked: " + app.getFlatType());
             System.out.println("Project Name: " + project.getName());
             System.out.println("Neighborhood: " + project.getNeighborhood());
-            System.out.println("Opening Date: " + project.getOpeningDate());
-            System.out.println("Closing Date: " + project.getClosingDate());
-            System.out.println("_______________________________");
+            System.out.println("Flat Price: $" + flatPrice);
+            System.out.println("Booking Status: " + app.getStatus());
+            System.out.println("-------------------------------");
+            found = true;
         }
+        if (!found) {
+            System.out.println("No applications found matching the filter criteria.");
+        }
+        System.out.println("===== End of Report =====");
     }
 }

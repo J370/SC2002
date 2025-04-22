@@ -22,7 +22,6 @@ public class ManagerController {
 
     public void createProject(String name, String neighborhood, Map<String, Project.FlatTypeDetails> flatTypes,
                              LocalDate openingDate, LocalDate closingDate,int officerSlots) throws Exception {
-        if (projectDao.getProjectById(name) != null) throw new Exception("Project name must be unique");
         if (hasActiveProject()) throw new Exception("Cannot create new project while managing active project");
 
         Project newProject = new Project(
@@ -51,8 +50,24 @@ public class ManagerController {
         projectDao.deleteProject(projectName);
     }
 
-    public void manageProject(){
+    public void editProject(String name, String neighborhood, Map<String, Project.FlatTypeDetails> flatTypes,
+                             LocalDate openingDate, LocalDate closingDate,int officerSlots) throws Exception {
+        if (projectDao.getProjectById(name) != null) throw new Exception("Project name must be unique");
 
+        Project newProject = new Project(
+            name,
+            neighborhood,
+            flatTypes,
+            openingDate,
+            closingDate,
+            manager.getName(),
+            officerSlots,
+            new ArrayList<>(),
+            new ArrayList<>(),
+            new ArrayList<>(),
+            true
+        );
+        projectDao.updateProject(newProject);
     }
 
     public List<Project> viewAllProject(){
@@ -91,17 +106,21 @@ public class ManagerController {
     public void approveRegistration(String projectName, String officerName) throws Exception{
         Project project = projectDao.getProjectById(projectName);
         
-        if (project.getAssignedOfficers().size() >= project.getOfficerSlots()) {
-            throw new Exception("No available officer slots");
-        }
+        if (!project.getRequestedOfficers().contains(officerName)) throw new Exception("Officer " + officerName + " did not request to join this project.");
+        if (project.getAssignedOfficers().contains(officerName)) throw new Exception("Officer " + officerName + " is already assigned to this project.");
+        if (project.getOfficerSlots() <= 0) throw new Exception("No available officer slots for project: " + projectName);
 
         project.addAssignedOfficer(officerName);
         project.removeRequestedOfficer(officerName);
+        project.setOfficerSlots(project.getOfficerSlots() - 1);
         projectDao.updateProject(project);
     }
 
-    public void rejectRegistration(String projectName, String officerName){
+    public void rejectRegistration(String projectName, String officerName) throws Exception{
         Project project = projectDao.getProjectById(projectName);
+        if (project == null) throw new Exception("Project not found: " + projectName);
+        if (!project.getRequestedOfficers().contains(officerName)) throw new Exception("Officer " + officerName + " did not request to join this project.");
+        if (project.getRejectedOfficers().contains(officerName)) throw new Exception("Officer " + officerName + " has already been rejected for this project.");
         project.addRejectedOfficer(officerName);
         project.removeRequestedOfficer(officerName);
         projectDao.updateProject(project);
@@ -127,9 +146,6 @@ public class ManagerController {
         application.setStatus(ApplicationStatus.SUCCESS);
         applicationDao.update(application);
 
-        // Update project inventory
-        flatDetails.setAvailableUnits(flatDetails.getAvailableUnits() - 1);
-        projectDao.updateProject(project);
     }
 
     // Approve withdrawal request
@@ -138,13 +154,12 @@ public class ManagerController {
             .orElseThrow(() -> new Exception("Application not found"));
 
         // Check booking status
-        if (application.getStatus() == ApplicationStatus.BOOKED) {throw new Exception("Cannot withdraw after flat booking");}
 
         Project project = projectDao.getProjectById(application.getProjectName());
         if (project == null) throw new Exception("Associated project not found");
 
         // Restock flat if application was successful
-        if (application.getStatus() == ApplicationStatus.SUCCESS) {
+        if (application.getStatus() == ApplicationStatus.BOOKED) {
             String flatType = application.getFlatType();
             Project.FlatTypeDetails flatDetails = project.getFlatTypes().get(flatType);
             
@@ -166,21 +181,37 @@ public class ManagerController {
     //able to view and reply to enquiries regarding the project manager is handling
     public void replyEnquiry(int enquiryId, String reply) throws Exception{
         Enquiry enquiry = enquiryDao.findById(enquiryId);
+        if (reply == null) throw new Exception("Reply cannot be empty");
         if (enquiry == null) throw new Exception("Enquiry not found");
+        Project project = projectDao.getProjectById(enquiry.getProjectName());
+        if (project == null || !project.getManager().equals(manager.getName())) {
+            throw new Exception("You are not authorized to reply to this enquiry.");
+        }
         if (enquiry.isReplied()) throw new Exception("Enquiry already replied");
         enquiry.setReply(reply, manager.getName());
         enquiryDao.update(enquiry);
     }
 
     // generate report of applicants with respective flat booking – flat type, project name, age, marital status
-    public void generateReport(){
-
+    // There should be filters to generate a list based on various categories (e.g. report of married applicants’ choice of flat type)
+    public List<Application> generateReport() {
+        List<Application> allApplications = applicationDao.getAllApplications();
+        List<Application> bookedApplications = new ArrayList<>();
+        if (allApplications != null) {
+            for (Application app : allApplications) {
+                if (app.getStatus() == ApplicationStatus.BOOKED) {
+                    bookedApplications.add(app);
+                }
+            }
+        }
+        return bookedApplications;
     }
 
     // toggle project visibility
 
-    public void toggleProjectVisibility(String projectName) {
+    public void toggleProjectVisibility(String projectName) throws Exception {
         Project project = projectDao.getProjectById(projectName);
+        if (project == null) throw new Exception("Project not found");
         project.toggleVisibility();
         projectDao.updateProject(project);
     }
@@ -188,7 +219,7 @@ public class ManagerController {
 
     private boolean hasActiveProject() {
         return projectDao.getAllProjects().stream()
-            .filter(p -> p.getManager().equals(manager.getNric()))
+            .filter(p -> p.getManager().equals(manager.getName()))
             .anyMatch(p -> p.isVisible() && p.isApplicationOpen());
     }
 }

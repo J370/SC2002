@@ -42,10 +42,6 @@ public class OfficerController {
             throw new Exception("Project not found: " + projectName);
         }
         
-        // Check that officer name is not null
-        if (officer.getName() == null) {
-            throw new Exception("Officer name is not set");
-        }
         
         // Date validations
         if (targetProject.getOpeningDate() == null || targetProject.getClosingDate() == null) {
@@ -89,12 +85,32 @@ public class OfficerController {
     //generate receipt for applicant once approved
     public String generateReceipt(Application application) throws Exception {
         if (application.getStatus() != ApplicationStatus.BOOKED) throw new Exception("Application is not booked");
-        String receipt = "151";
-        return receipt;
+            // Get applicant details
+        User applicant = User.getUser(application.getApplicantNric());
+        if (applicant == null) throw new Exception("Applicant not found.");
+
+        Project project = projectDao.getProjectById(application.getProjectName());
+        if (project == null) throw new Exception("Project not found.");
+
+        Project.FlatTypeDetails flatDetails = project.getFlatTypes().get(application.getFlatType());
+        if (flatDetails == null) throw new Exception("Flat type not found in project.");
+        String receipt =
+            "\n===== BTO Booking Receipt =====" +
+            "\nApplicant Name: " + applicant.getName() +
+            "\nNRIC: " + applicant.getNric() +
+            "\nAge: " + applicant.getAge() +
+            "\nMarital Status: " + applicant.getMaritalStatus() +
+            "\nFlat Type Booked: " + application.getFlatType() +
+            "\nProject Name: " + project.getName() +
+            "\nNeighborhood: " + project.getNeighborhood() +
+            "\nFlat Price: $" + flatDetails.getSellingPrice() +
+            "\nBooking Status: " + application.getStatus() +
+            "\n==============================";
+    return receipt;
     }
 
     // view status of BTO applicants
-    public List<Application> viewApplicationsForMyProjects() {
+    public List<Application> viewApplicationsForMyProjects() throws Exception {
         List<Application> result = new ArrayList<>();
         List<Project> allProjects = projectDao.getAllProjects();
         List<String> myProjectNames = new ArrayList<>();
@@ -103,6 +119,7 @@ public class OfficerController {
                 myProjectNames.add(p.getName());
             }
         }
+        if (myProjectNames.isEmpty()) throw new Exception("You are not assigned to any projects");
         for (Application app : applicationDao.getAllApplications()) {
             if (myProjectNames.contains(app.getProjectName())) {
                 result.add(app);
@@ -116,6 +133,7 @@ public class OfficerController {
         Application application = applicationDao.getApplicationById(applicationId)
             .orElseThrow(() -> new Exception("Application not found"));
         Project project = projectDao.getProjectById(application.getProjectName());
+        if (project == null) throw new Exception("Project not found for this application");
         if (!project.getAssignedOfficers().contains(officer.getName())) throw new Exception("You are not assigned to this project.");
         if (application.getStatus() != ApplicationStatus.SUCCESS) throw new Exception("Only successful applications can be updated to booked.");
         
@@ -136,6 +154,7 @@ public class OfficerController {
     // view all enquiries for officer assigned project
     public List<Enquiry> viewEnquiriesForMyProjects() throws Exception {
         List<Project> allProjects = projectDao.getAllProjects();
+        if (allProjects == null) throw new Exception("No projects found");
         List<String> assignedProjectNames = new ArrayList<>();
         for (Project p : allProjects) {
             if (p.getAssignedOfficers().contains(officer.getName())) {
@@ -155,6 +174,7 @@ public class OfficerController {
     // Officer can reply to an enquiry for their project
     public void replyEnquiry(int enquiryId, String reply) throws Exception{
         Enquiry enquiry = enquiryDao.findById(enquiryId);
+        if (reply == null) throw new Exception("Reply cannot be empty");
         if (enquiry == null) throw new Exception("Enquiry not found");
         Project project = projectDao.getProjectById(enquiry.getProjectName());
         if (project == null || !project.getAssignedOfficers().contains(officer.getName())) {
