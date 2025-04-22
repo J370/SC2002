@@ -110,7 +110,6 @@ public class OfficerController {
         }
         return result;
     }
-    
 
     // update status of BTO applicants
     public void updateStatus(String applicationId, String status) throws Exception {
@@ -120,9 +119,11 @@ public class OfficerController {
         if (!project.getAssignedOfficers().contains(officer.getName())) throw new Exception("You are not assigned to this project.");
 
         if (application.getStatus() == ApplicationStatus.BOOKED) throw new Exception("Cannot update booked application status");
+        if (application.getStatus() == ApplicationStatus.UNSUCCESSFUL) throw new Exception("Cannot update unsuccessful application status");
+        if (application.getStatus() == ApplicationStatus.PENDING) throw new Exception("Cannot update pending application status");
         ApplicationStatus tempStatus = ApplicationStatus.valueOf(status);
         application.setStatus(tempStatus);
-        applicationDao.save(application);
+        applicationDao.update(application);
 
         if (tempStatus == ApplicationStatus.BOOKED) {
             projectDao.decreaseAvailableUnits(application.getProjectName(), application.getFlatType(), 1);
@@ -148,23 +149,17 @@ public class OfficerController {
         }
         return result;
     }
-    
+
     // Officer can reply to an enquiry for their project
-    public void replyEnquiry(int enquiryId, String reply) throws Exception {
+    public void replyEnquiry(int enquiryId, String reply) throws Exception{
         Enquiry enquiry = enquiryDao.findById(enquiryId);
         if (enquiry == null) throw new Exception("Enquiry not found");
-    
-        // Check if officer is assigned to the project of this enquiry
-        Project project = projectDao.getProjectById(enquiry.getProjectName());
-        if (project == null || !project.getAssignedOfficers().contains(officer.getName())) {
+        if (officer.getProject() == null || !enquiry.getProjectName().equals(officer.getProject().getName()))
             throw new Exception("You are not assigned to this project");
-        }
-    
         if (enquiry.isReplied()) throw new Exception("Enquiry already replied");
         enquiry.setReply(reply, officer.getName());
         enquiryDao.update(enquiry);
     }
-    
 
     private boolean hasAppliedToProject(String projectName) {
         List<Application> applications = applicationDao.getAllApplications();

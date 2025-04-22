@@ -1,7 +1,6 @@
 package bto.View;
 
 import bto.Controller.*;
-import bto.Data.*;
 import bto.Model.*;
 import java.util.List;
 import java.util.Map;
@@ -10,13 +9,9 @@ public class ApplicantView extends UserView {
     ApplicantController applicantController;
     Applicant applicant;
 
-    public ApplicantView(Applicant applicant) {
+    public ApplicantView(Applicant applicant, ApplicantController applicantController) {
         super(applicant);
-        ApplicationDao applicationDao = new ApplicationCSVDao();
-        ProjectDao projectDao = new ProjectCSVDao();
-        EnquiryDao enquiryDao = new EnquiryCSVDao();
-
-        this.applicantController = new ApplicantController(applicant, applicationDao, projectDao, enquiryDao);
+        this.applicantController = applicantController;
         this.applicant = applicant;
     }
 

@@ -1,7 +1,6 @@
 package bto.View;
 
 import bto.Controller.*;
-import bto.Data.*;
 import bto.Model.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -12,13 +11,9 @@ public class ManagerView extends UserView {
     ManagerController managerController;
     Manager manager;
 
-    public ManagerView(Manager manager) {
+    public ManagerView(Manager manager, ManagerController managerController) {
         super(manager);
-        ApplicationDao applicationDao = new ApplicationCSVDao();
-        ProjectDao projectDao = new ProjectCSVDao();
-        EnquiryDao enquiryDao = new EnquiryCSVDao();
-
-        this.managerController = new ManagerController(manager, projectDao, applicationDao, enquiryDao);
+        this.managerController = managerController;
         this.manager = manager;
     }
 
@@ -84,6 +79,9 @@ public class ManagerView extends UserView {
         LocalDate closingDateStr = LocalDate.parse(scanner.next(), dateFormatter);
         System.out.print("Please enter the officer slots: ");
         int officerSlots = scanner.nextInt();
+        scanner.nextLine(); // Consume newline left-over
+
+
         System.out.println("Please enter the flat types and their details (type 'done' to finish): ");
         Map<String, Project.FlatTypeDetails> flatTypes = new HashMap<>();
         while (true) {
@@ -125,6 +123,7 @@ public class ManagerView extends UserView {
     public void manageProject() {
         System.out.println("Please enter the project name to manage: ");
         String projectName = scanner.nextLine();
+
         managerController.manageProject();
     }
 

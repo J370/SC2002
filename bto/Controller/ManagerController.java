@@ -45,7 +45,7 @@ public class ManagerController {
     public void deleteProject(String projectName) throws Exception {
         Project project = projectDao.getProjectById(projectName);
         if (project == null) throw new Exception("Project not found");
-        if (!project.getManager().equals(manager.getNric())) throw new Exception("Only project creator can delete project");
+        if (!project.getManager().equals(manager.getName())) throw new Exception("Only project creator can delete project");
         if (project.isApplicationOpen()) throw new Exception("Cannot delete project during active application period");
 
         projectDao.deleteProject(projectName);

@@ -1,7 +1,6 @@
 package bto.View;
 
 import bto.Controller.*;
-import bto.Data.*;
 import bto.Model.*;
 import java.util.List;
 
@@ -9,14 +8,10 @@ public class OfficerView extends UserView {
     OfficerController officerController;
     Officer officer;
 
-    public OfficerView(Officer officer) {
+    public OfficerView(Officer officer, OfficerController officerController) {
         super(officer);
-        ApplicationDao applicationDao = new ApplicationCSVDao();
-        ProjectDao projectDao = new ProjectCSVDao();
-        EnquiryDao enquiryDao = new EnquiryCSVDao();
-
-        this.officerController = new OfficerController(officer, applicationDao, projectDao, enquiryDao);
         this.officer = officer;
+        this.officerController = officerController;
     }
     
     public void menu(boolean isFirstTime) {
@@ -135,19 +130,12 @@ public class OfficerView extends UserView {
             return;
         }
 
-        System.out.print("Enter application ID to update status: ");
+        System.out.print("Enter sucess application ID to update status to booked: ");
         scanner.nextLine();
         String applicationId = scanner.nextLine();
-        System.out.print("Enter new status (PENDING/SUCCESS/UNSUCCESSFUL/BOOKED): ");
-        String newStatus = scanner.nextLine();
 
-        // Validate status
-        if (!newStatus.equals("PENDING") && !newStatus.equals("SUCCESS") && !newStatus.equals("UNSUCCESSFUL") && !newStatus.equals("BOOKED")) {
-            System.out.println("Invalid status. Please enter a valid status.");
-            return;
-        }
         try {
-            officerController.updateStatus(applicationId, newStatus);
+            officerController.updateStatus(applicationId, "BOOKED");
             System.out.println("Status updated successfully.");
         } catch (Exception e) {
             System.out.println(e.getMessage());
