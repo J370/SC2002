@@ -4,10 +4,10 @@ import bto.Data.*;
 
 public class InitController {
     public void readCSV() {
-        UserCSVDao csvDao = new UserCSVDao();
+        UserDao userDao = new UserCSVDao();
 
-        csvDao.readUsers("./bto/Data/CSV/ApplicantList.csv");
-        csvDao.readUsers("./bto/Data/CSV/ManagerList.csv");
-        csvDao.readUsers("./bto/Data/CSV/OfficerList.csv");
+        userDao.readUsers("./bto/Data/CSV/ApplicantList.csv");
+        userDao.readUsers("./bto/Data/CSV/ManagerList.csv");
+        userDao.readUsers("./bto/Data/CSV/OfficerList.csv");
     }
 }
