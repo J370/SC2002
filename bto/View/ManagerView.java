@@ -31,11 +31,20 @@ public class ManagerView extends UserView {
         System.out.println("3. Delete project");
         System.out.println("4. Edit project");
         System.out.println("5. View all projects");
-        System.out.println("6. Logout");
+        System.out.println("6. View own projects");
+        System.out.println("7. View requested officer");
+        System.out.println("8. Approve registration");
+        System.out.println("9. Reject registration");
+        System.out.println("10. Approve application");
+        System.out.println("11. Approve withdrawal");
+        System.out.println("12. View all enquiries");
+        System.out.println("13. Reply to enquiry");
+        System.out.println("14. Generate report");
+        System.out.println("15. Toggle project visibility");
+        System.out.println("16. Logout");
         System.out.print("Please select an option: ");
 
         int option = scanner.nextInt();
-        scanner.nextLine(); // Consume leftover newline
 
         switch (option) {
             case 1:
@@ -59,11 +68,61 @@ public class ManagerView extends UserView {
                 break;
 
             case 5:
-                generateReport();
+                viewAllProject();
                 menu(false);
                 break;
 
             case 6:
+                viewOwnProjects();
+                menu(false);
+                break;
+
+            case 7:
+                viewRequestedOfficer();
+                menu(false);
+                break;
+
+            case 8:
+                approveRegistration();
+                menu(false);
+                break;
+
+            case 9:
+                rejectRegistration();
+                menu(false);
+                break;
+
+            case 10:
+                approveApplication();
+                menu(false);
+                break;
+
+            case 11:
+                approveWithdrawal();
+                menu(false);
+                break;
+
+            case 12:
+                viewAllEnquiries();
+                menu(false);
+                break;
+
+            case 13:
+                replyEnquiry();
+                menu(false);
+                break;
+
+            case 14:
+                generateReport();
+                menu(false);
+                break;
+
+            case 15:
+                toggleProjectVisibility();
+                menu(false);
+                break;
+
+            case 16:
                 System.out.println("Logging out...");
                 LoginView loginView = new LoginView();
                 loginView.displayLoginPrompt();
@@ -233,6 +292,146 @@ public class ManagerView extends UserView {
         }
     }
 
+    public void viewAllProject() {
+        List<Project> projects = managerController.viewAllProject();
+        if (projects.isEmpty()) {
+            System.out.println("No projects available.");
+        } else {
+            System.out.println("Available Projects:");
+            for (Project project : projects) {
+                System.out.println("-----------------------------");
+                System.out.println("Project Name: " + project.getName());
+                System.out.println("Neighborhood: " + project.getNeighborhood());
+                System.out.println("Opening Date: " + project.getOpeningDate());
+                System.out.println("Closing Date: " + project.getClosingDate());
+                System.out.println("Officer Slots: " + project.getOfficerSlots());
+                System.out.println("Flat Types: " + project.getFlatTypes());
+            }
+        }
+    }
+
+    public void viewOwnProjects() {
+        List<Project> projects = managerController.viewOwnProjects();
+        if (projects.isEmpty()) {
+            System.out.println("No projects available.");
+        } else {
+            System.out.println("Your Projects:");
+            for (Project project : projects) {
+                System.out.println("-----------------------------");
+                System.out.println("Project Name: " + project.getName());
+                System.out.println("Neighborhood: " + project.getNeighborhood());
+                System.out.println("Opening Date: " + project.getOpeningDate());
+                System.out.println("Closing Date: " + project.getClosingDate());
+                System.out.println("Officer Slots: " + project.getOfficerSlots());
+                System.out.println("Flat Types: " + project.getFlatTypes());
+            }
+        }
+    }
+
+    public void viewRequestedOfficer() {
+        List<String> requests = managerController.viewRequestedOfficer();
+        if (requests.isEmpty()) {
+            System.out.println("No officer requests available.");
+        } else {
+            System.out.println("Officer Requests:");
+            for (String request : requests) {
+                System.out.println("-----------------------------");
+                System.out.println(request);
+            }
+        }
+    }
+
+    public void approveRegistration() {
+        scanner.nextLine(); // Consume any leftover newline
+        System.out.print("Please enter the project name: ");
+        String projectName = scanner.nextLine().trim();
+    
+        System.out.print("Please enter the officer name to approve: ");
+        String officerName = scanner.nextLine().trim();
+    
+        try {
+            managerController.approveRegistration(projectName, officerName);
+            System.out.println("Officer registration approved successfully.");
+        } catch (Exception e) {
+            System.out.println("An error occurred while approving the registration: " + e.getMessage());
+        }
+    }
+
+    public void rejectRegistration() {
+        scanner.nextLine(); // Consume any leftover newline
+        System.out.print("Please enter the project name: ");
+        String projectName = scanner.nextLine().trim();
+    
+        System.out.print("Please enter the officer name to reject: ");
+        String officerName = scanner.nextLine().trim();
+    
+        try {
+            managerController.rejectRegistration(projectName, officerName);
+            System.out.println("Officer registration rejected successfully.");
+        } catch (Exception e) {
+            System.out.println("An error occurred while rejecting the registration: " + e.getMessage());
+        }
+    }
+
+    public void approveApplication() {
+        scanner.nextLine(); // Consume any leftover newline
+        System.out.print("Please enter the application ID to approve: ");
+        String applicationId = scanner.nextLine().trim();
+    
+        try {
+            managerController.approveApplication(applicationId);
+            System.out.println("Application approved successfully.");
+        } catch (Exception e) {
+            System.out.println("An error occurred while approving the application: " + e.getMessage());
+        }
+    }
+
+    public void approveWithdrawal() {
+        scanner.nextLine(); // Consume any leftover newline
+        System.out.print("Please enter the application ID to approve withdrawal: ");
+        String applicationId = scanner.nextLine().trim();
+    
+        try {
+            managerController.approveWithdrawal(applicationId);
+            System.out.println("Withdrawal approved successfully.");
+        } catch (Exception e) {
+            System.out.println("An error occurred while approving the withdrawal: " + e.getMessage());
+        }
+    }
+
+    public void viewAllEnquiries() {
+        List<Enquiry> enquiries = managerController.viewAllEnquiries();
+        if (enquiries.isEmpty()) {
+            System.out.println("No enquiries available.");
+        } else {
+            System.out.println("Enquiries:");
+            for (Enquiry enquiry : enquiries) {
+                System.out.println("-----------------------------");
+                System.out.println("Enquiry ID: " + enquiry.getId());
+                System.out.println("Applicant NRIC: " + enquiry.getApplicantNric());
+                System.out.println("Project Name: " + enquiry.getProjectName());
+                System.out.println("Message: " + enquiry.getDetails());
+            }
+        }
+    }
+
+    public void replyEnquiry() {
+        scanner.nextLine(); // Consume any leftover newline
+        System.out.print("Please enter the enquiry ID to reply: ");
+        int enquiryId = scanner.nextInt();
+        scanner.nextLine(); // Consume any leftover newline
+    
+        System.out.print("Please enter your reply: ");
+        String reply = scanner.nextLine().trim();
+    
+        try {
+            managerController.replyEnquiry(enquiryId, reply);
+            System.out.println("Enquiry replied successfully.");
+        } catch (Exception e) {
+            System.out.println("An error occurred while replying to the enquiry: " + e.getMessage());
+        }
+    }
+
     public void generateReport() {
         List<Application> applications = managerController.generateReport();
     
@@ -285,5 +484,18 @@ public class ManagerView extends UserView {
             System.out.println("No applications found matching the filter criteria.");
         }
         System.out.println("===== End of Report =====");
+    }
+
+    public void toggleProjectVisibility() {
+        scanner.nextLine(); // Consume any leftover newline
+        System.out.print("Please enter the project name to toggle visibility: ");
+        String projectName = scanner.nextLine().trim();
+    
+        try {
+            managerController.toggleProjectVisibility(projectName);
+            System.out.println("Project visibility toggled successfully.");
+        } catch (Exception e) {
+            System.out.println("An error occurred while toggling project visibility: " + e.getMessage());
+        }
     }
 }
