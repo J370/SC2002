@@ -8,19 +8,34 @@ import bto.Data.ProjectCSVDao;
 import bto.Data.ProjectDao;
 import bto.Model.*;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LoginView {
     Scanner scanner = new Scanner(System.in);
 
     public void displayLoginPrompt() {
+        System.out.println("\n--------------------------------------");
         System.out.println("Welcome to the BTO Application System!");
         System.out.print("Please enter your NRIC: ");
         String nric = scanner.nextLine();
+
+        if (!isValidNric(nric)) {
+            System.out.println("Invalid NRIC format. Please try again.");
+            displayLoginPrompt(); // Retry login
+            return;
+        }
+
         System.out.print("Please enter your password: ");
         String password = scanner.nextLine();
 
         AuthController authController = new AuthController();
         User user = User.getUser(nric);
+        if (user == null) {
+            System.out.println("User not found. Please try again.");
+            displayLoginPrompt();
+            return;            
+        }
         boolean isValid = authController.validateLogin(user, password);
         if (isValid) {
             ApplicationDao applicationDao = new ApplicationCSVDao();
@@ -47,8 +62,15 @@ public class LoginView {
                 System.out.println("Invalid user type.");
             }
         } else {
-            System.out.println("Invalid NRIC or password. Please try again.");
+            System.out.println("Invalid password. Please try again.");
             displayLoginPrompt(); // Retry login
         }
+    }
+
+    private boolean isValidNric(String nric) {
+        String nricPattern = "^[STFG]\\d{7}[A-Z]$";
+        Pattern pattern = Pattern.compile(nricPattern);
+        Matcher matcher = pattern.matcher(nric);
+        return matcher.matches();
     }
 }
