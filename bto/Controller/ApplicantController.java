@@ -42,19 +42,16 @@ public class ApplicantController {
         return result;
     }
 
-    public void applyProject(String projectName) throws Exception {
+    public void applyProject(String projectName, String flatType) throws Exception {
         Project project = projectDao.getProjectById(projectName);
-        if (applicationDao.getActiveApplication(applicant.getNric()).isPresent()) throw new Exception("You already have an active application!"); 
-        
-        String flatType = "2-Room"; // Default for singles
-        if (applicant.getMaritalStatus().equals("Married")) {
-            List<String> availableTypes = project.getAvailableFlatTypes();
-            if (availableTypes.isEmpty()) throw new Exception("No available flat types in this project");
-            //flatType = availableTypes.size() > 1 ? applicantView.promptFlatType() : availableTypes.get(0);
-        }
-
-        if (!project.hasAvailableUnits(flatType)) throw new Exception("No available units for selected flat type");
-
+        if (project == null) throw new Exception("Project not found.");
+        if (applicationDao.getActiveApplication(applicant.getNric()).isPresent())
+            throw new Exception("You already have an active application!");
+    
+        Project.FlatTypeDetails details = project.getFlatTypes().get(flatType);
+        if (details == null) throw new Exception("Flat type not found in this project.");
+        if (details.getAvailableUnits() <= 0) throw new Exception("No available units for selected flat type.");
+    
         Application application = new Application(project.getName(), applicant.getNric(), flatType);
         applicationDao.save(application);
     }

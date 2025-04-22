@@ -34,52 +34,54 @@ public class ApplicantView extends UserView {
         System.out.println("10. Delete enquiry");
         System.out.println("11. Logout");
         System.out.print("Please select an option: ");
-
-        switch (scanner.nextInt()) {
+    
+        int option = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+    
+        switch (option) {
             case 1:
                 changePassword();
                 menu(false);
-
+                break;
             case 2:
                 viewProjects();
                 menu(false);
-
+                break;
             case 3:
                 applyProject();
                 menu(false);
-
+                break;
             case 4:
                 viewMyApplications();
                 menu(false);
-
-
+                break;
             case 5:
                 applicationStatus();
                 menu(false);
-
+                break;
             case 6:
                 withdrawApplication();
                 menu(false);
-
+                break;
             case 7:
                 makeEnquiry();
                 menu(false);
-
+                break;
             case 8:
                 viewEnquiry();
                 menu(false);
-
+                break;
             case 9:
                 editEnquiry();
                 menu(false);
-
+                break;
             case 10:
                 deleteEnquiry();
                 menu(false);
+                break;
             case 11:
                 System.out.println("Logging out...");
                 break;
-
             default:
                 menu(false);
         }
@@ -87,6 +89,11 @@ public class ApplicantView extends UserView {
 
     public void viewProjects() {
         List<Project> projects = applicantController.getAvailableProjects();
+
+        if (applicant.getMaritalStatus().equals("Single") && applicant.getAge() < 35) {
+            System.out.println("You're single and under 35, no BTO are available for you.");
+            return;
+        }
         if (projects.isEmpty()) {
             System.out.println("No available projects.");
         } else {
@@ -96,7 +103,7 @@ public class ApplicantView extends UserView {
                 System.out.println("Project Name: " + project.getName());
                 System.out.println("Neighborhood: " + project.getNeighborhood());
     
-                if (applicant.getMaritalStatus().equals("Single") && applicant.getAge() < 35) {
+                if (applicant.getMaritalStatus().equals("Single") && applicant.getAge() >= 35) {
                     Project.FlatTypeDetails details = project.getFlatTypes().get("2-Room");
                     if (details != null) {
                         System.out.println("Flat Type: 2-Room");
@@ -124,14 +131,18 @@ public class ApplicantView extends UserView {
 
     public void applyProject() {
         System.out.print("Enter the project name you want to apply for: ");
-        scanner.nextLine();
         String projectName = scanner.nextLine();
+    
+        System.out.print("Enter the flat type you want to apply for(2-Room/3-Room): ");
+        String flatType = scanner.nextLine();
+    
         try {
-            applicantController.applyProject(projectName);
+            applicantController.applyProject(projectName, flatType);
             System.out.println("Application submitted successfully.");
-        } 
-        catch (Exception e) {System.out.println("Error: " + e.getMessage());}
-    } 
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
     
     public void viewMyApplications() {
         List<Application> apps = applicantController.getAllApplications();
@@ -159,6 +170,7 @@ public class ApplicantView extends UserView {
     public void withdrawApplication() {
         System.out.println("Are you sure you want to withdraw?\n(1 for Yes, 2 for No)");
         boolean confirm = scanner.nextInt() == 1;
+        scanner.nextLine();
         if (!confirm) {
             System.out.println("Withdrawal cancelled.");
         } else {
@@ -202,8 +214,8 @@ public class ApplicantView extends UserView {
     public void editEnquiry() {
         System.out.print("Enter the enquiry ID you want to edit: ");
         int enquiryId = scanner.nextInt();
-        System.out.print("Enter the new details: ");
         scanner.nextLine();
+        System.out.print("Enter the new details: ");
         String newDetails = scanner.nextLine();
         try{
             applicantController.editEnquiry(enquiryId, newDetails);
@@ -215,8 +227,11 @@ public class ApplicantView extends UserView {
     public void deleteEnquiry() {
         System.out.print("Enter the enquiry ID you want to delete: ");
         int deleteEnquiryId = scanner.nextInt();
+        scanner.nextLine();
         System.out.println("Are you sure you want to delete this enquiry?\n(1 for Yes, 2 for No)");
-        if (scanner.nextInt() == 1) {
+        int confirm = scanner.nextInt();
+        scanner.nextLine();
+        if (confirm == 1) {
             try{
                 applicantController.deleteEnquiry(deleteEnquiryId);
                 System.out.println("Enquiry deleted successfully.");

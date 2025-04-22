@@ -135,7 +135,7 @@ public class OfficerView extends UserView {
         String applicationId = scanner.nextLine();
 
         try {
-            officerController.updateStatus(applicationId, "BOOKED");
+            officerController.updateStatus(applicationId);
             System.out.println("Status updated successfully.");
         } catch (Exception e) {
             System.out.println(e.getMessage());
