@@ -26,7 +26,11 @@ public class ApplicantController {
         List<Project> visibleProjects = new ArrayList<>();
         List<Project> allProjects = projectDao.getAllProjects();
         for (Project project : allProjects) {
-            if (project.isVisible()) visibleProjects.add(project);
+            if (!project.isVisible()) continue;
+            if (applicant instanceof Officer) {
+                if (project.getAssignedOfficers().contains(applicant.getName())) continue;
+            }
+            visibleProjects.add(project);
         }
         return visibleProjects;
     }
@@ -48,6 +52,12 @@ public class ApplicantController {
         if (applicationDao.getActiveApplication(applicant.getNric()).isPresent())
             throw new Exception("You already have an active application!");
     
+        if (applicant instanceof Officer) {
+            if (project.getAssignedOfficers().contains(applicant.getName())) {
+                throw new Exception("Officers cannot apply for projects they are assigned to.");
+            }
+        }
+            
         Project.FlatTypeDetails details = project.getFlatTypes().get(flatType);
         if (details == null) throw new Exception("Flat type not found in this project.");
         if (details.getAvailableUnits() <= 0) throw new Exception("No available units for selected flat type.");
