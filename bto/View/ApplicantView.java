@@ -166,6 +166,10 @@ public class ApplicantView extends UserView {
     
     public void viewMyApplications() {
         List<Application> apps = applicantController.getAllApplications();
+        if(apps.isEmpty()) {
+            System.out.println("No applications found.");
+            return;
+        }
         for (Application app : apps) {
             System.out.println("-------------------------------");
             System.out.println("Application ID: " + app.getId());
@@ -180,11 +184,12 @@ public class ApplicantView extends UserView {
     public void applicationStatus() {
         try{        
             Application application = applicantController.viewActiveApplication();
+            System.out.println("-------------------------------");
             System.out.println("Application Project Name: " + application.getProjectName());
             System.out.println("Application Status: " + application.getStatus());
+            System.out.println("-------------------------------");
         }
-        catch (Exception e) {System.out.println("Error: " + e.getMessage());}
-
+        catch (Exception e) {System.out.println(e.getMessage());}
     }
 
     public void withdrawApplication() {
@@ -204,12 +209,14 @@ public class ApplicantView extends UserView {
 
     public void makeEnquiry() {
         System.out.print("Enter the project name for your enquiry: ");
-        scanner.nextLine();
         String projectNameEnquiry = scanner.nextLine();
         System.out.print("Enter your enquiry details: ");
         String enquiryDetails = scanner.nextLine();
-        applicantController.submitEnquiry(projectNameEnquiry, enquiryDetails);
-        System.out.println("Enquiry submitted successfully.");
+        try{
+            applicantController.submitEnquiry(projectNameEnquiry, enquiryDetails);
+            System.out.println("Enquiry submitted successfully.");
+        }
+        catch (Exception e) {System.out.println(e.getMessage());}
     }
 
     public void viewEnquiry() {

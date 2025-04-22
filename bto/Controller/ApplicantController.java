@@ -87,6 +87,9 @@ public class ApplicantController {
 
     public void submitEnquiry(String projectName, String details) {
         Project project = projectDao.getProjectById(projectName);
+        if (project == null) throw new NoSuchElementException("Project with name " + projectName + " not found");
+        if (applicationDao.getActiveApplication(applicant.getNric()).isEmpty())
+            throw new NoSuchElementException("You must apply for the project before submitting an enquiry");
         Enquiry enquiry = new Enquiry(0,
             applicant.getNric(),
             project.getName(),    
