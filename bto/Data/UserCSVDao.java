@@ -2,7 +2,8 @@ package bto.Data;
 import bto.Model.*;
 import java.io.*;
 
-public class UserCSVDao {
+public class UserCSVDao implements UserDao {
+    @Override
     public void readUsers(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -33,6 +34,7 @@ public class UserCSVDao {
         }
     }
 
+    @Override
     public void updateUser(User user) {
         String filePath = "./bto/Data/CSV/" + user.getClass().getSimpleName() + "List.csv";
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath, true))) {
