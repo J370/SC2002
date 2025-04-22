@@ -34,7 +34,10 @@ public class ManagerView extends UserView {
         System.out.println("6. Logout");
         System.out.print("Please select an option: ");
 
-        switch (scanner.nextInt()) {
+        int option = scanner.nextInt();
+        scanner.nextLine(); // Consume leftover newline
+
+        switch (option) {
             case 1:
                 changePassword();
                 menu(false);                
@@ -56,7 +59,7 @@ public class ManagerView extends UserView {
                 break;
 
             case 5:
-                //viewAllProjects();
+                generateReport();
                 menu(false);
                 break;
 

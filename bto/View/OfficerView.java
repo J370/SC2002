@@ -53,10 +53,10 @@ public class OfficerView extends UserView {
                 menu(false);
                 break;
 
-            // case 4:
-            //     generateReceipt();
-            //     menu(false);
-            //     break;
+            case 4:
+                generateReceipt();
+                menu(false);
+                break;
 
             case 5:
                 updateStatus();
@@ -115,17 +115,16 @@ public class OfficerView extends UserView {
         }
     }
 
-    // public void generateReceipt() {
-    //     System.out.print("Enter application ID to generate receipt: ");
-    //     String applicationId = scanner.next();
-    //     try {
-    //         Application application = applicationDao.getApplicationById(applicationId);
-    //         String receipt = officerController.generateReceipt(application);
-    //         System.out.println("Receipt generated: " + receipt);
-    //     } catch (Exception e) {
-    //         System.out.println(e.getMessage());
-    //     }
-    // }
+    public void generateReceipt() {
+        System.out.print("Enter application ID to generate receipt: ");
+        String applicationId = scanner.next();
+        try {
+            String receipt = officerController.generateReceipt(applicationId);
+            System.out.println("Receipt generated:\n" + receipt);
+        } catch (Exception e) {
+          System.out.println(e.getMessage());
+    }
+    }
 
     public void updateStatus() {
         try {

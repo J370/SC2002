@@ -83,7 +83,9 @@ public class OfficerController {
 
 
     //generate receipt for applicant once approved
-    public String generateReceipt(Application application) throws Exception {
+    public String generateReceipt(String applicationId) throws Exception {
+        Application application = applicationDao.getApplicationById(applicationId)
+            .orElseThrow(() -> new Exception("Application not found"));
         if (application.getStatus() != ApplicationStatus.BOOKED) throw new Exception("Application is not booked");
             // Get applicant details
         User applicant = User.getUser(application.getApplicantNric());
