@@ -29,7 +29,7 @@ public class ManagerView extends UserView {
         System.out.println("1. Change password");
         System.out.println("2. Create project");
         System.out.println("3. Delete project");
-        System.out.println("4. Manage project");
+        System.out.println("4. Edit project");
         System.out.println("5. View all projects");
         System.out.println("6. Logout");
         System.out.print("Please select an option: ");
@@ -112,6 +112,7 @@ public class ManagerView extends UserView {
     }
 
     public void deleteProject() {
+        scanner.nextLine(); // Consume any leftover newline
         System.out.println("Please enter the project name to delete: ");
         String projectName = scanner.nextLine();
         System.out.print("Are you sure you want to delete the project? (yes/no)");

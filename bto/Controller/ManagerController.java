@@ -45,14 +45,12 @@ public class ManagerController {
         Project project = projectDao.getProjectById(projectName);
         if (project == null) throw new Exception("Project not found");
         if (!project.getManager().equals(manager.getName())) throw new Exception("Only project creator can delete project");
-        if (project.isApplicationOpen()) throw new Exception("Cannot delete project during active application period");
 
         projectDao.deleteProject(projectName);
     }
 
     public void editProject(String name, String neighborhood, Map<String, Project.FlatTypeDetails> flatTypes,
                              LocalDate openingDate, LocalDate closingDate,int officerSlots) throws Exception {
-        if (projectDao.getProjectById(name) != null) throw new Exception("Project name must be unique");
 
         Project newProject = new Project(
             name,
