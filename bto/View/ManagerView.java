@@ -61,6 +61,8 @@ public class ManagerView extends UserView {
 
             case 6:
                 System.out.println("Logging out...");
+                LoginView loginView = new LoginView();
+                loginView.displayLoginPrompt();
                 break;
         
             default:

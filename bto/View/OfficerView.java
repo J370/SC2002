@@ -19,6 +19,7 @@ public class OfficerView extends UserView {
     }
     
     public void menu(boolean isFirstTime) {
+        System.out.println("\n===================================");
         if (isFirstTime) {
             System.out.println("Welcome " + officer.getName() + "!");
             System.out.println("You are logged in as an officer.");
@@ -79,6 +80,8 @@ public class OfficerView extends UserView {
 
             case 9:
                 System.out.println("Logging out...");
+                LoginView loginView = new LoginView();
+                loginView.displayLoginPrompt();
                 break;
             
             default:
