@@ -112,21 +112,23 @@ public class OfficerController {
     }
 
     // update status of BTO applicants
-    public void updateStatus(String applicationId, String status) throws Exception {
+    public void updateStatus(String applicationId) throws Exception {
         Application application = applicationDao.getApplicationById(applicationId)
             .orElseThrow(() -> new Exception("Application not found"));
         Project project = projectDao.getProjectById(application.getProjectName());
         if (!project.getAssignedOfficers().contains(officer.getName())) throw new Exception("You are not assigned to this project.");
-
-        if (application.getStatus() == ApplicationStatus.BOOKED) throw new Exception("Cannot update booked application status");
-        if (application.getStatus() == ApplicationStatus.UNSUCCESSFUL) throw new Exception("Cannot update unsuccessful application status");
-        if (application.getStatus() == ApplicationStatus.PENDING) throw new Exception("Cannot update pending application status");
-        ApplicationStatus tempStatus = ApplicationStatus.valueOf(status);
-        application.setStatus(tempStatus);
-        applicationDao.update(application);
-
-        if (tempStatus == ApplicationStatus.BOOKED) {
-            projectDao.decreaseAvailableUnits(application.getProjectName(), application.getFlatType(), 1);
+        if (application.getStatus() != ApplicationStatus.SUCCESS) throw new Exception("Only successful applications can be updated to booked.");
+        
+        String flatType = application.getFlatType();
+        if (flatType != null && !flatType.isEmpty()) {
+            Project.FlatTypeDetails details = project.getFlatTypes().get(flatType);
+            if (details == null) {
+                throw new Exception("Flat type not found in project.");
+            }
+            if (details.getAvailableUnits() < 1) {
+                throw new Exception("No available units for flat type: " + flatType);
+            }
+            projectDao.decreaseAvailableUnits(application.getProjectName(), flatType, 1);
         }
     }
 
