@@ -58,7 +58,7 @@ public class ProjectCSVDao implements ProjectDao {
         return getAllProjects().stream()
                 .filter(p -> p.getName().equalsIgnoreCase(projectId))
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Project with ID " + projectId + " not found"));
+                .orElseThrow(() -> new NoSuchElementException("Project with name " + projectId + " not found"));
     }
 
     @Override
@@ -178,6 +178,4 @@ public class ProjectCSVDao implements ProjectDao {
             String.valueOf(p.isVisible())
         );
     }
-
-
 }

@@ -110,16 +110,16 @@ public class ApplicantView extends UserView {
                     Project.FlatTypeDetails details = project.getFlatTypes().get("2-Room");
                     if (details != null) {
                         System.out.println("Flat Type: 2-Room");
-                        System.out.println("    Number of units: " + details.getAvailableUnits());
-                        System.out.println("    Selling price: $" + details.getSellingPrice());
+                        System.out.println("Number of units: " + details.getAvailableUnits());
+                        System.out.println("Selling price: $" + details.getSellingPrice());
                     }
                 } else {
                     for (Map.Entry<String, Project.FlatTypeDetails> entry : project.getFlatTypes().entrySet()) {
                         String flatType = entry.getKey();
                         Project.FlatTypeDetails details = entry.getValue();
                         System.out.println("Flat Type: " + flatType);
-                        System.out.println("    Number of units: " + details.getAvailableUnits());
-                        System.out.println("    Selling price: $" + details.getSellingPrice());
+                        System.out.println("Number of units: " + details.getAvailableUnits());
+                        System.out.println("Selling price: $" + details.getSellingPrice());
                     }
                 }
     
@@ -133,17 +133,34 @@ public class ApplicantView extends UserView {
     }
 
     public void applyProject() {
+        if (applicant.getMaritalStatus().equals("Single") && applicant.getAge() < 35) {
+            System.out.println("You're single and under 35, no BTO are available for you.");
+            return;
+        }
+
         System.out.print("Enter the project name you want to apply for: ");
         String projectName = scanner.nextLine();
     
-        System.out.print("Enter the flat type you want to apply for(2-Room/3-Room): ");
+        System.out.print("Enter the flat type you want to apply for (2-Room/3-Room): ");
         String flatType = scanner.nextLine();
+
+        if (!flatType.equals("2-Room") & !flatType.equals("3-Room")) {
+            System.out.println("Invalid flat type. Please enter either 2-Room or 3-Room.");
+            return;
+        }
+
+        if (applicant.getMaritalStatus().equals("Single") && applicant.getAge() >= 35) {
+            if (!flatType.equals("2-Room")) {
+                System.out.println("You can only apply for 2-Room flat type.");
+                return;
+            }
+        }
     
         try {
             applicantController.applyProject(projectName, flatType);
             System.out.println("Application submitted successfully.");
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
     

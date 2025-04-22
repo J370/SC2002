@@ -4,6 +4,7 @@ import bto.Model.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class ApplicantController {
@@ -48,7 +49,9 @@ public class ApplicantController {
 
     public void applyProject(String projectName, String flatType) throws Exception {
         Project project = projectDao.getProjectById(projectName);
-        if (project == null) throw new Exception("Project not found.");
+        
+        if (project == null | !project.isVisible()) throw new NoSuchElementException("Project with name " + projectName + " not found");
+
         if (applicationDao.getActiveApplication(applicant.getNric()).isPresent())
             throw new Exception("You already have an active application!");
     
@@ -57,7 +60,7 @@ public class ApplicantController {
                 throw new Exception("Officers cannot apply for projects they are assigned to.");
             }
         }
-            
+
         Project.FlatTypeDetails details = project.getFlatTypes().get(flatType);
         if (details == null) throw new Exception("Flat type not found in this project.");
         if (details.getAvailableUnits() <= 0) throw new Exception("No available units for selected flat type.");
