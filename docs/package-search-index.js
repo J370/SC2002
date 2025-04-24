@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"bto"},{"l":"bto.Controller"},{"l":"bto.Data"},{"l":"bto.Model"},{"l":"bto.View"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"bto"},{"l":"bto.Controller"},{"l":"bto.Data"},{"l":"bto.Model"},{"l":"bto.View"}]
