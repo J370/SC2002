@@ -75,7 +75,6 @@ public class ManagerController {
     public List<Project> viewOwnProjects() {
         List<Project> allProjects = projectDao.getAllProjects();
         List<Project> ownProjects = new ArrayList<>();
-        
         for (Project p : allProjects) {
             if (p.getManager().toString().equals(manager.getName())) {
                 ownProjects.add(p);
@@ -118,10 +117,19 @@ public class ManagerController {
     //approve officer registration request to be officer of project
     public void approveRegistration(String projectName, String officerName) throws Exception{
         Project project = projectDao.getProjectById(projectName);
-        
-        if (!project.getRequestedOfficers().contains(officerName)) throw new Exception("Officer " + officerName + " did not request to join this project.");
+
         if (project.getAssignedOfficers().contains(officerName)) throw new Exception("Officer " + officerName + " is already assigned to this project.");
-        if (project.getOfficerSlots() <= 0) throw new Exception("No available officer slots for project: " + projectName);
+        if (!project.getRequestedOfficers().contains(officerName)) {
+            if (!project.getRejectedOfficers().contains(officerName)) {
+                throw new Exception("Officer " + officerName + " is already assigned to this project.");
+            }
+            else {
+                project.removeRejectedOfficer(officerName);
+            }
+        }
+        else {
+            if (project.getOfficerSlots() <= 0) throw new Exception("No available officer slots for project: " + projectName);
+        }
 
         project.addAssignedOfficer(officerName);
         project.removeRequestedOfficer(officerName);
@@ -131,11 +139,24 @@ public class ManagerController {
 
     public void rejectRegistration(String projectName, String officerName) throws Exception{
         Project project = projectDao.getProjectById(projectName);
-        if (project == null) throw new Exception("Project not found: " + projectName);
-        if (!project.getRequestedOfficers().contains(officerName)) throw new Exception("Officer " + officerName + " did not request to join this project.");
+
         if (project.getRejectedOfficers().contains(officerName)) throw new Exception("Officer " + officerName + " has already been rejected for this project.");
+        if (!project.getRequestedOfficers().contains(officerName)) {
+            if (!project.getAssignedOfficers().contains(officerName)) {
+                throw new Exception("Officer " + officerName + " is already assigned to this project.");
+            }
+            else {
+                project.removeAssignedOfficer(officerName);
+            }
+        }
+        else {
+            if (project.getOfficerSlots() <= 0) throw new Exception("No available officer slots for project: " + projectName);
+        }
+        
+
         project.addRejectedOfficer(officerName);
         project.removeRequestedOfficer(officerName);
+        project.setOfficerSlots(project.getOfficerSlots() + 1);
         projectDao.updateProject(project);
     }
 
@@ -159,6 +180,27 @@ public class ManagerController {
         application.setStatus(ApplicationStatus.SUCCESS);
         applicationDao.update(application);
 
+    }
+
+    public void rejectApplication(String applicationId) throws Exception {
+        Application application = applicationDao.getApplicationById(applicationId)
+            .orElseThrow(() -> new Exception("Application not found"));
+
+        // Check application status
+        Project project = projectDao.getProjectById(application.getProjectName());
+        if (project == null) {throw new Exception("Associated project not found");}
+
+        // Check application status
+        if (application.getStatus() != ApplicationStatus.PENDING) throw new Exception("Only pending applications can be approved");
+
+        // Check flat availability
+        String flatType = application.getFlatType();
+        Project.FlatTypeDetails flatDetails = project.getFlatTypes().get(flatType);
+        
+        if (flatDetails == null || flatDetails.getAvailableUnits() <= 0) throw new Exception("No available units for " + flatType + " flats");
+
+        application.setStatus(ApplicationStatus.UNSUCCESSFUL);
+        applicationDao.update(application);
     }
 
     // Approve withdrawal request
@@ -187,6 +229,9 @@ public class ManagerController {
         applicationDao.update(application);
     }
 
+    public void rejectWithdrawal(String applicationId) throws Exception {
+        
+    }
 
     // view all enquiries of ALL projects
     public List<Enquiry> viewAllEnquiries(){return enquiryDao.getAllEnquiries();}

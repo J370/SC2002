@@ -97,7 +97,7 @@ public class ApplicationCSVDao implements ApplicationDao {
                 if (app != null) applications.add(app);
             }
         } catch (IOException e) {
-            System.err.println("Error reading applications: " + e.getMessage());
+            System.err.println(e.getMessage());
         }
         return applications;
     }
@@ -109,7 +109,7 @@ public class ApplicationCSVDao implements ApplicationDao {
                 writer.write(toCsvLine(app) + "\n");
             }
         } catch (IOException e) {
-            System.err.println("Error saving applications: " + e.getMessage());
+            System.err.println(e.getMessage());
         }
     }
 
@@ -146,7 +146,7 @@ public class ApplicationCSVDao implements ApplicationDao {
         try (FileWriter writer = new FileWriter(FILEPATH)) {
             writer.write(HEADER + "\n");
         } catch (IOException e) {
-            System.err.println("Error creating CSV file: " + e.getMessage());
+            System.err.println(e.getMessage());
         }
     }
 }

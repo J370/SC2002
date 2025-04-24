@@ -36,12 +36,14 @@ public class ManagerView extends UserView {
         System.out.println("8. Approve registration");
         System.out.println("9. Reject registration");
         System.out.println("10. Approve application");
-        System.out.println("11. Approve withdrawal");
-        System.out.println("12. View all enquiries");
-        System.out.println("13. Reply to enquiry");
-        System.out.println("14. Generate report");
-        System.out.println("15. Toggle project visibility");
-        System.out.println("16. Logout");
+        System.out.println("11. Reject application");
+        System.out.println("12. Approve withdrawal");
+        System.out.println("13. Reject withdrawal");
+        System.out.println("14. View all enquiries");
+        System.out.println("15. Reply to enquiry");
+        System.out.println("16. Generate report");
+        System.out.println("17. Toggle project visibility");
+        System.out.println("18. Logout");
         System.out.print("Please select an option: ");
 
         int option = scanner.nextInt();
@@ -97,39 +99,51 @@ public class ManagerView extends UserView {
                     approveApplication();
                     menu(false);
                     break;
-
+                    
                 case 11:
-                    approveWithdrawal();
+                    rejectApplication();
                     menu(false);
                     break;
 
                 case 12:
-                    viewAllEnquiries();
+                    approveWithdrawal();
                     menu(false);
                     break;
 
                 case 13:
-                    replyEnquiry();
+                    rejectWithdrawal();
                     menu(false);
                     break;
 
                 case 14:
-                    generateReport();
+                    viewAllEnquiries();
                     menu(false);
                     break;
 
                 case 15:
-                    toggleProjectVisibility();
+                    replyEnquiry();
                     menu(false);
                     break;
 
                 case 16:
+                    generateReport();
+                    menu(false);
+                    break;
+
+                case 17:
+                    toggleProjectVisibility();
+                    menu(false);
+                    break;
+
+                case 18:
                     System.out.println("Logging out...");
                     LoginView loginView = new LoginView();
                     loginView.displayLoginPrompt();
                     break;
             
                 default:
+                    System.out.println("Invalid option. Please try again.");
+                    menu(false);
                     break;
             }
         } catch (Exception e) {
@@ -174,7 +188,7 @@ public class ManagerView extends UserView {
         try {
             managerController.createProject(name, neighborhood, flatTypes, openingDateStr, closingDateStr, officerSlots);
         } catch (Exception e) {
-            System.out.println("An error occurred while creating the project: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
@@ -192,7 +206,7 @@ public class ManagerView extends UserView {
             managerController.deleteProject(projectName);
             System.out.println("Project deleted successfully.");
         } catch (Exception e) {
-            System.out.println("An error occurred while deleting the project: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
@@ -293,7 +307,7 @@ public class ManagerView extends UserView {
             );
             System.out.println("Project updated successfully.");
         } catch (Exception e) {
-            System.out.println("An error occurred while editing the project: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
@@ -317,6 +331,7 @@ public class ManagerView extends UserView {
                     System.out.println("Available Units: " + details.getAvailableUnits());
                     System.out.println("Selling Price: $" + details.getSellingPrice());
                 }
+                System.out.println("Visibility: " + (project.isVisible() ? "Visible" : "Hidden"));
             }
         }
     }
@@ -334,7 +349,14 @@ public class ManagerView extends UserView {
                 System.out.println("Opening Date: " + project.getOpeningDate());
                 System.out.println("Closing Date: " + project.getClosingDate());
                 System.out.println("Officer Slots: " + project.getOfficerSlots());
-                System.out.println("Flat Types: " + project.getFlatTypes());
+                for (Map.Entry<String, Project.FlatTypeDetails> entry : project.getFlatTypes().entrySet()) {
+                    String flatType = entry.getKey();
+                    Project.FlatTypeDetails details = entry.getValue();
+                    System.out.println("Flat Type: " + flatType);
+                    System.out.println("Available Units: " + details.getAvailableUnits());
+                    System.out.println("Selling Price: $" + details.getSellingPrice());
+                }
+                System.out.println("Visibility: " + (project.isVisible() ? "Visible" : "Hidden"));
             }
         }
     }
@@ -345,8 +367,8 @@ public class ManagerView extends UserView {
             System.out.println("No officer requests available.");
         } else {
             System.out.println("Officer Requests:");
+            System.out.println("-----------------");
             for (String request : requests) {
-                System.out.println("-----------------------------");
                 System.out.println(request);
             }
         }
@@ -364,7 +386,7 @@ public class ManagerView extends UserView {
             managerController.approveRegistration(projectName, officerName);
             System.out.println("Officer registration approved successfully.");
         } catch (Exception e) {
-            System.out.println("An error occurred while approving the registration: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
@@ -380,15 +402,21 @@ public class ManagerView extends UserView {
             managerController.rejectRegistration(projectName, officerName);
             System.out.println("Officer registration rejected successfully.");
         } catch (Exception e) {
-            System.out.println("An error occurred while rejecting the registration: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
     public void approveApplication() {
         scanner.nextLine(); // Consume any leftover newline
-        managerController.viewAllApplications().stream()
-            .filter(app -> app.getStatus().toString().equals("PENDING"))
-            .forEach(app -> System.out.println("Application ID: " + app.getId() + ", Project Name: " + app.getProjectName() + ", Applicant NRIC: " + app.getApplicantNric()));
+
+        List<Application> applications = managerController.viewAllApplications().stream()
+            .filter(app -> !app.getStatus().toString().equals("SUCCESS"))
+            .toList();
+        if(applications.isEmpty()) {
+            System.out.println("No applications available for approval.");
+            return;
+        }
+        applications.forEach(app -> System.out.println("Application ID: " + app.getId() + ", Project Name: " + app.getProjectName() + ", Applicant NRIC: " + app.getApplicantNric() + ", Status: " + app.getStatus()));
         System.out.print("Please enter the application ID to approve: ");
         String applicationId = scanner.nextLine().trim();
     
@@ -396,7 +424,29 @@ public class ManagerView extends UserView {
             managerController.approveApplication(applicationId);
             System.out.println("Application approved successfully.");
         } catch (Exception e) {
-            System.out.println("An error occurred while approving the application: " + e.getMessage());
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public void rejectApplication() {
+        scanner.nextLine(); // Consume any leftover newline
+
+        List<Application> applications = managerController.viewAllApplications().stream()
+            .filter(app -> !app.getStatus().toString().equals("UNSUCCESSFUL"))
+            .toList();
+        if(applications.isEmpty()) {
+            System.out.println("No applications available for approval.");
+            return;
+        }
+        applications.forEach(app -> System.out.println("Application ID: " + app.getId() + ", Project Name: " + app.getProjectName() + ", Applicant NRIC: " + app.getApplicantNric() + ", Status: " + app.getStatus()));
+        System.out.print("Please enter the application ID to reject: ");
+        String applicationId = scanner.nextLine().trim();
+    
+        try {
+            managerController.rejectApplication(applicationId);
+            System.out.println("Application rejected successfully.");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -409,7 +459,20 @@ public class ManagerView extends UserView {
             managerController.approveWithdrawal(applicationId);
             System.out.println("Withdrawal approved successfully.");
         } catch (Exception e) {
-            System.out.println("An error occurred while approving the withdrawal: " + e.getMessage());
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void rejectWithdrawal() {
+        scanner.nextLine(); // Consume any leftover newline
+        System.out.print("Please enter the application ID to reject withdrawal: ");
+        String applicationId = scanner.nextLine().trim();
+    
+        try {
+            managerController.rejectWithdrawal(applicationId);
+            System.out.println("Withdrawal rejected successfully.");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -442,7 +505,7 @@ public class ManagerView extends UserView {
             managerController.replyEnquiry(enquiryId, reply);
             System.out.println("Enquiry replied successfully.");
         } catch (Exception e) {
-            System.out.println("An error occurred while replying to the enquiry: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
@@ -510,7 +573,7 @@ public class ManagerView extends UserView {
             managerController.toggleProjectVisibility(projectName);
             System.out.println("Project visibility toggled successfully.");
         } catch (Exception e) {
-            System.out.println("An error occurred while toggling project visibility: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 }

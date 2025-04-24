@@ -1,3 +1,3 @@
 Project Name,Neighborhood,Type 1,Number of units for Type 1,Selling price for Type 1,Type 2,Number of units for Type 2,Selling price for Type 2,Application opening date,Application closing date,Manager,Officer Slot,Assigned Officer,Requested Officer,Rejected Officer,Visible
-Acacia Breeze,Yishun,2-Room,1,350000,3-Room,3,450000,2025/02/15,2025/05/20,Jessica,2,Daniel|Officer,null,Emily,true
-Bedok Reservior Breeze,Bedok Reservior,2-Room,100,250000,3-Room,150,400000,2026/01/01,2029/01/01,Manager,3,null,Emily,null,true
+Acacia Breeze,Yishun,2-Room,1,350000,3-Room,3,450000,2025/02/15,2025/05/20,Jessica,0,Daniel|Officer|Emily,null,null,true
+Bedok Reservior Breeze,Bedok Reservior,2-Room,100,250000,3-Room,150,400000,2026/01/01,2029/01/01,Manager,2,Emily,null,null,true

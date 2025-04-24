@@ -86,10 +86,12 @@ public class OfficerView extends UserView {
                     break;
                 
                 default:
-                menu(false);
+                    System.out.println("Invalid option. Please try again.");
+                    menu(false);
+                    break;
             }
         } catch (Exception e) {
-            System.out.println("An error occurred: " + e.getMessage());
+            System.out.println(e.getMessage());
             menu(false);
         }
     }

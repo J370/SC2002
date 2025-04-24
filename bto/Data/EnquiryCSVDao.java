@@ -85,7 +85,7 @@ public class EnquiryCSVDao implements EnquiryDao {
                 if (enq != null) enquiries.add(enq);
             }
         } catch (IOException e) {
-            System.err.println("Error reading enquiries: " + e.getMessage());
+            System.err.println(e.getMessage());
         }
         return enquiries;
     }
@@ -97,7 +97,7 @@ public class EnquiryCSVDao implements EnquiryDao {
                 writer.write(toCsvLine(enq) + "\n");
             }
         } catch (IOException e) {
-            System.err.println("Error saving enquiries: " + e.getMessage());
+            System.err.println(e.getMessage());
         }
     }
 
@@ -145,7 +145,7 @@ public class EnquiryCSVDao implements EnquiryDao {
         try (FileWriter writer = new FileWriter(CSV_FILE)) {
             writer.write(HEADER + "\n");
         } catch (IOException e) {
-            System.err.println("Error creating CSV file: " + e.getMessage());
+            System.err.println(e.getMessage());
         }
     }
 }

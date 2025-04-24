@@ -87,7 +87,9 @@ public class ApplicantView extends UserView {
                     loginView.displayLoginPrompt();
                     break;
                 default:
+                    System.out.println("Invalid option. Please try again.");
                     menu(false);
+                    break;
             }
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());
@@ -208,7 +210,7 @@ public class ApplicantView extends UserView {
                 applicantController.withdrawApplication();
                 System.out.println("Application withdrawn successfully.");
             }
-            catch (Exception e) {System.out.println("Error: " + e.getMessage());}
+            catch (Exception e) {System.out.println(e.getMessage());}
         }
     }
 
@@ -253,7 +255,7 @@ public class ApplicantView extends UserView {
             applicantController.editEnquiry(enquiryId, newDetails);
             System.out.println("Enquiry updated successfully.");
         }
-        catch (Exception e) {System.out.println("Error: " + e.getMessage());}
+        catch (Exception e) {System.out.println(e.getMessage());}
     }
 
     public void deleteEnquiry() {
@@ -268,7 +270,7 @@ public class ApplicantView extends UserView {
                 applicantController.deleteEnquiry(deleteEnquiryId);
                 System.out.println("Enquiry deleted successfully.");
             }
-            catch (Exception e) {System.out.println("Error: " + e.getMessage());}
+            catch (Exception e) {System.out.println(e.getMessage());}
         } else {
             System.out.println("Deletion cancelled.");
         }

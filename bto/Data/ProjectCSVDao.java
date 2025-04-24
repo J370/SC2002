@@ -48,7 +48,7 @@ public class ProjectCSVDao implements ProjectDao {
                 if (p != null) projects.add(p);
             }
         } catch (IOException e) {
-            System.err.println("Error reading projects: " + e.getMessage());
+            System.err.println(e.getMessage());
         }
         return projects;
     }
@@ -79,7 +79,7 @@ public class ProjectCSVDao implements ProjectDao {
         try (FileWriter writer = new FileWriter(FILEPATH)) {
             writer.write(HEADER + "\n");
         } catch (IOException e) {
-            System.err.println("Error creating CSV file: " + e.getMessage());
+            System.err.println(e.getMessage());
         }
     }
 
@@ -150,7 +150,7 @@ public class ProjectCSVDao implements ProjectDao {
                 writer.write(toCsvLine(p) + "\n");
             }
         } catch (IOException e) {
-            System.err.println("Error saving projects: " + e.getMessage());
+            System.err.println(e.getMessage());
         }
     }
 
