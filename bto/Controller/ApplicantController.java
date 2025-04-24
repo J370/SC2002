@@ -80,6 +80,7 @@ public class ApplicantController {
     public void withdrawApplication() throws Exception {
         Application app = viewActiveApplication();
         if (app.getWithdrawalRequested()) throw new Exception("Withdrawal already requested.");
+        if (app.getStatus() == ApplicationStatus.UNSUCCESSFUL) throw new Exception("Cannot withdraw an unsuccessful application.");
         app.setWithdrawalRequested(true);
         applicationDao.update(app);
     }
