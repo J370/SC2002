@@ -37,54 +37,59 @@ public class OfficerView extends UserView {
         System.out.println("9. Logout");
         System.out.print("Please select an option: ");
 
-        switch (scanner.nextInt()) {
-            case 1:
-                changePassword();
-                menu(false);
-                break;
+        try {
+            switch (scanner.nextInt()) {
+                case 1:
+                    changePassword();
+                    menu(false);
+                    break;
 
-            case 2:
-                registerProject();
-                menu(false);
-                break;
+                case 2:
+                    registerProject();
+                    menu(false);
+                    break;
 
-            case 3:
-                viewRegistrationStatus();
-                menu(false);
-                break;
+                case 3:
+                    viewRegistrationStatus();
+                    menu(false);
+                    break;
 
-            case 4:
-                generateReceipt();
-                menu(false);
-                break;
+                case 4:
+                    generateReceipt();
+                    menu(false);
+                    break;
 
-            case 5:
-                updateStatus();
-                menu(false);
-                break;
+                case 5:
+                    updateStatus();
+                    menu(false);
+                    break;
 
-            case 6:
-                viewEnquiriesForMyProject();
-                menu(false);
-                break;
+                case 6:
+                    viewEnquiriesForMyProject();
+                    menu(false);
+                    break;
 
-            case 7:
-                replyToEnquiry();
-                menu(false);
-                break;
+                case 7:
+                    replyToEnquiry();
+                    menu(false);
+                    break;
 
-            case 8:
-                applicantView.menu(true);
-                menu(false);
-                break;
+                case 8:
+                    applicantView.menu(true);
+                    menu(false);
+                    break;
 
-            case 9:
-                System.out.println("Logging out...");
-                LoginView loginView = new LoginView();
-                loginView.displayLoginPrompt();
-                break;
-            
-            default:
+                case 9:
+                    System.out.println("Logging out...");
+                    LoginView loginView = new LoginView();
+                    loginView.displayLoginPrompt();
+                    break;
+                
+                default:
+                menu(false);
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e.getMessage());
             menu(false);
         }
     }

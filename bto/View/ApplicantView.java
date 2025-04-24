@@ -39,54 +39,59 @@ public class ApplicantView extends UserView {
         int option = scanner.nextInt();
         scanner.nextLine(); // Consume newline
     
-        switch (option) {
-            case 1:
-                changePassword();
-                menu(false);
-                break;
-            case 2:
-                viewProjects();
-                menu(false);
-                break;
-            case 3:
-                applyProject();
-                menu(false);
-                break;
-            case 4:
-                viewMyApplications();
-                menu(false);
-                break;
-            case 5:
-                applicationStatus();
-                menu(false);
-                break;
-            case 6:
-                withdrawApplication();
-                menu(false);
-                break;
-            case 7:
-                makeEnquiry();
-                menu(false);
-                break;
-            case 8:
-                viewEnquiry();
-                menu(false);
-                break;
-            case 9:
-                editEnquiry();
-                menu(false);
-                break;
-            case 10:
-                deleteEnquiry();
-                menu(false);
-                break;
-            case 11:
-                System.out.println("Logging out...");
-                LoginView loginView = new LoginView();
-                loginView.displayLoginPrompt();
-                break;
-            default:
-                menu(false);
+        try {
+            switch (option) {
+                case 1:
+                    changePassword();
+                    menu(false);
+                    break;
+                case 2:
+                    viewProjects();
+                    menu(false);
+                    break;
+                case 3:
+                    applyProject();
+                    menu(false);
+                    break;
+                case 4:
+                    viewMyApplications();
+                    menu(false);
+                    break;
+                case 5:
+                    applicationStatus();
+                    menu(false);
+                    break;
+                case 6:
+                    withdrawApplication();
+                    menu(false);
+                    break;
+                case 7:
+                    makeEnquiry();
+                    menu(false);
+                    break;
+                case 8:
+                    viewEnquiry();
+                    menu(false);
+                    break;
+                case 9:
+                    editEnquiry();
+                    menu(false);
+                    break;
+                case 10:
+                    deleteEnquiry();
+                    menu(false);
+                    break;
+                case 11:
+                    System.out.println("Logging out...");
+                    LoginView loginView = new LoginView();
+                    loginView.displayLoginPrompt();
+                    break;
+                default:
+                    menu(false);
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e.getMessage());
+            menu(false);
         }
     }
 

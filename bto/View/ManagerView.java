@@ -46,90 +46,95 @@ public class ManagerView extends UserView {
 
         int option = scanner.nextInt();
 
-        switch (option) {
-            case 1:
-                changePassword();
-                menu(false);                
-                break;
+        try {
+            switch (option) {
+                case 1:
+                    changePassword();
+                    menu(false);                
+                    break;
+                
+                case 2:
+                    createProject();
+                    menu(false);
+                    break;
+
+                case 3:
+                    deleteProject();
+                    menu(false);
+                    break;
+
+                case 4:
+                    editProject();
+                    menu(false);
+                    break;
+
+                case 5:
+                    viewAllProject();
+                    menu(false);
+                    break;
+
+                case 6:
+                    viewOwnProjects();
+                    menu(false);
+                    break;
+
+                case 7:
+                    viewRequestedOfficer();
+                    menu(false);
+                    break;
+
+                case 8:
+                    approveRegistration();
+                    menu(false);
+                    break;
+
+                case 9:
+                    rejectRegistration();
+                    menu(false);
+                    break;
+
+                case 10:
+                    approveApplication();
+                    menu(false);
+                    break;
+
+                case 11:
+                    approveWithdrawal();
+                    menu(false);
+                    break;
+
+                case 12:
+                    viewAllEnquiries();
+                    menu(false);
+                    break;
+
+                case 13:
+                    replyEnquiry();
+                    menu(false);
+                    break;
+
+                case 14:
+                    generateReport();
+                    menu(false);
+                    break;
+
+                case 15:
+                    toggleProjectVisibility();
+                    menu(false);
+                    break;
+
+                case 16:
+                    System.out.println("Logging out...");
+                    LoginView loginView = new LoginView();
+                    loginView.displayLoginPrompt();
+                    break;
             
-            case 2:
-                createProject();
-                menu(false);
-                break;
-
-            case 3:
-                deleteProject();
-                menu(false);
-                break;
-
-            case 4:
-                editProject();
-                menu(false);
-                break;
-
-            case 5:
-                viewAllProject();
-                menu(false);
-                break;
-
-            case 6:
-                viewOwnProjects();
-                menu(false);
-                break;
-
-            case 7:
-                viewRequestedOfficer();
-                menu(false);
-                break;
-
-            case 8:
-                approveRegistration();
-                menu(false);
-                break;
-
-            case 9:
-                rejectRegistration();
-                menu(false);
-                break;
-
-            case 10:
-                approveApplication();
-                menu(false);
-                break;
-
-            case 11:
-                approveWithdrawal();
-                menu(false);
-                break;
-
-            case 12:
-                viewAllEnquiries();
-                menu(false);
-                break;
-
-            case 13:
-                replyEnquiry();
-                menu(false);
-                break;
-
-            case 14:
-                generateReport();
-                menu(false);
-                break;
-
-            case 15:
-                toggleProjectVisibility();
-                menu(false);
-                break;
-
-            case 16:
-                System.out.println("Logging out...");
-                LoginView loginView = new LoginView();
-                loginView.displayLoginPrompt();
-                break;
-        
-            default:
-                break;
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e.getMessage());
+            menu(false);
         }
     }
 
@@ -142,14 +147,15 @@ public class ManagerView extends UserView {
     
         System.out.print("Please enter the neighborhood: ");
         String neighborhood = scanner.nextLine().trim();
-    
+
+        LocalDate openingDateStr, closingDateStr;
         System.out.print("Please enter the opening date (yyyy/MM/dd): ");
         String openingDateInput = scanner.nextLine().trim();
-        LocalDate openingDateStr = LocalDate.parse(openingDateInput, dateFormatter);
+        openingDateStr = LocalDate.parse(openingDateInput, dateFormatter);
     
         System.out.print("Please enter the closing date (yyyy/MM/dd): ");
         String closingDateInput = scanner.nextLine().trim();
-        LocalDate closingDateStr = LocalDate.parse(closingDateInput, dateFormatter);
+        closingDateStr = LocalDate.parse(closingDateInput, dateFormatter);
     
         System.out.print("Please enter the officer slots: ");
         int officerSlots = Integer.parseInt(scanner.nextLine().trim());
@@ -164,10 +170,9 @@ public class ManagerView extends UserView {
             double price = Double.parseDouble(scanner.nextLine().trim());
             flatTypes.put(flatType, new Project.FlatTypeDetails(numberOfUnits, price));
         }
-    
+
         try {
             managerController.createProject(name, neighborhood, flatTypes, openingDateStr, closingDateStr, officerSlots);
-            System.out.println("Project created successfully.");
         } catch (Exception e) {
             System.out.println("An error occurred while creating the project: " + e.getMessage());
         }
@@ -175,9 +180,9 @@ public class ManagerView extends UserView {
 
     public void deleteProject() {
         scanner.nextLine(); // Consume any leftover newline
-        System.out.println("Please enter the project name to delete: ");
+        System.out.print("Please enter the project name to delete: ");
         String projectName = scanner.nextLine();
-        System.out.print("Are you sure you want to delete the project? (yes/no)");
+        System.out.print("Are you sure you want to delete the project? (yes/no): ");
         String confirmation = scanner.nextLine();
         if (!confirmation.equalsIgnoreCase("yes")) {
             System.out.println("Project deletion cancelled.");
@@ -305,7 +310,13 @@ public class ManagerView extends UserView {
                 System.out.println("Opening Date: " + project.getOpeningDate());
                 System.out.println("Closing Date: " + project.getClosingDate());
                 System.out.println("Officer Slots: " + project.getOfficerSlots());
-                System.out.println("Flat Types: " + project.getFlatTypes());
+                for (Map.Entry<String, Project.FlatTypeDetails> entry : project.getFlatTypes().entrySet()) {
+                    String flatType = entry.getKey();
+                    Project.FlatTypeDetails details = entry.getValue();
+                    System.out.println("Flat Type: " + flatType);
+                    System.out.println("Available Units: " + details.getAvailableUnits());
+                    System.out.println("Selling Price: $" + details.getSellingPrice());
+                }
             }
         }
     }
