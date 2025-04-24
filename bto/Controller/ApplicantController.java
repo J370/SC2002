@@ -80,8 +80,8 @@ public class ApplicantController {
 
     public void withdrawApplication() throws Exception {
         Application app = viewActiveApplication();
-        if (app.getStatus() == ApplicationStatus.BOOKED) throw new Exception("Cannot withdraw application that has been booked!");
-        app.setStatus(ApplicationStatus.UNSUCCESSFUL);
+        if (app.getWithdrawalRequested()) throw new Exception("Withdrawal already requested.");
+        app.setWithdrawalRequested(true);
         applicationDao.update(app);
     }
 

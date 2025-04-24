@@ -9,6 +9,7 @@ public class Application {
     private String flatType;
     private ApplicationStatus status;
     private LocalDateTime createdTime;
+    private boolean withdrawalRequested;
 
     public Application(String projectName, String applicantNric, String flatType) {
         this.projectName = projectName;
@@ -25,7 +26,7 @@ public class Application {
     public String getFlatType() { return flatType; }
     public ApplicationStatus getStatus() { return status; }
     public LocalDateTime getCreatedTime() { return createdTime; }
-
+    public boolean getWithdrawalRequested() { return withdrawalRequested; }
 
     // Setters
     public Application setStatus(ApplicationStatus status) {
@@ -43,4 +44,5 @@ public class Application {
         return this;
     }
 
+    public void setWithdrawalRequested(boolean requested) { this.withdrawalRequested = requested; }
 }

@@ -207,31 +207,39 @@ public class ManagerController {
     public void approveWithdrawal(String applicationId) throws Exception {
         Application application = applicationDao.getApplicationById(applicationId)
             .orElseThrow(() -> new Exception("Application not found"));
-
-        // Check booking status
-
+    
+        if (!application.getWithdrawalRequested()) throw new Exception("No withdrawal requested for this application.");
+    
         Project project = projectDao.getProjectById(application.getProjectName());
         if (project == null) throw new Exception("Associated project not found");
-
+    
         // Restock flat if application was successful
         if (application.getStatus() == ApplicationStatus.BOOKED) {
             String flatType = application.getFlatType();
             Project.FlatTypeDetails flatDetails = project.getFlatTypes().get(flatType);
-            
             if (flatDetails != null) {
                 flatDetails.setAvailableUnits(flatDetails.getAvailableUnits() + 1);
                 projectDao.updateProject(project);
             }
         }
-
-        // Update application status
+    
+        // Update application status and withdrawal flag
         application.setStatus(ApplicationStatus.UNSUCCESSFUL);
+        application.setWithdrawalRequested(false);
+        applicationDao.update(application);
+    }
+    
+    public void rejectWithdrawal(String applicationId) throws Exception {
+        Application application = applicationDao.getApplicationById(applicationId)
+            .orElseThrow(() -> new Exception("Application not found"));
+    
+        if (!application.getWithdrawalRequested()) throw new Exception("No withdrawal requested for this application.");
+    
+        // Just reset the withdrawal flag
+        application.setWithdrawalRequested(false);
         applicationDao.update(application);
     }
 
-    public void rejectWithdrawal(String applicationId) throws Exception {
-        
-    }
 
     // view all enquiries of ALL projects
     public List<Enquiry> viewAllEnquiries(){return enquiryDao.getAllEnquiries();}

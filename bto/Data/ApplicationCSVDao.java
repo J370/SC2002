@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class ApplicationCSVDao implements ApplicationDao {
     private static final String FILEPATH = "./bto/Data/CSV/Applications.csv";
-    private static final String HEADER = "ApplicationID,ProjectName,ApplicantNRIC,FlatType,Status,CreatedTime;";
+    private static final String HEADER = "ApplicationID,ProjectName,ApplicantNRIC,FlatType,Status,CreatedTime,WithdrawalStatus;";
     private static final DateTimeFormatter DT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
@@ -117,13 +117,17 @@ public class ApplicationCSVDao implements ApplicationDao {
     private Application parseApplication(String csvLine) {
         try {
             String[] parts = csvLine.split(",", -1);
-            return new Application(
+            Application app = new Application(
                 parts[1],  // ProjectName
                 parts[2],  // ApplicantNRIC
                 parts[3]   // FlatType
             ).setId(parts[0])  // ApplicationID
              .setStatus(ApplicationStatus.valueOf(parts[4].toUpperCase()))
              .setCreatedTime(parts.length > 5 && !parts[5].isEmpty() ? LocalDateTime.parse(parts[5], DT_FORMATTER) : null);
+            if (parts.length > 6) {
+                app.setWithdrawalRequested(Boolean.parseBoolean(parts[6]));
+            }
+            return app;
         } catch (Exception e) {
             System.err.println("Error parsing application: " + csvLine);
             return null;
@@ -137,10 +141,11 @@ public class ApplicationCSVDao implements ApplicationDao {
             app.getApplicantNric(),
             app.getFlatType(),
             app.getStatus().name(),
-            app.getCreatedTime().format(DT_FORMATTER)
+            app.getCreatedTime().format(DT_FORMATTER),
+            String.valueOf(app.getWithdrawalRequested())
         );
     }
-
+    
 
     private void initializeCsvFile() {
         try (FileWriter writer = new FileWriter(FILEPATH)) {

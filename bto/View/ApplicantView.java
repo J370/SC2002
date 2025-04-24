@@ -183,6 +183,7 @@ public class ApplicantView extends UserView {
             System.out.println("Project Name: " + app.getProjectName());
             System.out.println("Flat Type: " + app.getFlatType());
             System.out.println("Status: " + app.getStatus());
+            System.out.println("Withdrawal Requested: " + (app.getWithdrawalRequested() ? "Yes" : "No"));
             System.out.println("Created Time: " + (app.getCreatedTime() != null ? app.getCreatedTime().toString() : "NIL"));
             System.out.println("-------------------------------");
         }
@@ -200,7 +201,7 @@ public class ApplicantView extends UserView {
     }
 
     public void withdrawApplication() {
-        System.out.println("Are you sure you want to withdraw?\n(1 for Yes, 2 for No)");
+        System.out.println("Are you sure you want to request withdrawal?\n(1 for Yes, 2 for No)");
         boolean confirm = scanner.nextInt() == 1;
         scanner.nextLine();
         if (!confirm) {
@@ -208,7 +209,7 @@ public class ApplicantView extends UserView {
         } else {
             try{
                 applicantController.withdrawApplication();
-                System.out.println("Application withdrawn successfully.");
+                System.out.println("Withdrawal request submitted. Please wait for manager approval.");
             }
             catch (Exception e) {System.out.println(e.getMessage());}
         }
