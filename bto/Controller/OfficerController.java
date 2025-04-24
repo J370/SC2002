@@ -21,13 +21,11 @@ public class OfficerController {
         this.enquiryDao = enquiryDao;
     }
 
-    // To register to be a registered officer for a specific project
     public void registerProject(String projectName) throws Exception {
         if (projectName == null || projectName.trim().isEmpty()) {
             throw new Exception("Project name cannot be empty");
         }
 
-        // 1. Check if officer has applied for this project as an applicant
         if (hasAppliedToProject(projectName)) {
             throw new Exception("Cannot register for a project you've applied to as an applicant.");
         }
@@ -43,7 +41,6 @@ public class OfficerController {
         }
         
         
-        // Date validations
         if (targetProject.getOpeningDate() == null || targetProject.getClosingDate() == null) {
             throw new Exception("Project has invalid dates");
         }
@@ -61,7 +58,6 @@ public class OfficerController {
             throw new Exception("You have been rejected for this project.");
         }
 
-        // Add to requested officers if not already requested
         if (!targetProject.getRequestedOfficers().contains(officer.getName())) {
             targetProject.addRequestedOfficer(officer.getName());
             projectDao.updateProject(targetProject);
@@ -69,7 +65,6 @@ public class OfficerController {
     }
 
 
-    // register status to be approved by manager
     public List<RegistrationStatus> viewRegistrationStatus() {
         List<Project>  projects = projectDao.getAllProjects();
         List<RegistrationStatus> output = new ArrayList<>();
@@ -86,12 +81,10 @@ public class OfficerController {
     }
 
 
-    //generate receipt for applicant once approved
     public String generateReceipt(String applicationId) throws Exception {
         Application application = applicationDao.getApplicationById(applicationId)
             .orElseThrow(() -> new Exception("Application not found"));
         if (application.getStatus() != ApplicationStatus.BOOKED) throw new Exception("Application is not booked");
-            // Get applicant details
         User applicant = User.getUser(application.getApplicantNric());
         if (applicant == null) throw new Exception("Applicant not found.");
 
@@ -115,7 +108,6 @@ public class OfficerController {
     return receipt;
     }
 
-    // view status of BTO applicants
     public List<Application> viewApplicationsForMyProjects() throws Exception {
         List<Application> result = new ArrayList<>();
         List<Project> allProjects = projectDao.getAllProjects();
@@ -134,7 +126,6 @@ public class OfficerController {
         return result;
     }
 
-    // update status of BTO applicants
     public void updateStatus(String applicationId) throws Exception {
         Application application = applicationDao.getApplicationById(applicationId)
             .orElseThrow(() -> new Exception("Application not found"));
@@ -158,7 +149,6 @@ public class OfficerController {
     }
 
     
-    // view all enquiries for officer assigned project
     public List<Enquiry> viewEnquiriesForMyProjects() throws Exception {
         List<Project> allProjects = projectDao.getAllProjects();
         if (allProjects == null) throw new Exception("No projects found");
@@ -178,7 +168,6 @@ public class OfficerController {
         return result;
     }
 
-    // Officer can reply to an enquiry for their project
     public void replyEnquiry(int enquiryId, String reply) throws Exception{
         Enquiry enquiry = enquiryDao.findById(enquiryId);
         if (reply == null) throw new Exception("Reply cannot be empty");
@@ -202,7 +191,7 @@ public class OfficerController {
 
     public static class RegistrationStatus {
         public final Project project;
-        public final String status; // "Pending", "Successful", "Unsuccessful"
+        public final String status; 
         public RegistrationStatus(Project project, String status) {
             this.project = project;
             this.status = status;

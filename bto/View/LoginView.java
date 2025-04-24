@@ -22,7 +22,7 @@ public class LoginView {
 
         if (!isValidNric(nric)) {
             System.out.println("Invalid NRIC format. Please try again.");
-            displayLoginPrompt(); // Retry login
+            displayLoginPrompt(); 
             return;
         }
 
@@ -63,7 +63,7 @@ public class LoginView {
             }
         } else {
             System.out.println("Invalid password. Please try again.");
-            displayLoginPrompt(); // Retry login
+            displayLoginPrompt(); 
         }
     }
 

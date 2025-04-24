@@ -18,7 +18,6 @@ public class Application {
         this.createdTime = LocalDateTime.now();
     }
 
-        // Getters
     public String getId() { return id; }
     public String getApplicantNric() { return applicantNric; }
     public String getProjectName() { return projectName; }
@@ -27,7 +26,6 @@ public class Application {
     public LocalDateTime getCreatedTime() { return createdTime; }
 
 
-    // Setters
     public Application setStatus(ApplicationStatus status) {
         this.status = status;
         return this;

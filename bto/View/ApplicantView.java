@@ -37,7 +37,7 @@ public class ApplicantView extends UserView {
         System.out.print("Please select an option: ");
     
         int option = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine(); 
     
         try {
             switch (option) {

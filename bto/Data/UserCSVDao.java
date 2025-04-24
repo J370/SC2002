@@ -13,7 +13,6 @@ public class UserCSVDao implements UserDao {
                     first = false;
                 }
                 else {
-                    // use comma as separator
                     String[] data = line.split(",");
                     filePath = filePath.replace("./bto/Data/CSV/", "");
                     switch (filePath) {

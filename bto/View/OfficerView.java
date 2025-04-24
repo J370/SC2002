@@ -212,7 +212,7 @@ public class OfficerView extends UserView {
         }
         System.out.print("Enter enquiry ID to reply: ");
         int enquiryId = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine(); 
         System.out.print("Enter your reply: ");
         String reply = scanner.nextLine();
 

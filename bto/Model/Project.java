@@ -96,7 +96,6 @@ public class Project {
     public List<String> getRejectedOfficers() {return new ArrayList<>(rejectedOfficers);}
     public boolean getVisible() {return isVisible;}
 
-    // === Setters ===
     public void setFlatTypes(Map<String, FlatTypeDetails> flatTypes) {this.flatTypes = new HashMap<>(flatTypes);}
     public void setOfficerSlots(int slots) {this.officerSlots = Math.min(slots, 10);}
     public void setVisible(boolean visible) {this.isVisible = visible;}

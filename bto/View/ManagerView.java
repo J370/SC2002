@@ -154,7 +154,7 @@ public class ManagerView extends UserView {
 
     public void createProject() {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        scanner.nextLine(); // Consume any leftover newline
+        scanner.nextLine(); 
     
         System.out.print("Please enter the project name: ");
         String name = scanner.nextLine().trim();
@@ -193,7 +193,7 @@ public class ManagerView extends UserView {
     }
 
     public void deleteProject() {
-        scanner.nextLine(); // Consume any leftover newline
+        scanner.nextLine(); 
         System.out.print("Please enter the project name to delete: ");
         String projectName = scanner.nextLine();
         System.out.print("Are you sure you want to delete the project? (yes/no): ");
@@ -212,7 +212,7 @@ public class ManagerView extends UserView {
 
     public void editProject() {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        scanner.nextLine(); // consume leftover newline if needed
+        scanner.nextLine(); 
     
         System.out.print("Please enter the project name to edit: ");
         String projectName = scanner.nextLine().trim();
@@ -269,13 +269,11 @@ public class ManagerView extends UserView {
             }
         }
     
-        // Only allow editing of 2-Room and 3-Room
         Map<String, Project.FlatTypeDetails> flatTypes = new HashMap<>(project.getFlatTypes());
         String[] allowedTypes = {"2-Room", "3-Room"};
         for (String type : allowedTypes) {
             Project.FlatTypeDetails details = flatTypes.get(type);
             if (details == null) {
-                // If missing, add with default values
                 details = new Project.FlatTypeDetails(0, 0.0);
             }
             System.out.print("Current " + type + " units: " + details.getAvailableUnits() + ". New units (or press Enter to skip): ");
@@ -293,7 +291,6 @@ public class ManagerView extends UserView {
             flatTypes.put(type, new Project.FlatTypeDetails(units, price));
         }
     
-        // Ensure only 2-Room and 3-Room exist
         flatTypes.keySet().retainAll(java.util.Arrays.asList(allowedTypes));
     
         try {
@@ -375,7 +372,7 @@ public class ManagerView extends UserView {
     }
 
     public void approveRegistration() {
-        scanner.nextLine(); // Consume any leftover newline
+        scanner.nextLine(); 
         System.out.print("Please enter the project name: ");
         String projectName = scanner.nextLine().trim();
     
@@ -391,7 +388,7 @@ public class ManagerView extends UserView {
     }
 
     public void rejectRegistration() {
-        scanner.nextLine(); // Consume any leftover newline
+        scanner.nextLine(); 
         System.out.print("Please enter the project name: ");
         String projectName = scanner.nextLine().trim();
     
@@ -407,7 +404,7 @@ public class ManagerView extends UserView {
     }
 
     public void approveApplication() {
-        scanner.nextLine(); // Consume any leftover newline
+        scanner.nextLine(); 
 
         List<Application> applications = managerController.viewAllApplications().stream()
             .filter(app -> !app.getStatus().toString().equals("SUCCESS"))
@@ -429,7 +426,7 @@ public class ManagerView extends UserView {
     }
     
     public void rejectApplication() {
-        scanner.nextLine(); // Consume any leftover newline
+        scanner.nextLine(); 
 
         List<Application> applications = managerController.viewAllApplications().stream()
             .filter(app -> !app.getStatus().toString().equals("UNSUCCESSFUL"))
@@ -451,7 +448,7 @@ public class ManagerView extends UserView {
     }
 
     public void approveWithdrawal() {
-        scanner.nextLine(); // Consume any leftover newline
+        scanner.nextLine(); 
         System.out.print("Please enter the application ID to approve withdrawal: ");
         String applicationId = scanner.nextLine().trim();
     
@@ -464,7 +461,7 @@ public class ManagerView extends UserView {
     }
 
     public void rejectWithdrawal() {
-        scanner.nextLine(); // Consume any leftover newline
+        scanner.nextLine(); 
         System.out.print("Please enter the application ID to reject withdrawal: ");
         String applicationId = scanner.nextLine().trim();
     
@@ -493,10 +490,10 @@ public class ManagerView extends UserView {
     }
 
     public void replyEnquiry() {
-        scanner.nextLine(); // Consume any leftover newline
+        scanner.nextLine(); 
         System.out.print("Please enter the enquiry ID to reply: ");
         int enquiryId = scanner.nextInt();
-        scanner.nextLine(); // Consume any leftover newline
+        scanner.nextLine(); 
     
         System.out.print("Please enter your reply: ");
         String reply = scanner.nextLine().trim();
@@ -512,9 +509,8 @@ public class ManagerView extends UserView {
     public void generateReport() {
         List<Application> applications = managerController.generateReport();
     
-        // Prompt for filters
         System.out.print("Enter marital status to filter by (or press Enter to skip): ");
-        scanner.nextLine(); // Consume any leftover newline
+        scanner.nextLine(); 
         String maritalStatus = scanner.nextLine().trim();
         if (maritalStatus.isEmpty()) maritalStatus = null;
     
@@ -532,7 +528,6 @@ public class ManagerView extends UserView {
             User applicant = User.getUser(app.getApplicantNric());
             if (applicant == null) continue;
     
-            // Apply filters
             if (maritalStatus != null && !applicant.getMaritalStatus().equalsIgnoreCase(maritalStatus)) continue;
             if (flatType != null && !app.getFlatType().equalsIgnoreCase(flatType)) continue;
             if (projectName != null && !app.getProjectName().equalsIgnoreCase(projectName)) continue;
@@ -565,7 +560,7 @@ public class ManagerView extends UserView {
     }
 
     public void toggleProjectVisibility() {
-        scanner.nextLine(); // Consume any leftover newline
+        scanner.nextLine(); 
         System.out.print("Please enter the project name to toggle visibility: ");
         String projectName = scanner.nextLine().trim();
     
