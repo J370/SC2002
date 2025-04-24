@@ -449,6 +449,24 @@ public class ManagerView extends UserView {
 
     public void approveWithdrawal() {
         scanner.nextLine(); 
+
+        List<Application> withdrawalApplications = managerController.viewAllApplications().stream()
+            .filter(Application::getWithdrawalRequested)
+            .toList();
+
+        if (withdrawalApplications.isEmpty()) {
+            System.out.println("No withdrawal applications available for approval.");
+            return;
+        }
+
+        System.out.println("Withdrawal Requests:");
+        withdrawalApplications.forEach(app -> System.out.println(
+            "Application ID: " + app.getId() +
+            ", Project Name: " + app.getProjectName() +
+            ", Applicant NRIC: " + app.getApplicantNric() +
+            ", Status: " + app.getStatus() +
+            "---------------------------------------------"
+        ));
         System.out.print("Please enter the application ID to approve withdrawal: ");
         String applicationId = scanner.nextLine().trim();
     
@@ -462,6 +480,23 @@ public class ManagerView extends UserView {
 
     public void rejectWithdrawal() {
         scanner.nextLine(); 
+
+        List<Application> withdrawalApplications = managerController.viewAllApplications().stream()
+        .filter(Application::getWithdrawalRequested)
+        .toList();
+
+        if (withdrawalApplications.isEmpty()) {
+            System.out.println("No withdrawal applications available for approval.");
+            return;
+        }
+
+        System.out.println("Withdrawal Requests:");
+        withdrawalApplications.forEach(app -> System.out.println(
+            "Application ID: " + app.getId() +
+            ", Project Name: " + app.getProjectName() +
+            ", Applicant NRIC: " + app.getApplicantNric() +
+            ", Status: " + app.getStatus()));
+
         System.out.print("Please enter the application ID to reject withdrawal: ");
         String applicationId = scanner.nextLine().trim();
     
