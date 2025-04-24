@@ -1,8 +1,18 @@
 package bto.Data;
+
 import bto.Model.*;
 import java.io.*;
 
+/**
+ * Implementation of the {@link UserDao} interface for managing user data using CSV files.
+ */
 public class UserCSVDao implements UserDao {
+
+    /**
+     * Reads user data from a specified CSV file and loads it into the system.
+     *
+     * @param filePath The path to the CSV file containing user data.
+     */
     @Override
     public void readUsers(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -33,6 +43,11 @@ public class UserCSVDao implements UserDao {
         }
     }
 
+    /**
+     * Updates an existing user's data in the corresponding CSV file.
+     *
+     * @param user The user whose data is to be updated.
+     */
     @Override
     public void updateUser(User user) {
         String filePath = "./bto/Data/CSV/" + user.getClass().getSimpleName() + "List.csv";
@@ -56,6 +71,7 @@ public class UserCSVDao implements UserDao {
                 }
             }
 
+            // Write the updated content back to the file
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
                 writer.write(updatedContent.toString());
             }

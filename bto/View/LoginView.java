@@ -1,4 +1,5 @@
 package bto.View;
+
 import bto.Controller.*;
 import bto.Data.ApplicationCSVDao;
 import bto.Data.ApplicationDao;
@@ -11,9 +12,17 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * View class for managing the login process in the BTO Application System.
+ * This class handles user authentication and redirects users to their respective views based on their roles.
+ */
 public class LoginView {
-    Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Displays the login prompt to the user and handles the login process.
+     * Validates the user's NRIC and password, and redirects them to the appropriate view based on their role.
+     */
     public void displayLoginPrompt() {
         System.out.println("\n--------------------------------------");
         System.out.println("Welcome to the BTO Application System!");
@@ -67,6 +76,12 @@ public class LoginView {
         }
     }
 
+    /**
+     * Validates the format of the provided NRIC.
+     *
+     * @param nric The NRIC to validate.
+     * @return {@code true} if the NRIC format is valid, {@code false} otherwise.
+     */
     private boolean isValidNric(String nric) {
         String nricPattern = "^[ST]\\d{7}[A-Z]$";
         Pattern pattern = Pattern.compile(nricPattern);

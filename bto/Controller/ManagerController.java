@@ -1,4 +1,5 @@
 package bto.Controller;
+
 import bto.Data.*;
 import bto.Model.*;
 import java.time.LocalDate;
@@ -6,12 +7,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controller class for managing operations related to managers, such as creating, editing, and deleting projects,
+ * handling officer registrations, managing applications, and responding to enquiries.
+ */
 public class ManagerController {
     private final Manager manager;
     private final ProjectDao projectDao;
     private final ApplicationDao applicationDao;
     private final EnquiryDao enquiryDao;
-    
+
+    /**
+     * Constructs a ManagerController with the specified dependencies.
+     *
+     * @param manager The manager associated with this controller.
+     * @param projectDao The DAO for managing projects.
+     * @param applicationDao The DAO for managing applications.
+     * @param enquiryDao The DAO for managing enquiries.
+     */
     public ManagerController(Manager manager, ProjectDao projectDao, 
                             ApplicationDao applicationDao, EnquiryDao enquiryDao) {
         this.manager = manager;
@@ -20,8 +33,19 @@ public class ManagerController {
         this.enquiryDao = enquiryDao;
     }
 
+    /**
+     * Creates a new project.
+     *
+     * @param name The name of the project.
+     * @param neighborhood The neighborhood of the project.
+     * @param flatTypes A map of flat types and their details.
+     * @param openingDate The opening date for applications.
+     * @param closingDate The closing date for applications.
+     * @param officerSlots The number of officer slots available for the project.
+     * @throws Exception If there is an active project or other validation issues.
+     */
     public void createProject(String name, String neighborhood, Map<String, Project.FlatTypeDetails> flatTypes,
-                             LocalDate openingDate, LocalDate closingDate,int officerSlots) throws Exception {
+                             LocalDate openingDate, LocalDate closingDate, int officerSlots) throws Exception {
         if (hasActiveProject()) throw new Exception("Cannot create new project while managing active project");
 
         Project newProject = new Project(
@@ -40,7 +64,12 @@ public class ManagerController {
         projectDao.saveProject(newProject);
     }
 
-
+    /**
+     * Deletes a project by its name.
+     *
+     * @param projectName The name of the project to delete.
+     * @throws Exception If the project is not found or the manager is not authorized to delete it.
+     */
     public void deleteProject(String projectName) throws Exception {
         Project project = projectDao.getProjectById(projectName);
         if (project == null) throw new Exception("Project not found");
@@ -49,9 +78,19 @@ public class ManagerController {
         projectDao.deleteProject(projectName);
     }
 
+    /**
+     * Edits an existing project.
+     *
+     * @param name The name of the project.
+     * @param neighborhood The neighborhood of the project.
+     * @param flatTypes A map of flat types and their details.
+     * @param openingDate The opening date for applications.
+     * @param closingDate The closing date for applications.
+     * @param officerSlots The number of officer slots available for the project.
+     * @throws Exception If the project cannot be updated.
+     */
     public void editProject(String name, String neighborhood, Map<String, Project.FlatTypeDetails> flatTypes,
-                             LocalDate openingDate, LocalDate closingDate,int officerSlots) throws Exception {
-
+                             LocalDate openingDate, LocalDate closingDate, int officerSlots) throws Exception {
         Project newProject = new Project(
             name,
             neighborhood,
@@ -68,10 +107,20 @@ public class ManagerController {
         projectDao.updateProject(newProject);
     }
 
-    public List<Project> viewAllProject(){
+    /**
+     * Retrieves all projects.
+     *
+     * @return A list of all projects.
+     */
+    public List<Project> viewAllProject() {
         return projectDao.getAllProjects();
     }
 
+    /**
+     * Retrieves all projects managed by the current manager.
+     *
+     * @return A list of projects managed by the manager.
+     */
     public List<Project> viewOwnProjects() {
         List<Project> allProjects = projectDao.getAllProjects();
         List<Project> ownProjects = new ArrayList<>();
@@ -83,6 +132,11 @@ public class ManagerController {
         return ownProjects;
     }
 
+    /**
+     * Retrieves a list of officer registration requests, assignments, and rejections for all projects.
+     *
+     * @return A list of officer registration details.
+     */
     public List<String> viewRequestedOfficer() {
         List<String> requests = new ArrayList<>();
         List<Project> allProjects = projectDao.getAllProjects();
@@ -271,6 +325,11 @@ public class ManagerController {
             .anyMatch(p -> p.isVisible() && p.isApplicationOpen());
     }
 
+/**
+     * Retrieves all applications.
+     *
+     * @return A list of all applications.
+     */
     public List<Application> viewAllApplications() {
         return applicationDao.getAllApplications();
     }

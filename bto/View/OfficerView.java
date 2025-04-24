@@ -4,12 +4,25 @@ import bto.Controller.*;
 import bto.Model.*;
 import java.util.List;
 
+/**
+ * The OfficerView class provides the user interface for officers to interact with the system.
+ * It allows officers to perform various actions such as viewing registration status, generating receipts,
+ * updating application statuses, and replying to enquiries.
+ */
 public class OfficerView extends UserView {
     OfficerController officerController;
     Officer officer;
     ApplicantController applicantController;
     ApplicantView applicantView;
 
+    /**
+     * Constructs an OfficerView instance.
+     *
+     * @param officer The officer currently logged in.
+     * @param officerController The controller handling officer-related operations.
+     * @param applicantController The controller handling applicant-related operations.
+     * @param applicantView The view for applicant-related operations.
+     */
     public OfficerView(Officer officer, OfficerController officerController, ApplicantController applicantController, ApplicantView applicantView) {
         super(officer);
         this.officer = officer;
@@ -17,7 +30,12 @@ public class OfficerView extends UserView {
         this.applicantController = applicantController;
         this.applicantView = applicantView;
     }
-    
+
+    /**
+     * Displays the menu for the officer and handles user input for menu options.
+     *
+     * @param isFirstTime Indicates if this is the first time the menu is being displayed.
+     */
     public void menu(boolean isFirstTime) {
         System.out.println("\n===================================");
         if (isFirstTime) {
@@ -96,6 +114,9 @@ public class OfficerView extends UserView {
         }
     }
 
+    /**
+     * Displays a list of available projects and allows the officer to register for a project.
+     */
     public void registerProject() {
         List<Project> projects = officerController.getAllProjects();
         System.out.println("Available Projects:");
@@ -116,6 +137,9 @@ public class OfficerView extends UserView {
         }
     }
 
+    /**
+     * Displays the registration status of the officer for various projects.
+     */
     public void viewRegistrationStatus() {
         List<OfficerController.RegistrationStatus> status = officerController.viewRegistrationStatus();
         if (status.isEmpty()) {
@@ -130,6 +154,9 @@ public class OfficerView extends UserView {
         }
     }
 
+    /**
+     * Displays a list of applications and allows the officer to generate a receipt for a selected application.
+     */
     public void generateReceipt() {
         System.out.println("Applications:");
         try {
@@ -153,6 +180,9 @@ public class OfficerView extends UserView {
     }
     }
 
+    /**
+     * Displays a list of applications and allows the officer to update the status of a selected application.
+     */
     public void updateStatus() {
         try {
             List<Application> applications = officerController.viewApplicationsForMyProjects();
@@ -181,6 +211,9 @@ public class OfficerView extends UserView {
         }
     }
 
+    /**
+     * Displays a list of enquiries related to the officer's projects.
+     */
     public void viewEnquiriesForMyProject() {
         try {
             List<Enquiry> enquiries = officerController.viewEnquiriesForMyProjects();
@@ -200,6 +233,9 @@ public class OfficerView extends UserView {
         }
     }
 
+    /**
+     * Allows the officer to reply to a specific enquiry.
+     */
     public void replyToEnquiry() {
         try {
             if(officerController.viewEnquiriesForMyProjects().isEmpty()) {

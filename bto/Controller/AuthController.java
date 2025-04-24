@@ -3,7 +3,18 @@ package bto.Controller;
 import bto.Model.*;
 import bto.Data.*;
 
+/**
+ * Controller class for handling authentication-related operations.
+ */
 public class AuthController {
+
+    /**
+     * Validates the login credentials of a user.
+     *
+     * @param user The user attempting to log in.
+     * @param password The password provided by the user.
+     * @return {@code true} if the credentials are valid, {@code false} otherwise.
+     */
     public boolean validateLogin(User user, String password) {
         if (user != null) {
             if (user.getPassword().equals(password)) {
@@ -16,6 +27,12 @@ public class AuthController {
         }
     }
 
+    /**
+     * Changes the password of a user.
+     *
+     * @param user The user whose password is to be changed.
+     * @param newPassword The new password to set.
+     */
     public void changePassword(User user, String newPassword) {
         if (user != null) {
             if (user.getPassword().equals(newPassword)) {

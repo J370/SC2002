@@ -5,16 +5,32 @@ import bto.Model.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * View class for managing applicant-related interactions with the system.
+ * This class provides a menu-driven interface for applicants to perform various actions,
+ * such as viewing projects, submitting applications, and managing enquiries.
+ */
 public class ApplicantView extends UserView {
-    ApplicantController applicantController;
-    User applicant;
+    private final ApplicantController applicantController;
+    private final User applicant;
 
+    /**
+     * Constructs an ApplicantView with the specified applicant and controller.
+     *
+     * @param applicant The applicant associated with this view.
+     * @param applicantController The controller for managing applicant-related operations.
+     */
     public ApplicantView(User applicant, ApplicantController applicantController) {
         super(applicant);
         this.applicantController = applicantController;
         this.applicant = applicant;
     }
 
+    /**
+     * Displays the main menu for the applicant.
+     *
+     * @param isFirstTime {@code true} if this is the first time the menu is displayed, {@code false} otherwise.
+     */
     public void menu(boolean isFirstTime) {
         System.out.println("\n===================================");
         if (isFirstTime) {
@@ -97,6 +113,9 @@ public class ApplicantView extends UserView {
         }
     }
 
+    /**
+     * Displays the list of available projects for the applicant.
+     */
     public void viewProjects() {
         List<Project> projects = applicantController.getAvailableProjects();
 
@@ -139,6 +158,9 @@ public class ApplicantView extends UserView {
         }
     }
 
+    /**
+     * Allows the applicant to apply for a project.
+     */
     public void applyProject() {
         if (applicant.getMaritalStatus().equals("Single") && applicant.getAge() < 35) {
             System.out.println("You're single and under 35, no BTO are available for you.");
@@ -170,7 +192,10 @@ public class ApplicantView extends UserView {
             System.out.println(e.getMessage());
         }
     }
-    
+
+    /**
+     * Displays all applications submitted by the applicant.
+     */
     public void viewMyApplications() {
         List<Application> apps = applicantController.getAllApplications();
         if(apps.isEmpty()) {
@@ -189,17 +214,24 @@ public class ApplicantView extends UserView {
         }
     }
 
+    /**
+     * Displays the status of the active application.
+     */
     public void applicationStatus() {
-        try{        
+        try {        
             Application application = applicantController.viewActiveApplication();
             System.out.println("-------------------------------");
             System.out.println("Application Project Name: " + application.getProjectName());
             System.out.println("Application Status: " + application.getStatus());
             System.out.println("-------------------------------");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-        catch (Exception e) {System.out.println(e.getMessage());}
     }
 
+    /**
+     * Allows the applicant to request withdrawal of an active application.
+     */
     public void withdrawApplication() {
         System.out.println("Are you sure you want to request withdrawal?\n(1 for Yes, 2 for No)");
         boolean confirm = scanner.nextInt() == 1;
@@ -207,26 +239,34 @@ public class ApplicantView extends UserView {
         if (!confirm) {
             System.out.println("Withdrawal cancelled.");
         } else {
-            try{
+            try {
                 applicantController.withdrawApplication();
                 System.out.println("Withdrawal request submitted. Please wait for manager approval.");
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
-            catch (Exception e) {System.out.println(e.getMessage());}
         }
     }
 
+    /**
+     * Allows the applicant to submit an enquiry for a project.
+     */
     public void makeEnquiry() {
         System.out.print("Enter the project name for your enquiry: ");
         String projectNameEnquiry = scanner.nextLine();
         System.out.print("Enter your enquiry details: ");
         String enquiryDetails = scanner.nextLine();
-        try{
+        try {
             applicantController.submitEnquiry(projectNameEnquiry, enquiryDetails);
             System.out.println("Enquiry submitted successfully.");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-        catch (Exception e) {System.out.println(e.getMessage());}
     }
 
+    /**
+     * Displays all enquiries submitted by the applicant.
+     */
     public void viewEnquiry() {
         List<Enquiry> userEnquiries = applicantController.viewEnquiries();
         if (userEnquiries.isEmpty()) {
@@ -246,19 +286,26 @@ public class ApplicantView extends UserView {
         }
     }
 
+    /**
+     * Allows the applicant to edit an existing enquiry.
+     */
     public void editEnquiry() {
         System.out.print("Enter the enquiry ID you want to edit: ");
         int enquiryId = scanner.nextInt();
         scanner.nextLine();
         System.out.print("Enter the new details: ");
         String newDetails = scanner.nextLine();
-        try{
+        try {
             applicantController.editEnquiry(enquiryId, newDetails);
             System.out.println("Enquiry updated successfully.");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-        catch (Exception e) {System.out.println(e.getMessage());}
     }
 
+    /**
+     * Allows the applicant to delete an existing enquiry.
+     */
     public void deleteEnquiry() {
         System.out.print("Enter the enquiry ID you want to delete: ");
         int deleteEnquiryId = scanner.nextInt();
@@ -267,11 +314,12 @@ public class ApplicantView extends UserView {
         int confirm = scanner.nextInt();
         scanner.nextLine();
         if (confirm == 1) {
-            try{
+            try {
                 applicantController.deleteEnquiry(deleteEnquiryId);
                 System.out.println("Enquiry deleted successfully.");
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
-            catch (Exception e) {System.out.println(e.getMessage());}
         } else {
             System.out.println("Deletion cancelled.");
         }

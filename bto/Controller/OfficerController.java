@@ -1,16 +1,29 @@
 package bto.Controller;
+
 import bto.Data.*;
 import bto.Model.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * Controller class for managing officer-related operations, such as project registration,
+ * application management, and enquiry handling.
+ */
 public class OfficerController {
     private final Officer officer;
     private final ApplicationDao applicationDao;
     private final ProjectDao projectDao;
     private final EnquiryDao enquiryDao;
 
+    /**
+     * Constructs an OfficerController with the specified dependencies.
+     *
+     * @param officer The officer associated with this controller.
+     * @param applicationDao The DAO for managing applications.
+     * @param projectDao The DAO for managing projects.
+     * @param enquiryDao The DAO for managing enquiries.
+     */
     public OfficerController(Officer officer, 
                             ApplicationDao applicationDao,
                             ProjectDao projectDao,
@@ -21,6 +34,12 @@ public class OfficerController {
         this.enquiryDao = enquiryDao;
     }
 
+    /**
+     * Registers the officer for a project.
+     *
+     * @param projectName The name of the project to register for.
+     * @throws Exception If the registration fails due to validation issues.
+     */
     public void registerProject(String projectName) throws Exception {
         if (projectName == null || projectName.trim().isEmpty()) {
             throw new Exception("Project name cannot be empty");
@@ -39,7 +58,6 @@ public class OfficerController {
         } catch (NoSuchElementException e) {
             throw new Exception("Project not found: " + projectName);
         }
-        
         
         if (targetProject.getOpeningDate() == null || targetProject.getClosingDate() == null) {
             throw new Exception("Project has invalid dates");
@@ -64,11 +82,15 @@ public class OfficerController {
         } else throw new Exception("Already requested registration for this project.");
     }
 
-
+    /**
+     * Views the registration status of the officer for all projects.
+     *
+     * @return A list of registration statuses for the officer.
+     */
     public List<RegistrationStatus> viewRegistrationStatus() {
-        List<Project>  projects = projectDao.getAllProjects();
+        List<Project> projects = projectDao.getAllProjects();
         List<RegistrationStatus> output = new ArrayList<>();
-        for (Project p : projects){
+        for (Project p : projects) {
             if (p.getAssignedOfficers().contains(officer.getName())) {
                 output.add(new RegistrationStatus(p, "Assigned"));
             } else if (p.getRequestedOfficers().contains(officer.getName())) {
@@ -80,7 +102,13 @@ public class OfficerController {
         return output;
     }
 
-
+    /**
+     * Generates a receipt for a booked application.
+     *
+     * @param applicationId The ID of the application.
+     * @return A string containing the receipt details.
+     * @throws Exception If the application is not found or is not booked.
+     */
     public String generateReceipt(String applicationId) throws Exception {
         Application application = applicationDao.getApplicationById(applicationId)
             .orElseThrow(() -> new Exception("Application not found"));
@@ -105,9 +133,15 @@ public class OfficerController {
             "\nFlat Price: $" + flatDetails.getSellingPrice() +
             "\nBooking Status: " + application.getStatus() +
             "\n==============================";
-    return receipt;
+        return receipt;
     }
 
+    /**
+     * Retrieves all applications for projects assigned to the officer.
+     *
+     * @return A list of applications for the officer's projects.
+     * @throws Exception If the officer is not assigned to any projects.
+     */
     public List<Application> viewApplicationsForMyProjects() throws Exception {
         List<Application> result = new ArrayList<>();
         List<Project> allProjects = projectDao.getAllProjects();
@@ -126,6 +160,12 @@ public class OfficerController {
         return result;
     }
 
+    /**
+     * Updates the status of an application to "booked".
+     *
+     * @param applicationId The ID of the application to update.
+     * @throws Exception If the application cannot be updated.
+     */
     public void updateStatus(String applicationId) throws Exception {
         Application application = applicationDao.getApplicationById(applicationId)
             .orElseThrow(() -> new Exception("Application not found"));
@@ -148,7 +188,12 @@ public class OfficerController {
         }
     }
 
-    
+    /**
+     * Retrieves all enquiries for projects assigned to the officer.
+     *
+     * @return A list of enquiries for the officer's projects.
+     * @throws Exception If no projects are assigned to the officer.
+     */
     public List<Enquiry> viewEnquiriesForMyProjects() throws Exception {
         List<Project> allProjects = projectDao.getAllProjects();
         if (allProjects == null) throw new Exception("No projects found");
@@ -168,7 +213,14 @@ public class OfficerController {
         return result;
     }
 
-    public void replyEnquiry(int enquiryId, String reply) throws Exception{
+    /**
+     * Replies to an enquiry for a project assigned to the officer.
+     *
+     * @param enquiryId The ID of the enquiry to reply to.
+     * @param reply The reply message.
+     * @throws Exception If the reply cannot be processed.
+     */
+    public void replyEnquiry(int enquiryId, String reply) throws Exception {
         Enquiry enquiry = enquiryDao.findById(enquiryId);
         if (reply == null) throw new Exception("Reply cannot be empty");
         if (enquiry == null) throw new Exception("Enquiry not found");
@@ -181,6 +233,12 @@ public class OfficerController {
         enquiryDao.update(enquiry);
     }
 
+    /**
+     * Checks if the officer has applied to a project as an applicant.
+     *
+     * @param projectName The name of the project.
+     * @return {@code true} if the officer has applied, {@code false} otherwise.
+     */
     private boolean hasAppliedToProject(String projectName) {
         List<Application> applications = applicationDao.getAllApplications();
         for (Application app : applications) {
@@ -189,15 +247,30 @@ public class OfficerController {
         return false;
     }
 
+    /**
+     * Represents the registration status of an officer for a project.
+     */
     public static class RegistrationStatus {
         public final Project project;
         public final String status; 
+
+        /**
+         * Constructs a RegistrationStatus object.
+         *
+         * @param project The project associated with the registration.
+         * @param status The status of the registration (e.g., "Assigned", "Pending", "Rejected").
+         */
         public RegistrationStatus(Project project, String status) {
             this.project = project;
             this.status = status;
         }
     }
 
+    /**
+     * Retrieves all projects.
+     *
+     * @return A list of all projects.
+     */
     public List<Project> getAllProjects() {
         return projectDao.getAllProjects();
     }

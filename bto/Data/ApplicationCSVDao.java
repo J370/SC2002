@@ -8,11 +8,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of the {@link ApplicationDao} interface for managing applications using a CSV file as the data source.
+ */
 public class ApplicationCSVDao implements ApplicationDao {
     private static final String FILEPATH = "./bto/Data/CSV/Applications.csv";
     private static final String HEADER = "ApplicationID,ProjectName,ApplicantNRIC,FlatType,Status,CreatedTime,WithdrawalStatus;";
     private static final DateTimeFormatter DT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    /**
+     * Saves a new application to the CSV file.
+     *
+     * @param application The application to save.
+     */
     @Override
     public void save(Application application) {
         if (application.getId() == null || application.getId().isEmpty()) {
@@ -24,6 +32,11 @@ public class ApplicationCSVDao implements ApplicationDao {
         writeAllApplications(allApps);
     }
 
+    /**
+     * Generates a new unique application ID.
+     *
+     * @return A new application ID as a string.
+     */
     private String generateNewApplicationId() {
         List<Application> apps = getAllApplications();
         int maxId = apps.stream()
@@ -36,6 +49,11 @@ public class ApplicationCSVDao implements ApplicationDao {
         return String.valueOf(maxId + 1);
     }
 
+    /**
+     * Updates an existing application in the CSV file.
+     *
+     * @param application The application to update.
+     */
     @Override
     public void update(Application application) {
         List<Application> allApps = getAllApplications().stream()
@@ -44,6 +62,11 @@ public class ApplicationCSVDao implements ApplicationDao {
         writeAllApplications(allApps);
     }
 
+    /**
+     * Deletes an application from the CSV file by its ID.
+     *
+     * @param applicationId The ID of the application to delete.
+     */
     @Override
     public void delete(String applicationId) {
         List<Application> filtered = getAllApplications().stream()
@@ -52,6 +75,12 @@ public class ApplicationCSVDao implements ApplicationDao {
         writeAllApplications(filtered);
     }
 
+    /**
+     * Retrieves an application by its ID.
+     *
+     * @param applicationId The ID of the application.
+     * @return An {@code Optional} containing the application if found, or empty if not found.
+     */
     @Override
     public Optional<Application> getApplicationById(String applicationId) {
         return getAllApplications().stream()
@@ -59,6 +88,12 @@ public class ApplicationCSVDao implements ApplicationDao {
             .findFirst();
     }
 
+    /**
+     * Retrieves the active application for a specific applicant by their NRIC.
+     *
+     * @param applicantNric The NRIC of the applicant.
+     * @return An {@code Optional} containing the active application if found, or empty if not found.
+     */
     @Override
     public Optional<Application> getActiveApplication(String applicantNric) {
         return getAllApplications().stream()
@@ -67,6 +102,12 @@ public class ApplicationCSVDao implements ApplicationDao {
             .findFirst();
     }
 
+    /**
+     * Retrieves all applications with a specific status.
+     *
+     * @param status The status to filter applications by.
+     * @return A list of applications with the specified status.
+     */
     @Override
     public List<Application> getApplicationsByStatus(String status) {
         return getAllApplications().stream()
@@ -74,6 +115,12 @@ public class ApplicationCSVDao implements ApplicationDao {
             .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all applications for a specific project.
+     *
+     * @param projectName The name of the project.
+     * @return A list of applications for the specified project.
+     */
     @Override
     public List<Application> getApplicationsByProject(String projectName) {
         return getAllApplications().stream()
@@ -81,6 +128,11 @@ public class ApplicationCSVDao implements ApplicationDao {
             .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all applications from the CSV file.
+     *
+     * @return A list of all applications.
+     */
     @Override
     public List<Application> getAllApplications() {
         List<Application> applications = new ArrayList<>();
@@ -101,6 +153,11 @@ public class ApplicationCSVDao implements ApplicationDao {
         return applications;
     }
 
+    /**
+     * Writes all applications to the CSV file.
+     *
+     * @param applications The list of applications to write.
+     */
     private void writeAllApplications(List<Application> applications) {
         try (FileWriter writer = new FileWriter(FILEPATH)) {
             writer.write(HEADER + "\n");
@@ -112,7 +169,12 @@ public class ApplicationCSVDao implements ApplicationDao {
         }
     }
 
-
+    /**
+     * Parses a CSV line into an {@link Application} object.
+     *
+     * @param csvLine The CSV line to parse.
+     * @return The parsed {@link Application} object, or {@code null} if parsing fails.
+     */
     private Application parseApplication(String csvLine) {
         try {
             String[] parts = csvLine.split(",", -1);
@@ -132,7 +194,13 @@ public class ApplicationCSVDao implements ApplicationDao {
             return null;
         }
     }
-    
+
+    /**
+     * Converts an {@link Application} object to a CSV line.
+     *
+     * @param app The application to convert.
+     * @return A string representing the application in CSV format.
+     */
     private String toCsvLine(Application app) {
         return String.join(",",
             app.getId(),
@@ -144,8 +212,10 @@ public class ApplicationCSVDao implements ApplicationDao {
             String.valueOf(app.getWithdrawalRequested())
         );
     }
-    
 
+    /**
+     * Initializes the CSV file by creating it and writing the header.
+     */
     private void initializeCsvFile() {
         try (FileWriter writer = new FileWriter(FILEPATH)) {
             writer.write(HEADER + "\n");

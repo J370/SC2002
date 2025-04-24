@@ -7,11 +7,19 @@ import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Implementation of the {@link EnquiryDao} interface for managing enquiries using a CSV file as the data source.
+ */
 public class EnquiryCSVDao implements EnquiryDao {
     private static final String CSV_FILE = "./bto/Data/CSV/Enquiries.csv";
     private static final String HEADER = "EnquiryID,ApplicantNRIC,ProjectName,EnquiryDetails,CreatedTime,Reply,RepliedBy,RepliedTime";
     private static final DateTimeFormatter DT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    /**
+     * Saves a new enquiry to the CSV file.
+     *
+     * @param enquiry The enquiry to save.
+     */
     @Override
     public void save(Enquiry enquiry) {
         List<Enquiry> allEnquiries = readAllEnquiries();
@@ -27,6 +35,11 @@ public class EnquiryCSVDao implements EnquiryDao {
         writeAllEnquiries(allEnquiries);
     }
 
+    /**
+     * Updates an existing enquiry in the CSV file.
+     *
+     * @param enquiry The enquiry to update.
+     */
     @Override
     public void update(Enquiry enquiry) {
         List<Enquiry> updated = readAllEnquiries().stream()
@@ -35,6 +48,11 @@ public class EnquiryCSVDao implements EnquiryDao {
         writeAllEnquiries(updated);
     }
 
+    /**
+     * Deletes an enquiry from the CSV file by its ID.
+     *
+     * @param enquiryId The ID of the enquiry to delete.
+     */
     @Override
     public void delete(int enquiryId) {
         List<Enquiry> filtered = readAllEnquiries().stream()
@@ -43,6 +61,12 @@ public class EnquiryCSVDao implements EnquiryDao {
         writeAllEnquiries(filtered);
     }
 
+    /**
+     * Finds an enquiry by its ID.
+     *
+     * @param enquiryId The ID of the enquiry.
+     * @return The enquiry if found, or {@code null} if not found.
+     */
     @Override
     public Enquiry findById(int enquiryId) {
         return readAllEnquiries().stream()
@@ -51,6 +75,12 @@ public class EnquiryCSVDao implements EnquiryDao {
             .orElse(null);
     }
 
+    /**
+     * Retrieves all enquiries submitted by a specific applicant.
+     *
+     * @param applicantNric The NRIC of the applicant.
+     * @return A list of enquiries submitted by the applicant.
+     */
     @Override
     public List<Enquiry> getEnquiriesByApplicant(String applicantNric) {
         return readAllEnquiries().stream()
@@ -58,6 +88,12 @@ public class EnquiryCSVDao implements EnquiryDao {
             .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all enquiries for a specific project.
+     *
+     * @param projectName The name of the project.
+     * @return A list of enquiries for the specified project.
+     */
     @Override
     public List<Enquiry> getEnquiriesByProject(String projectName) {
         return readAllEnquiries().stream()
@@ -65,11 +101,21 @@ public class EnquiryCSVDao implements EnquiryDao {
             .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all enquiries from the CSV file.
+     *
+     * @return A list of all enquiries.
+     */
     @Override
     public List<Enquiry> getAllEnquiries() {
         return readAllEnquiries();
     }
 
+    /**
+     * Reads all enquiries from the CSV file.
+     *
+     * @return A list of all enquiries.
+     */
     public List<Enquiry> readAllEnquiries() {
         List<Enquiry> enquiries = new ArrayList<>();
         File file = new File(CSV_FILE);
@@ -89,6 +135,11 @@ public class EnquiryCSVDao implements EnquiryDao {
         return enquiries;
     }
 
+    /**
+     * Writes all enquiries to the CSV file.
+     *
+     * @param enquiries The list of enquiries to write.
+     */
     private void writeAllEnquiries(List<Enquiry> enquiries) {
         try (FileWriter writer = new FileWriter(CSV_FILE)) {
             writer.write(HEADER + "\n");
@@ -100,6 +151,12 @@ public class EnquiryCSVDao implements EnquiryDao {
         }
     }
 
+    /**
+     * Parses a CSV line into an {@link Enquiry} object.
+     *
+     * @param csvLine The CSV line to parse.
+     * @return The parsed {@link Enquiry} object, or {@code null} if parsing fails.
+     */
     private Enquiry parseEnquiry(String csvLine) {
         try {
             String[] parts = csvLine.split(",", -1);
@@ -119,6 +176,12 @@ public class EnquiryCSVDao implements EnquiryDao {
         }
     }
 
+    /**
+     * Converts an {@link Enquiry} object to a CSV line.
+     *
+     * @param enq The enquiry to convert.
+     * @return A string representing the enquiry in CSV format.
+     */
     private String toCsvLine(Enquiry enq) {
         return String.join(",",
             String.valueOf(enq.getId()),
@@ -132,7 +195,12 @@ public class EnquiryCSVDao implements EnquiryDao {
         );
     }
 
-
+    /**
+     * Generates a new unique ID for an enquiry.
+     *
+     * @param existing The list of existing enquiries.
+     * @return A new unique ID.
+     */
     private int generateNewId(List<Enquiry> existing) {
         return existing.stream()
             .mapToInt(Enquiry::getId)
@@ -140,6 +208,9 @@ public class EnquiryCSVDao implements EnquiryDao {
             .orElse(0) + 1;
     }
 
+    /**
+     * Initializes the CSV file by creating it and writing the header.
+     */
     private void initializeCsvFile() {
         try (FileWriter writer = new FileWriter(CSV_FILE)) {
             writer.write(HEADER + "\n");

@@ -7,19 +7,31 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of the {@link ProjectDao} interface for managing projects using a CSV file as the data source.
+ */
 public class ProjectCSVDao implements ProjectDao {
     private static final String FILEPATH = "./bto/Data/CSV/ProjectList.csv";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd");
     private static final String HEADER = "Project Name,Neighborhood,Type 1,Number of units for Type 1,Selling price for Type 1,Type 2,Number of units for Type 2,Selling price for Type 2,Application opening date,Application closing date,Manager,Officer Slot,Assigned Officer,Requested Officer,Rejected Officer,Visible";
 
-
+    /**
+     * Saves a new project to the CSV file.
+     *
+     * @param project The project to save.
+     */
     @Override
     public void saveProject(Project project) {
         List<Project> allProjects = getAllProjects();
         allProjects.add(project);
         writeAllProjects(allProjects);
     }
-    
+
+    /**
+     * Updates an existing project in the CSV file.
+     *
+     * @param project The project to update.
+     */
     @Override
     public void updateProject(Project project) {
         List<Project> allProjects = getAllProjects().stream()
@@ -27,7 +39,12 @@ public class ProjectCSVDao implements ProjectDao {
                 .collect(Collectors.toList());
         writeAllProjects(allProjects);
     }
-    
+
+    /**
+     * Deletes a project from the CSV file by its name.
+     *
+     * @param projectId The name of the project to delete.
+     */
     @Override
     public void deleteProject(String projectId) {
         List<Project> allProjects = getAllProjects().stream()
@@ -36,12 +53,17 @@ public class ProjectCSVDao implements ProjectDao {
         writeAllProjects(allProjects);
     }
 
+    /**
+     * Retrieves all projects from the CSV file.
+     *
+     * @return A list of all projects.
+     */
     @Override
     public List<Project> getAllProjects() {
         List<Project> projects = new ArrayList<>();
         
         try (BufferedReader br = new BufferedReader(new FileReader(FILEPATH))) {
-            br.readLine();
+            br.readLine(); // Skip the header
             String line;
             while ((line = br.readLine()) != null) {
                 Project p = parseProject(line);
@@ -53,6 +75,13 @@ public class ProjectCSVDao implements ProjectDao {
         return projects;
     }
 
+    /**
+     * Retrieves a project by its name.
+     *
+     * @param projectId The name of the project.
+     * @return The project if found.
+     * @throws NoSuchElementException If the project is not found.
+     */
     @Override
     public Project getProjectById(String projectId) {
         return getAllProjects().stream()
@@ -61,6 +90,13 @@ public class ProjectCSVDao implements ProjectDao {
                 .orElseThrow(() -> new NoSuchElementException("Project with name " + projectId + " not found"));
     }
 
+    /**
+     * Decreases the available units for a specific flat type in a project.
+     *
+     * @param projectId The name of the project.
+     * @param flatType The flat type to update.
+     * @param count The number of units to decrease.
+     */
     @Override
     public void decreaseAvailableUnits(String projectId, String flatType, int count) {
         List<Project> allProjects = getAllProjects();
@@ -75,6 +111,9 @@ public class ProjectCSVDao implements ProjectDao {
         writeAllProjects(allProjects);
     }
 
+    /**
+     * Initializes the CSV file by creating it and writing the header.
+     */
     private void initializeCsvFile() {
         try (FileWriter writer = new FileWriter(FILEPATH)) {
             writer.write(HEADER + "\n");
@@ -83,6 +122,12 @@ public class ProjectCSVDao implements ProjectDao {
         }
     }
 
+    /**
+     * Parses a CSV line into a {@link Project} object.
+     *
+     * @param csvLine The CSV line to parse.
+     * @return The parsed {@link Project} object, or {@code null} if parsing fails.
+     */
     private Project parseProject(String csvLine) {
         try {
             String[] parts = csvLine.split(",", -1);
@@ -131,7 +176,6 @@ public class ProjectCSVDao implements ProjectDao {
                 isVisible
             );
     
-    
             return project;
         } catch (Exception e) {
             System.err.println("Error parsing project: " + csvLine);
@@ -139,7 +183,11 @@ public class ProjectCSVDao implements ProjectDao {
         }
     }
 
-
+    /**
+     * Writes all projects to the CSV file.
+     *
+     * @param projects The list of projects to write.
+     */
     private void writeAllProjects(List<Project> projects) {
         try (FileWriter writer = new FileWriter(FILEPATH)) {
             writer.write(HEADER + "\n");
@@ -151,11 +199,16 @@ public class ProjectCSVDao implements ProjectDao {
         }
     }
 
+    /**
+     * Converts a {@link Project} object to a CSV line.
+     *
+     * @param p The project to convert.
+     * @return A string representing the project in CSV format.
+     */
     private String toCsvLine(Project p) {
         Map<String, Project.FlatTypeDetails> flatTypes = p.getFlatTypes();
         List<String> types = new ArrayList<>(flatTypes.keySet());
 
-    
         return String.join(",",
             p.getName(),
             p.getNeighborhood(),
