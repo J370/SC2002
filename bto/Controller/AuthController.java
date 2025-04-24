@@ -6,14 +6,13 @@ import bto.Data.*;
 public class AuthController {
     public boolean validateLogin(User user, String password) {
         if (user != null) {
-            // Check if the password matches
             if (user.getPassword().equals(password)) {
-                return true; // Login successful
+                return true; 
             } else {
-                return false; // Incorrect password
+                return false; 
             }
         } else {
-            return false; // User not found
+            return false; 
         }
     }
 

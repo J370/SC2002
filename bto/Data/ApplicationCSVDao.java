@@ -15,7 +15,6 @@ public class ApplicationCSVDao implements ApplicationDao {
 
     @Override
     public void save(Application application) {
-        // Generate ID if missing
         if (application.getId() == null || application.getId().isEmpty()) {
             application.setId(generateNewApplicationId());
         }
@@ -29,7 +28,7 @@ public class ApplicationCSVDao implements ApplicationDao {
         List<Application> apps = getAllApplications();
         int maxId = apps.stream()
             .map(Application::getId)
-            .filter(id -> id.matches("\\d+")) // Only consider numeric IDs
+            .filter(id -> id.matches("\\d+")) 
             .mapToInt(Integer::parseInt)
             .max()
             .orElse(0);
@@ -90,7 +89,7 @@ public class ApplicationCSVDao implements ApplicationDao {
         if (!file.exists()) initializeCsvFile();
         
         try (BufferedReader br = new BufferedReader(new FileReader(FILEPATH))) {
-            br.readLine(); // Skip header
+            br.readLine(); 
             String line;
             while ((line = br.readLine()) != null) {
                 Application app = parseApplication(line);

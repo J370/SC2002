@@ -98,14 +98,12 @@ public class ProjectCSVDao implements ProjectDao {
                 ? new ArrayList<>()
                 : new ArrayList<>(Arrays.asList(parts[14].split("\\|")));
 
-                        // Parse Type 1
             if (!parts[2].isEmpty()) {
                 String type1 = parts[2];
                 int units1 = parts[3].isEmpty() ? 0 : Integer.parseInt(parts[3]);
                 double price1 = parts[4].isEmpty() ? 0 : Double.parseDouble(parts[4]);
                 flatTypes.put(type1, new Project.FlatTypeDetails(units1, price1));
             }
-            // Parse Type 2
             if (!parts[5].isEmpty()) {
                 String type2 = parts[5];
                 int units2 = parts[6].isEmpty() ? 0 : Integer.parseInt(parts[6]);
@@ -113,7 +111,6 @@ public class ProjectCSVDao implements ProjectDao {
                 flatTypes.put(type2, new Project.FlatTypeDetails(units2, price2));
             }
 
-            // Remove accidental "null" string if present
             assignedOfficers.removeIf(s -> s.equals("null"));
             requestedOfficers.removeIf(s -> s.equals("null"));
             rejectedOfficers.removeIf(s -> s.equals("null"));
@@ -121,8 +118,8 @@ public class ProjectCSVDao implements ProjectDao {
             boolean isVisible = parts.length > 15 && parts[15].trim().equalsIgnoreCase("true");
     
             Project project = new Project(
-                parts[0],  // name
-                parts[1],  // neighborhood
+                parts[0],  
+                parts[1],  
                 flatTypes,
                 LocalDate.parse(parts[8].trim(), DATE_FORMATTER),
                 LocalDate.parse(parts[9].trim(), DATE_FORMATTER),
@@ -162,10 +159,10 @@ public class ProjectCSVDao implements ProjectDao {
         return String.join(",",
             p.getName(),
             p.getNeighborhood(),
-            types.size() > 0 ? types.get(0) : "",  // Type 1
+            types.size() > 0 ? types.get(0) : "",  
             types.size() > 0 ? String.valueOf(flatTypes.get(types.get(0)).getAvailableUnits()) : "",
             types.size() > 0 ? String.format("%.0f", flatTypes.get(types.get(0)).getSellingPrice()) : "",
-            types.size() > 1 ? types.get(1) : "",  // Type 2
+            types.size() > 1 ? types.get(1) : "",  
             types.size() > 1 ? String.valueOf(flatTypes.get(types.get(1)).getAvailableUnits()) : "",
             types.size() > 1 ? String.format("%.0f", flatTypes.get(types.get(1)).getSellingPrice()) : "",
             p.getOpeningDate().format(DATE_FORMATTER),

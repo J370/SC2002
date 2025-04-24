@@ -16,7 +16,6 @@ public class EnquiryCSVDao implements EnquiryDao {
     public void save(Enquiry enquiry) {
         List<Enquiry> allEnquiries = readAllEnquiries();
         
-        // Generate ID if new enquiry
         if (enquiry.getId() == 0) {
             int newId = generateNewId(allEnquiries);
             enquiry = new Enquiry(newId, enquiry.getApplicantNric(), 
@@ -78,7 +77,7 @@ public class EnquiryCSVDao implements EnquiryDao {
         if (!file.exists()) initializeCsvFile();
         
         try (BufferedReader br = new BufferedReader(new FileReader(CSV_FILE))) {
-            br.readLine(); // Skip header
+            br.readLine(); 
             String line;
             while ((line = br.readLine()) != null) {
                 Enquiry enq = parseEnquiry(line);

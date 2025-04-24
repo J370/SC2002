@@ -83,7 +83,6 @@ public class ManagerController {
         return ownProjects;
     }
 
-    // see all requests to be officer of project (requested officer line in ProjectList.csv)
     public List<String> viewRequestedOfficer() {
         List<String> requests = new ArrayList<>();
         List<Project> allProjects = projectDao.getAllProjects();
@@ -114,7 +113,6 @@ public class ManagerController {
         return requests;
     }
 
-    //approve officer registration request to be officer of project
     public void approveRegistration(String projectName, String officerName) throws Exception{
         Project project = projectDao.getProjectById(projectName);
 
@@ -160,7 +158,6 @@ public class ManagerController {
         projectDao.updateProject(project);
     }
 
-    // approve applicant bto request - approval is limited to supply of flats
     public void approveApplication(String applicationId) throws Exception {
         Application application = applicationDao.getApplicationById(applicationId)
             .orElseThrow(() -> new Exception("Application not found"));
@@ -168,10 +165,8 @@ public class ManagerController {
         Project project = projectDao.getProjectById(application.getProjectName());
         if (project == null) {throw new Exception("Associated project not found");}
 
-        // Check application status
         if (application.getStatus() != ApplicationStatus.PENDING) throw new Exception("Only pending applications can be approved");
 
-        // Check flat availability
         String flatType = application.getFlatType();
         Project.FlatTypeDetails flatDetails = project.getFlatTypes().get(flatType);
         
@@ -186,14 +181,11 @@ public class ManagerController {
         Application application = applicationDao.getApplicationById(applicationId)
             .orElseThrow(() -> new Exception("Application not found"));
 
-        // Check application status
         Project project = projectDao.getProjectById(application.getProjectName());
         if (project == null) {throw new Exception("Associated project not found");}
 
-        // Check application status
-        if (application.getStatus() != ApplicationStatus.PENDING) throw new Exception("Only pending applications can be approved");
+        if (application.getStatus() != ApplicationStatus.PENDING) throw new Exception("Only pending applications can be rejected");
 
-        // Check flat availability
         String flatType = application.getFlatType();
         Project.FlatTypeDetails flatDetails = project.getFlatTypes().get(flatType);
         
@@ -203,7 +195,6 @@ public class ManagerController {
         applicationDao.update(application);
     }
 
-    // Approve withdrawal request
     public void approveWithdrawal(String applicationId) throws Exception {
         Application application = applicationDao.getApplicationById(applicationId)
             .orElseThrow(() -> new Exception("Application not found"));
@@ -212,8 +203,7 @@ public class ManagerController {
     
         Project project = projectDao.getProjectById(application.getProjectName());
         if (project == null) throw new Exception("Associated project not found");
-    
-        // Restock flat if application was successful
+
         if (application.getStatus() == ApplicationStatus.BOOKED) {
             String flatType = application.getFlatType();
             Project.FlatTypeDetails flatDetails = project.getFlatTypes().get(flatType);
@@ -222,8 +212,7 @@ public class ManagerController {
                 projectDao.updateProject(project);
             }
         }
-    
-        // Update application status and withdrawal flag
+
         application.setStatus(ApplicationStatus.UNSUCCESSFUL);
         application.setWithdrawalRequested(false);
         applicationDao.update(application);
@@ -235,16 +224,12 @@ public class ManagerController {
     
         if (!application.getWithdrawalRequested()) throw new Exception("No withdrawal requested for this application.");
     
-        // Just reset the withdrawal flag
         application.setWithdrawalRequested(false);
         applicationDao.update(application);
     }
 
-
-    // view all enquiries of ALL projects
     public List<Enquiry> viewAllEnquiries(){return enquiryDao.getAllEnquiries();}
 
-    //able to view and reply to enquiries regarding the project manager is handling
     public void replyEnquiry(int enquiryId, String reply) throws Exception{
         Enquiry enquiry = enquiryDao.findById(enquiryId);
         if (reply == null) throw new Exception("Reply cannot be empty");
@@ -258,8 +243,6 @@ public class ManagerController {
         enquiryDao.update(enquiry);
     }
 
-    // generate report of applicants with respective flat booking – flat type, project name, age, marital status
-    // There should be filters to generate a list based on various categories (e.g. report of married applicants’ choice of flat type)
     public List<Application> generateReport() {
         List<Application> allApplications = applicationDao.getAllApplications();
         List<Application> bookedApplications = new ArrayList<>();
@@ -273,7 +256,6 @@ public class ManagerController {
         return bookedApplications;
     }
 
-    // toggle project visibility
 
     public void toggleProjectVisibility(String projectName) throws Exception {
         Project project = projectDao.getProjectById(projectName);

@@ -69,7 +69,6 @@ public class ApplicantController {
         applicationDao.save(application);
     }
 
-
     public Application viewActiveApplication() throws Exception {
         Optional<Application> optionalApp = applicationDao.getActiveApplication(applicant.getNric());
 
