@@ -57,6 +57,10 @@ public class OfficerController {
             }
         }
 
+        if (targetProject.getRejectedOfficers().contains(officer.getName())) {
+            throw new Exception("You have been rejected for this project.");
+        }
+
         // Add to requested officers if not already requested
         if (!targetProject.getRequestedOfficers().contains(officer.getName())) {
             targetProject.addRequestedOfficer(officer.getName());
@@ -137,6 +141,7 @@ public class OfficerController {
         Project project = projectDao.getProjectById(application.getProjectName());
         if (project == null) throw new Exception("Project not found for this application");
         if (!project.getAssignedOfficers().contains(officer.getName())) throw new Exception("You are not assigned to this project.");
+        if (application.getStatus() == ApplicationStatus.BOOKED) throw new Exception("Application is already booked.");
         if (application.getStatus() != ApplicationStatus.SUCCESS) throw new Exception("Only successful applications can be updated to booked.");
         
         String flatType = application.getFlatType();
@@ -204,4 +209,7 @@ public class OfficerController {
         }
     }
 
+    public List<Project> getAllProjects() {
+        return projectDao.getAllProjects();
+    }
 }

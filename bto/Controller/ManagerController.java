@@ -77,7 +77,7 @@ public class ManagerController {
         List<Project> ownProjects = new ArrayList<>();
         
         for (Project p : allProjects) {
-            if (p.getManager().equals(manager.getNric())) {
+            if (p.getManager().toString().equals(manager.getName())) {
                 ownProjects.add(p);
             }
         }
@@ -94,6 +94,21 @@ public class ManagerController {
             if (!requestedOfficers.isEmpty()) {
                 for (String officer : requestedOfficers) {
                     requests.add("Officer: " + officer + " applied for Project: " + project.getName());
+                }
+            }
+
+            List<String> assignedOfficers = project.getAssignedOfficers();
+
+            if (!assignedOfficers.isEmpty()) {
+                for (String officer : assignedOfficers) {
+                    requests.add("Officer: " + officer + " is assigned to Project: " + project.getName());
+                }
+            }
+
+            List<String> rejectedOfficers = project.getRejectedOfficers();
+            if (!rejectedOfficers.isEmpty()) {
+                for (String officer : rejectedOfficers) {
+                    requests.add("Officer: " + officer + " is rejected from Project: " + project.getName());
                 }
             }
         }
@@ -219,5 +234,9 @@ public class ManagerController {
         return projectDao.getAllProjects().stream()
             .filter(p -> p.getManager().equals(manager.getName()))
             .anyMatch(p -> p.isVisible() && p.isApplicationOpen());
+    }
+
+    public List<Application> viewAllApplications() {
+        return applicationDao.getAllApplications();
     }
 }

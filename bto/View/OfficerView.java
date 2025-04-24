@@ -95,6 +95,14 @@ public class OfficerView extends UserView {
     }
 
     public void registerProject() {
+        List<Project> projects = officerController.getAllProjects();
+        System.out.println("Available Projects:");
+        for (Project project : projects) {
+            System.out.println("-------------------------------");
+            System.out.println("Project Name: " + project.getName());
+            System.out.println("Opening Date: " + project.getOpeningDate());
+            System.out.println("Closing Date: " + project.getClosingDate());
+        }
         System.out.print("Enter project name to register: ");
         scanner.nextLine();
         String projectName = scanner.nextLine();
@@ -121,6 +129,18 @@ public class OfficerView extends UserView {
     }
 
     public void generateReceipt() {
+        System.out.println("Applications:");
+        try {
+            List<Application> applications = officerController.viewApplicationsForMyProjects();
+            for (Application application : applications) {
+                System.out.println("-------------------------------");
+                System.out.println("Application ID: " + application.getId());
+                System.out.println("Project Name: " + application.getProjectName());
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return;
+        }
         System.out.print("Enter application ID to generate receipt: ");
         String applicationId = scanner.next();
         try {
@@ -162,6 +182,10 @@ public class OfficerView extends UserView {
     public void viewEnquiriesForMyProject() {
         try {
             List<Enquiry> enquiries = officerController.viewEnquiriesForMyProjects();
+            if (enquiries.isEmpty()) {
+                System.out.println("No enquiries available.");
+                return;
+            }
             System.out.println("Enquiries:");
             for (Enquiry enquiry : enquiries) {
                 System.out.println("-------------------------------");
@@ -175,6 +199,15 @@ public class OfficerView extends UserView {
     }
 
     public void replyToEnquiry() {
+        try {
+            if(officerController.viewEnquiriesForMyProjects().isEmpty()) {
+                System.out.println("No enquiries available.");
+                return;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return;
+        }
         System.out.print("Enter enquiry ID to reply: ");
         int enquiryId = scanner.nextInt();
         scanner.nextLine(); // Consume newline

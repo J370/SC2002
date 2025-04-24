@@ -19,6 +19,10 @@ public class AuthController {
 
     public void changePassword(User user, String newPassword) {
         if (user != null) {
+            if (user.getPassword().equals(newPassword)) {
+                System.out.println("New password cannot be the same as the old password.");
+                return;
+            }
             user.setPassword(newPassword);
             UserCSVDao userDao = new UserCSVDao();
             userDao.updateUser(user);

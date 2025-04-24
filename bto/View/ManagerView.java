@@ -386,6 +386,9 @@ public class ManagerView extends UserView {
 
     public void approveApplication() {
         scanner.nextLine(); // Consume any leftover newline
+        managerController.viewAllApplications().stream()
+            .filter(app -> app.getStatus().toString().equals("PENDING"))
+            .forEach(app -> System.out.println("Application ID: " + app.getId() + ", Project Name: " + app.getProjectName() + ", Applicant NRIC: " + app.getApplicantNric()));
         System.out.print("Please enter the application ID to approve: ");
         String applicationId = scanner.nextLine().trim();
     
@@ -448,6 +451,7 @@ public class ManagerView extends UserView {
     
         // Prompt for filters
         System.out.print("Enter marital status to filter by (or press Enter to skip): ");
+        scanner.nextLine(); // Consume any leftover newline
         String maritalStatus = scanner.nextLine().trim();
         if (maritalStatus.isEmpty()) maritalStatus = null;
     
