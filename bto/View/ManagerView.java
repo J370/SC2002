@@ -8,16 +8,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The ManagerView class provides the user interface for managers to interact with the system.
+ * It allows managers to perform various actions such as creating, editing, and deleting projects,
+ * managing officer registrations, handling applications, and generating reports.
+ */
 public class ManagerView extends UserView {
     ManagerController managerController;
     Manager manager;
 
+    /**
+     * Constructs a ManagerView with the specified manager and manager controller.
+     *
+     * @param manager The manager associated with this view.
+     * @param managerController The controller for managing manager-related operations.
+     */
     public ManagerView(Manager manager, ManagerController managerController) {
         super(manager);
         this.managerController = managerController;
         this.manager = manager;
     }
 
+    /**
+     * Displays the menu for the manager and handles user input for menu options.
+     *
+     * @param isFirstTime {@code true} if this is the first time the menu is displayed, {@code false} otherwise.
+     */
     public void menu(boolean isFirstTime) {
         System.out.println("\n===================================");
         if (isFirstTime) {
@@ -152,6 +168,11 @@ public class ManagerView extends UserView {
         }
     }
 
+    /**
+     * Creates a new project.
+     * Prompts the user to enter project details such as name, neighborhood, opening and closing dates, officer slots, 
+     * and flat type details. The project is then created using the manager controller.
+     */
     public void createProject() {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         scanner.nextLine(); 
@@ -192,6 +213,11 @@ public class ManagerView extends UserView {
         }
     }
 
+    /**
+     * Deletes an existing project.
+     * Prompts the user to enter the project name and confirms the deletion before proceeding.
+     *
+     */
     public void deleteProject() {
         scanner.nextLine(); 
         System.out.print("Please enter the project name to delete: ");
@@ -210,6 +236,12 @@ public class ManagerView extends UserView {
         }
     }
 
+    /**
+     * Edits an existing project.
+     * Prompts the user to enter the project name and allows editing of project details such as neighborhood, 
+     * opening and closing dates, officer slots, and flat type details. Keeps current values if no new input is provided.
+     *
+     */
     public void editProject() {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         scanner.nextLine(); 
@@ -308,6 +340,11 @@ public class ManagerView extends UserView {
         }
     }
 
+    /**
+     * Displays all available projects in the system.
+     * Shows details such as project name, neighborhood, opening and closing dates, officer slots, flat types, 
+     * and visibility status.
+     */
     public void viewAllProject() {
         List<Project> projects = managerController.viewAllProject();
         if (projects.isEmpty()) {
@@ -333,6 +370,11 @@ public class ManagerView extends UserView {
         }
     }
 
+    /**
+     * Displays all projects managed by the current manager.
+     * Shows details such as project name, neighborhood, opening and closing dates, officer slots, flat types, 
+     * and visibility status.
+     */
     public void viewOwnProjects() {
         List<Project> projects = managerController.viewOwnProjects();
         if (projects.isEmpty()) {
@@ -358,6 +400,10 @@ public class ManagerView extends UserView {
         }
     }
 
+    /**
+     * Displays all officer registration requests.
+     * If no requests are available, a message is displayed.
+     */
     public void viewRequestedOfficer() {
         List<String> requests = managerController.viewRequestedOfficer();
         if (requests.isEmpty()) {
@@ -371,6 +417,11 @@ public class ManagerView extends UserView {
         }
     }
 
+    /**
+     * Approves an officer's registration for a project.
+     * Prompts the user to enter the project name and the officer's name.
+     *
+     */
     public void approveRegistration() {
         scanner.nextLine(); 
         System.out.print("Please enter the project name: ");
@@ -387,6 +438,11 @@ public class ManagerView extends UserView {
         }
     }
 
+    /**
+     * Rejects an officer's registration for a project.
+     * Prompts the user to enter the project name and the officer's name.
+     *
+     */
     public void rejectRegistration() {
         scanner.nextLine(); 
         System.out.print("Please enter the project name: ");
@@ -403,6 +459,11 @@ public class ManagerView extends UserView {
         }
     }
 
+    /**
+     * Approves an application for a project.
+     * Displays all pending applications and prompts the user to select one for approval.
+     *
+     */
     public void approveApplication() {
         scanner.nextLine(); 
 
@@ -425,6 +486,11 @@ public class ManagerView extends UserView {
         }
     }
     
+    /**
+     * Rejects an application for a project.
+     * Displays all pending applications and prompts the user to select one for rejection.
+     *
+     */
     public void rejectApplication() {
         scanner.nextLine(); 
 
@@ -447,6 +513,11 @@ public class ManagerView extends UserView {
         }
     }
 
+    /**
+     * Approves a withdrawal request for an application.
+     * Displays all withdrawal requests and prompts the user to select one for approval.
+     *
+     */
     public void approveWithdrawal() {
         scanner.nextLine(); 
 
@@ -478,6 +549,11 @@ public class ManagerView extends UserView {
         }
     }
 
+    /**
+     * Rejects a withdrawal request for an application.
+     * Displays all withdrawal requests and prompts the user to select one for rejection.
+     *
+     */
     public void rejectWithdrawal() {
         scanner.nextLine(); 
 
@@ -508,6 +584,10 @@ public class ManagerView extends UserView {
         }
     }
 
+    /**
+     * Displays all enquiries in the system.
+     * If no enquiries are available, a message is displayed.
+     */
     public void viewAllEnquiries() {
         List<Enquiry> enquiries = managerController.viewAllEnquiries();
         if (enquiries.isEmpty()) {
@@ -524,6 +604,11 @@ public class ManagerView extends UserView {
         }
     }
 
+    /**
+     * Allows the manager to reply to a specific enquiry.
+     * Prompts the user to enter the enquiry ID and the reply message.
+     * 
+     */
     public void replyEnquiry() {
         scanner.nextLine(); 
         System.out.print("Please enter the enquiry ID to reply: ");
@@ -541,6 +626,11 @@ public class ManagerView extends UserView {
         }
     }
 
+    /**
+     * Generates a filtered report of booked applications.
+     * The report can be filtered by marital status, flat type, and project name.
+     * If no applications match the filter criteria, a message is displayed.
+     */
     public void generateReport() {
         List<Application> applications = managerController.generateReport();
     
@@ -594,6 +684,11 @@ public class ManagerView extends UserView {
         System.out.println("===== End of Report =====");
     }
 
+    /**
+     * Toggles the visibility of a specific project.
+     * Prompts the user to enter the project name and updates its visibility status.
+     * 
+     */
     public void toggleProjectVisibility() {
         scanner.nextLine(); 
         System.out.print("Please enter the project name to toggle visibility: ");

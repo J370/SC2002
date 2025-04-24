@@ -92,7 +92,7 @@ public class Application {
     /**
      * Sets the ID of the application.
      *
-     * @param id The new application ID.
+     * @param string The new application ID.
      * @return The updated Application object.
      */
     public Application setId(String string) {

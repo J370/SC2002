@@ -325,6 +325,12 @@ public class ApplicantView extends UserView {
         }
     }
 
+    /**
+     * Displays a list of available projects for the applicant.
+     *
+     * @param projects A list of projects to display.
+     * @param maritalStatus The marital status of the applicant, which may affect project eligibility.
+     */
     public void displayProjects(List<Project> projects, String maritalStatus) {
         System.out.println("Available Projects:");
         for (Project project : projects) {

@@ -251,8 +251,15 @@ public class OfficerController {
      * Represents the registration status of an officer for a project.
      */
     public static class RegistrationStatus {
+        /**
+         * The project associated with the registration.
+         */
         public final Project project;
-        public final String status; 
+
+        /**
+         * The status of the registration (e.g., "Assigned", "Pending", "Rejected").
+         */
+        public final String status;
 
         /**
          * Constructs a RegistrationStatus object.

@@ -167,6 +167,13 @@ public class ManagerController {
         return requests;
     }
 
+    /**
+     * Approves an officer's registration for a project.
+     *
+     * @param projectName The name of the project.
+     * @param officerName The name of the officer to approve.
+     * @throws Exception If the officer is already assigned, not requested, or there are no available officer slots for the project.
+     */
     public void approveRegistration(String projectName, String officerName) throws Exception{
         Project project = projectDao.getProjectById(projectName);
 
@@ -189,7 +196,14 @@ public class ManagerController {
         projectDao.updateProject(project);
     }
 
-    public void rejectRegistration(String projectName, String officerName) throws Exception{
+    /**
+     * Rejects an officer's registration for a project.
+     *
+     * @param projectName The name of the project.
+     * @param officerName The name of the officer to reject.
+     * @throws Exception If the officer is already rejected, not requested, or assigned to the project.
+     */
+    public void rejectRegistration(String projectName, String officerName) throws Exception {
         Project project = projectDao.getProjectById(projectName);
 
         if (project.getRejectedOfficers().contains(officerName)) throw new Exception("Officer " + officerName + " has already been rejected for this project.");
@@ -212,6 +226,12 @@ public class ManagerController {
         projectDao.updateProject(project);
     }
 
+    /**
+     * Approves an application.
+     *
+     * @param applicationId The ID of the application to approve.
+     * @throws Exception If the application is not found, is not pending, or there are no available units for the flat type.
+     */
     public void approveApplication(String applicationId) throws Exception {
         Application application = applicationDao.getApplicationById(applicationId)
             .orElseThrow(() -> new Exception("Application not found"));
@@ -231,6 +251,12 @@ public class ManagerController {
 
     }
 
+    /**
+     * Rejects an application.
+     *
+     * @param applicationId The ID of the application to reject.
+     * @throws Exception If the application is not found, is not pending, or there are no available units for the flat type.
+     */
     public void rejectApplication(String applicationId) throws Exception {
         Application application = applicationDao.getApplicationById(applicationId)
             .orElseThrow(() -> new Exception("Application not found"));
@@ -249,6 +275,12 @@ public class ManagerController {
         applicationDao.update(application);
     }
 
+    /**
+     * Approves a withdrawal request for an application.
+     *
+     * @param applicationId The ID of the application to approve withdrawal for.
+     * @throws Exception If the application is not found, no withdrawal is requested, or the associated project is not found.
+     */
     public void approveWithdrawal(String applicationId) throws Exception {
         Application application = applicationDao.getApplicationById(applicationId)
             .orElseThrow(() -> new Exception("Application not found"));
@@ -272,6 +304,12 @@ public class ManagerController {
         applicationDao.update(application);
     }
     
+    /**
+     * Rejects a withdrawal request for an application.
+     *
+     * @param applicationId The ID of the application to reject withdrawal for.
+     * @throws Exception If the application is not found or no withdrawal is requested.
+     */
     public void rejectWithdrawal(String applicationId) throws Exception {
         Application application = applicationDao.getApplicationById(applicationId)
             .orElseThrow(() -> new Exception("Application not found"));
@@ -282,9 +320,23 @@ public class ManagerController {
         applicationDao.update(application);
     }
 
-    public List<Enquiry> viewAllEnquiries(){return enquiryDao.getAllEnquiries();}
+    /**
+     * Retrieves all enquiries from the system.
+     *
+     * @return A list of all enquiries.
+     */
+    public List<Enquiry> viewAllEnquiries() {
+        return enquiryDao.getAllEnquiries();
+    }
 
-    public void replyEnquiry(int enquiryId, String reply) throws Exception{
+    /**
+     * Replies to a specific enquiry.
+     *
+     * @param enquiryId The ID of the enquiry to reply to.
+     * @param reply The reply message to be sent.
+     * @throws Exception If the reply is empty, the enquiry is not found, or the manager is not authorized to reply.
+     */
+    public void replyEnquiry(int enquiryId, String reply) throws Exception {
         Enquiry enquiry = enquiryDao.findById(enquiryId);
         if (reply == null) throw new Exception("Reply cannot be empty");
         if (enquiry == null) throw new Exception("Enquiry not found");
@@ -297,6 +349,11 @@ public class ManagerController {
         enquiryDao.update(enquiry);
     }
 
+    /**
+     * Generates a report of all booked applications.
+     *
+     * @return A list of applications with the status {@code BOOKED}.
+     */
     public List<Application> generateReport() {
         List<Application> allApplications = applicationDao.getAllApplications();
         List<Application> bookedApplications = new ArrayList<>();
@@ -310,7 +367,12 @@ public class ManagerController {
         return bookedApplications;
     }
 
-
+    /**
+     * Toggles the visibility of a project.
+     *
+     * @param projectName The name of the project whose visibility is to be toggled.
+     * @throws Exception If the project is not found.
+     */
     public void toggleProjectVisibility(String projectName) throws Exception {
         Project project = projectDao.getProjectById(projectName);
         if (project == null) throw new Exception("Project not found");
@@ -318,14 +380,18 @@ public class ManagerController {
         projectDao.updateProject(project);
     }
 
-
+    /**
+     * Checks if the manager has an active project.
+     *
+     * @return {@code true} if the manager has an active project, {@code false} otherwise.
+     */
     private boolean hasActiveProject() {
         return projectDao.getAllProjects().stream()
             .filter(p -> p.getManager().equals(manager.getName()))
             .anyMatch(p -> p.isVisible() && p.isApplicationOpen());
     }
 
-/**
+    /**
      * Retrieves all applications.
      *
      * @return A list of all applications.

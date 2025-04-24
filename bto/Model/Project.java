@@ -176,28 +176,144 @@ public class Project {
         }
     }
 
-    // Getters and setters for project attributes
+    /**
+     * Gets the name of the project.
+     *
+     * @return The name of the project.
+     */
     public String getName() { return projectName; }
+
+    /**
+     * Gets the neighborhood where the project is located.
+     *
+     * @return The neighborhood of the project.
+     */
     public String getNeighborhood() { return neighborhood; }
+
+    /**
+     * Gets the flat types and their details for the project.
+     *
+     * @return A map of flat types and their details.
+     */
     public Map<String, FlatTypeDetails> getFlatTypes() { return new HashMap<>(flatTypes); }
+
+    /**
+     * Gets the opening date for applications to the project.
+     *
+     * @return The opening date for applications.
+     */
     public LocalDate getOpeningDate() { return openingDate; }
+
+    /**
+     * Gets the closing date for applications to the project.
+     *
+     * @return The closing date for applications.
+     */
     public LocalDate getClosingDate() { return closingDate; }
+
+    /**
+     * Gets the name of the manager responsible for the project.
+     *
+     * @return The name of the manager.
+     */
     public String getManager() { return manager; }
+
+    /**
+     * Gets the number of officer slots available for the project.
+     *
+     * @return The number of officer slots.
+     */
     public int getOfficerSlots() { return officerSlots; }
+
+    /**
+     * Gets the list of officers assigned to the project.
+     *
+     * @return A list of assigned officers.
+     */
     public List<String> getAssignedOfficers() { return new ArrayList<>(assignedOfficers); }
+
+    /**
+     * Gets the list of officers who have requested to join the project.
+     *
+     * @return A list of requested officers.
+     */
     public List<String> getRequestedOfficers() { return new ArrayList<>(requestedOfficers); }
+
+    /**
+     * Gets the list of officers who have been rejected from the project.
+     *
+     * @return A list of rejected officers.
+     */
     public List<String> getRejectedOfficers() { return new ArrayList<>(rejectedOfficers); }
+
+    /**
+     * Checks if the project is visible.
+     *
+     * @return {@code true} if the project is visible, {@code false} otherwise.
+     */
     public boolean getVisible() { return isVisible; }
 
+    /**
+     * Sets the flat types and their details for the project.
+     *
+     * @param flatTypes A map of flat types and their details.
+     */
     public void setFlatTypes(Map<String, FlatTypeDetails> flatTypes) { this.flatTypes = new HashMap<>(flatTypes); }
+
+    /**
+     * Sets the number of officer slots available for the project.
+     * The number of slots is capped at a maximum of 10.
+     *
+     * @param slots The number of officer slots to set.
+     */
     public void setOfficerSlots(int slots) { this.officerSlots = Math.min(slots, 10); }
+
+    /**
+     * Sets the visibility of the project.
+     *
+     * @param visible {@code true} to make the project visible, {@code false} otherwise.
+     */
     public void setVisible(boolean visible) { this.isVisible = visible; }
 
+    /**
+     * Adds an officer to the list of assigned officers for the project.
+     *
+     * @param officerName The name of the officer to assign.
+     */
     public void addAssignedOfficer(String officerName) { assignedOfficers.add(officerName); }
+
+    /**
+     * Adds an officer to the list of requested officers for the project.
+     *
+     * @param officerName The name of the officer to add to the requested list.
+     */
     public void addRequestedOfficer(String officerName) { requestedOfficers.add(officerName); }
+
+    /**
+     * Adds an officer to the list of rejected officers for the project.
+     *
+     * @param officerName The name of the officer to reject.
+     */
     public void addRejectedOfficer(String officerName) { rejectedOfficers.add(officerName); }
 
+    /**
+     * Removes an officer from the list of assigned officers for the project.
+     *
+     * @param officerName The name of the officer to remove from the assigned list.
+     */
     public void removeAssignedOfficer(String officerName) { assignedOfficers.remove(officerName); }
+
+    /**
+     * Removes an officer from the list of requested officers for the project.
+     *
+     * @param officerName The name of the officer to remove from the requested list.
+     */
     public void removeRequestedOfficer(String officerName) { requestedOfficers.remove(officerName); }
+
+    /**
+     * Removes an officer from the list of rejected officers for the project.
+     *
+     * @param officerName The name of the officer to remove from the rejected list.
+     */
     public void removeRejectedOfficer(String officerName) { rejectedOfficers.remove(officerName); }
 }
