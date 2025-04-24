@@ -21,5 +21,5 @@ Java Development Kit (JDK)
 ## Running
 ### Linux
 javac $(find . -name "*.java") && java bto.App
-### Windows
-Install WSL
+### Inteelij
+Run project in intellij
