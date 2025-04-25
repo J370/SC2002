@@ -162,6 +162,9 @@ public class OfficerView extends UserView {
         try {
             List<Application> applications = officerController.viewApplicationsForMyProjects();
             for (Application application : applications) {
+                if (application.getStatus() != ApplicationStatus.BOOKED) {
+                    continue;
+                }
                 System.out.println("-------------------------------");
                 System.out.println("Application ID: " + application.getId());
                 System.out.println("Project Name: " + application.getProjectName());
@@ -188,6 +191,9 @@ public class OfficerView extends UserView {
             List<Application> applications = officerController.viewApplicationsForMyProjects();
             System.out.println("Applications:");
             for (Application application : applications) {
+                if (application.getStatus() != ApplicationStatus.SUCCESS) {
+                    continue;
+                }
                 System.out.println("-------------------------------");
                 System.out.println("Application ID: " + application.getId());
                 System.out.println("Applicant NRIC: " + application.getApplicantNric());
